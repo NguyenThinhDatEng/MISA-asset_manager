@@ -1,0 +1,71 @@
+@import url(font.css);
+@import url(layout/sidebar/sidebar.css);
+@import url(icon.css);
+/* @import url(patterns/header.css);
+@import url(components/input.css);
+@import url(components/text.css);
+@import url(components/button.css);
+@import url(components/table.css);
+@import url(components/combobox.css);
+@import url(components/popup.css);
+@import url(components/dropdown.css);
+@import url(communication/dialog.css);
+@import url(communication/toast.css);
+@import url(more/loader.css);
+@import url(more/scrollbar.css);
+@import url(more/tooltip.css);
+@import url(style.css); */
+
+:root {
+    --menu-item: #1AA4C8;
+    --input--hover: #1AA4C8;
+    --input--error: #EA3636;
+    --hover: #D1EDF4;
+    --combobox__data: #C7E0F4;
+    --scrollbar-thumb: #ABB6C8;
+    --scrollbar-track: #D1DAE9;
+    --checkbox__border: #090F39;
+    --checkbox__background: #31B9E2;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: MISA Regular;
+    font-size: 13px
+}
+
+body {
+    margin: 0;
+}
+
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.layout {
+    display: flex;
+    overflow: hidden;
+}
+
+@media only screen and (max-width: 1500px) {
+    .sidebar {
+        width: 66px;
+    }
+
+    .item__content {
+        display: none;
+    }
+
+    .icon-item_wrapper .icon_sidebar-collapse {
+        display: none;
+    }
+}
