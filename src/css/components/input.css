@@ -1,0 +1,120 @@
+@import url(../font.css);
+
+input {
+    padding: 0;
+    margin: 0;
+    outline: none;
+}
+
+input:hover,
+input:focus {
+    border: 1px solid var(--input--hover);
+}
+
+input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--checkbox__border);
+    border-radius: 2px;
+    -webkit-appearance: none;
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--checkbox__background);
+    border: none;
+}
+
+input[type="checkbox"]::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: '';
+    width: 14px;
+    height: 14px;
+    background: url('../../assets/imgs/qlts-icon.png');
+    background-position: -69.5px -509px;
+    display: none;
+}
+
+input:checked[type="checkbox"]::before {
+    display: block;
+}
+
+/* Hide the arrows of input number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Hide the calendar of input date */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    -webkit-appearance: none;
+    display: none;
+}
+
+.input {
+    border: 1px solid #afafaf;
+    border-radius: 2.5px;
+    font-size: 13px;
+}
+
+.input--error {
+    position: relative;
+    border: 1px solid var(--input--error);
+}
+
+.error-message {
+    position: absolute;
+    display: none;
+    color: var(--input--error);
+    padding-top: 2px;
+    max-width: 240px;
+}
+
+.input--disabled:hover {
+    border-color: #afafaf;
+}
+
+.input.year {
+    border: none;
+    font-weight: 700;
+    width: 30px;
+    background-color: transparent;
+}
+
+.input--search {
+    background-color: #ffffff;
+    padding: 10px 8px 9px 39px;
+    width: 179px;
+    height: 35px;
+    overflow: hidden;
+}
+
+input::placeholder {
+    font-family: MISA Italic;
+}
+
+.input_filter {
+    width: 219px;
+}
+
+.checkbox {
+    position: absolute;
+    top: 11px;
+    left: 16px;
+}
+
+.limit input {
+    position: absolute;
+    border: none;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 21px;
+    margin-left: 13px;
+}

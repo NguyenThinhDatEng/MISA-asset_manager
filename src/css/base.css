@@ -1,8 +1,10 @@
 @import url(font.css);
-@import url(layout/sidebar/sidebar.css);
 @import url(icon.css);
-/* @import url(patterns/header.css);
+@import url(layout/sidebar.css);
+@import url(layout/header.css);
+@import url(layout/content.css);
 @import url(components/input.css);
+/* @import url(patterns/header.css);
 @import url(components/text.css);
 @import url(components/button.css);
 @import url(components/table.css);
@@ -38,6 +40,10 @@ body {
     margin: 0;
 }
 
+p {
+    margin: 0;
+}
+
 .center {
     position: absolute;
     top: 50%;
@@ -54,6 +60,13 @@ body {
 .layout {
     display: flex;
     overflow: hidden;
+}
+
+.header-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 @media only screen and (max-width: 1500px) {

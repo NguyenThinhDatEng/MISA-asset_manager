@@ -60,6 +60,19 @@
     transform: translateY(-50%);
 }
 
+.sidebar--hidden {
+    width: 66px;
+}
+
+.sidebar--hidden .item__content,
+.sidebar--hidden .sidebar-collapse {
+    display: none;
+}
+
+.sidebar--hidden .sidebar-extension {
+    display: block;
+}
+
 .item {
     display: flex;
     align-items: center;

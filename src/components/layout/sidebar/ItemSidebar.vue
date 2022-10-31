@@ -1,6 +1,6 @@
 <template>
-  <div :id="id ? id : ''" class="item">
-    <div class="icon-item_wrapper">
+  <div :id="id ? id : ''" :class="['item', active ? 'item--active' : '']">
+    <div class="icon-item_wrapper" :title="title ? title : ''">
       <div :class="['icon icon-item center', iconName]"></div>
     </div>
     <div class="item__content">
@@ -15,23 +15,27 @@
 <script>
 export default {
   name: "ItemSidebar",
-  created() {},
   components: {},
   props: {
     id: String,
     iconName: String,
     iconContent: String,
+    title: String,
+    active: Boolean,
   },
   emits: [],
   methods: {},
   data() {
     return {
-      active: false,
+      // itemClass: {
+      //   item: true,
+      //   "item--active": this.active,
+      // },
     };
   },
 };
 </script>
 
 <style scoped>
-@import url(../../../css/layout/sidebar/item.css);
+@import url(@/css/layout/sidebar.css);
 </style>

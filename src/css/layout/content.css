@@ -1,0 +1,40 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    /* top - left+right - bottom  */
+    background-color: #f4f7ff;
+    padding: 14px 20px 17px;
+}
+
+.function {
+    display: flex;
+    justify-content: space-between;
+    height: 35px;
+    margin-bottom: 12px;
+}
+
+.function .icon_down,
+.limit .icon_down {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.function_left {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    width: 641px;
+}
+
+.asset_type-filter,
+.department-filter {
+    position: relative;
+    width: 219px;
+}
+
+.function__right {
+    display: flex;
+}

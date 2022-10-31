@@ -138,16 +138,16 @@
 .icon--down {
     background-position: -71px -337px;
     width: 9px;
-    height: 6px;
+    height: 7px;
 }
 
 .icon--up {
     background-position: -27px -337px;
     width: 9px;
-    height: 6px;
+    height: 7px;
 }
 
-.icon--user {
+.icon--account {
     background-position: -20px -20px;
 }
 
@@ -157,6 +157,10 @@
 
 .icon--menu {
     background-position: -196px -20px;
+}
+
+.icon--notification {
+    background-position: -327px -107px;
 }
 
 .icon--search_input {

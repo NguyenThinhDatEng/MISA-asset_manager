@@ -1,0 +1,36 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.header--left {
+    font-family: MISA Bold;
+    font-weight: 700;
+}
+
+.header--right {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.header_year {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 112px;
+    height: 30px;
+    border-radius: 3px;
+    padding: 8px 8px 7px 12px;
+    margin: 0 21px;
+    background-color: rgba(26, 164, 200, .2);
+    overflow: hidden;
+}
+
+.header .icon-item_wrapper .icon {
+    cursor: pointer;
+}
