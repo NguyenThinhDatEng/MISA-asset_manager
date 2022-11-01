@@ -14,8 +14,9 @@
         v-for="(value, key) in items"
         v-bind:key="key"
         :iconName="setIconName(key)"
-        :iconContent="value"
+        :itemContent="value"
         :title="setValue(value)"
+        @activeState="onClickItem"
       ></Item>
     </div>
     <!-- Footer sidebar -->
@@ -76,6 +77,9 @@ export default {
     },
     extendSidebar() {
       this.hidden = false;
+    },
+    onClickItem(active) {
+      console.log(active);
     },
   },
   data() {

@@ -20,6 +20,8 @@ export default {
     "search-input": "Tìm kiếm theo tên, mã tài sản",
     export: "Xuất dữ liệu",
     delete: "Xóa bản ghi",
+    STT: "Số thứ tự",
+    limit: "Số lượng bản ghi hiển thị",
   },
   Logo: {
     qlts: "MISA QLTS",
@@ -35,10 +37,14 @@ export default {
   },
   Placeholder: {
     "asset-search": "Tìm kiếm tài sản",
-    "asset-type": "Loại tài sản",
+    category: "Loại tài sản",
     department: "Bộ phận sử dụng",
   },
   ButtonName: {
     "asset-add": "Thêm tài sản",
+  },
+  URLs: {
+    department: "https://localhost:44385/api/v1/Departments",
+    "asset-type": "https://localhost:44385/api/v1/AssetCategories",
   },
 };

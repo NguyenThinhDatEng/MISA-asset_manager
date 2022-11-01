@@ -75,6 +75,7 @@
 }
 
 .dropdown--checkbox .checkbox__wrapper {
+    position: relative;
     width: 36px;
     height: 36px;
 }

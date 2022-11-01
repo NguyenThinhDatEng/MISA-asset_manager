@@ -3,7 +3,7 @@
     <TheSidebar></TheSidebar>
     <div class="header-content">
       <TheHeader></TheHeader>
-      <TheContent></TheContent>
+      <TheContent> </TheContent>
     </div>
   </div>
 </template>

@@ -1,0 +1,123 @@
+.combobox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    outline: none;
+    height: 36px;
+    border: 1px solid #afafaf;
+    border-radius: 2.5px;
+}
+
+.combobox:focus-within {
+    border: 1px solid #30ADCD;
+}
+
+.combobox--error {
+    border: 1px solid var(--input--error);
+}
+
+.combobox.combobox--error+.error-message {
+    display: block;
+}
+
+.popup .combobox {
+    width: 100%;
+}
+
+.combobox__input {
+    position: absolute;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    padding-left: 12px;
+    padding-right: 36px;
+}
+
+.combobox__input:hover,
+.combobox__input:focus,
+.combobox__input:active {
+    border: none;
+}
+
+.combobox__button {
+    position: absolute;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 2.5px;
+    background-color: transparent;
+}
+
+.combobox__data {
+    position: absolute;
+    top: calc(100% + 1px);
+    width: 100%;
+    max-height: 200px;
+    border-radius: 2.5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+    line-height: 36px;
+    overflow: auto;
+    padding: 8px;
+    background-color: #fff;
+    z-index: 1;
+}
+
+.combobox__data .data {
+    display: flex;
+    height: 36px;
+    background-color: #fff;
+    cursor: context-menu;
+}
+
+.combobox__data .data:hover {
+    border-radius: 2.5px;
+    background-color: var(--combobox__data);
+}
+
+.combobox__data .data:hover .icon__wrapper {
+    opacity: 1;
+}
+
+.combobox__data .data .icon__wrapper {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 2.5px;
+    opacity: 0;
+    background-color: var(--combobox__data);
+}
+
+.combobox__data .data:focus-within,
+.combobox__data .data:active,
+.combobox__data .data:focus {
+    background-color: var(--combobox__data);
+}
+
+.combobox__data p {
+    padding-left: 16px;
+}
+
+.footer__left .combobox {
+    justify-content: space-between;
+    width: 59px;
+    height: 25px;
+    border-radius: 2.625px;
+    margin-right: 20px;
+}
+
+.footer__left .combobox__input {
+    width: calc(100% - 31px);
+    text-align: right;
+    padding: 0;
+}
+
+.footer__left .combobox__button {
+    width: 31px;
+    height: 25px;
+}
+
+.combobox--checked .data .icon__wrapper--checked {
+    opacity: 1;
+}

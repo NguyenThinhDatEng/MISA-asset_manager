@@ -8,46 +8,21 @@
         type="text"
         class="input dropdown__input"
         :placeholder="placeholder"
+        @click="isHidden = !isHidden"
       />
-      <div class="dropdown__button">
+      <div class="dropdown__button" @click="isHidden = !isHidden">
         <div class="icon center icon--down"></div>
       </div>
-      <div id="dropdown__data--asset-type" class="dropdown__data" hidden>
-        <div class="data">
+      <div
+        id="dropdown__data--asset-type"
+        class="dropdown__data"
+        v-show="isHidden == false"
+      >
+        <div class="data" v-for="item in data" :key="item[field + '_id']">
           <div class="checkbox__wrapper">
             <input type="checkbox" class="center checkbox" />
           </div>
-          <p>Máy vi tính xách tay</p>
-        </div>
-        <div class="data">
-          <div class="checkbox__wrapper">
-            <input type="checkbox" class="center checkbox" />
-          </div>
-          <p>Máy tính bàn</p>
-        </div>
-        <div class="data">
-          <div class="checkbox__wrapper">
-            <input type="checkbox" class="center checkbox" />
-          </div>
-          <p>Điện thoại di động</p>
-        </div>
-        <div class="data">
-          <div class="checkbox__wrapper">
-            <input type="checkbox" class="center checkbox" />
-          </div>
-          <p>Điện thoại bàn</p>
-        </div>
-        <div class="data">
-          <div class="checkbox__wrapper">
-            <input type="checkbox" class="center checkbox" />
-          </div>
-          <p>Đồ gia dụng</p>
-        </div>
-        <div class="data">
-          <div class="checkbox__wrapper">
-            <input type="checkbox" class="center checkbox" />
-          </div>
-          <p>1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20</p>
+          <p>{{ item[field + "_name"] }}</p>
         </div>
       </div>
     </div>
@@ -57,15 +32,21 @@
 <script>
 import resource from "@/resource/resource";
 export default {
-  name: "CheckboxDropdown",
-  created() {},
+  name: "DropdownCheckbox",
   components: {},
-  props: { id: String, parentClass: String, placeholder: String },
+  props: {
+    id: String,
+    parentClass: String,
+    placeholder: String,
+    field: String,
+    data: Object,
+  },
   emits: [],
   methods: {},
   data() {
     return {
       resource,
+      isHidden: true,
     };
   },
 };
