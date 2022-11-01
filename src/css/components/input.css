@@ -89,10 +89,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .input--search {
+    position: relative;
+    width: 179px;
+    height: 36px;
     background-color: #ffffff;
     padding: 10px 8px 9px 39px;
-    width: 179px;
-    height: 35px;
     overflow: hidden;
 }
 

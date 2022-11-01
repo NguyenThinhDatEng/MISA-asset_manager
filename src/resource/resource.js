@@ -17,6 +17,9 @@ export default {
     increase: "Tăng",
     decrease: "Giảm",
     "financial-department": "Sở tài chính",
+    "search-input": "Tìm kiếm theo tên, mã tài sản",
+    export: "Xuất dữ liệu",
+    delete: "Xóa bản ghi",
   },
   Logo: {
     qlts: "MISA QLTS",
@@ -29,5 +32,13 @@ export default {
     help: "Hỗ trợ",
     menu: "Danh mục",
     notification: "Thông báo",
+  },
+  Placeholder: {
+    "asset-search": "Tìm kiếm tài sản",
+    "asset-type": "Loại tài sản",
+    department: "Bộ phận sử dụng",
+  },
+  ButtonName: {
+    "asset-add": "Thêm tài sản",
   },
 };

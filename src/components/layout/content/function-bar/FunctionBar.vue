@@ -3,156 +3,76 @@
     <!-- Left function bar  -->
     <div class="function_left">
       <!-- Search  -->
-      <div class="asset-search">
-        <div class="icon-function_wrapper">
-          <div class="icon center icon-18px icon_search_input"></div>
-        </div>
-        <input
-          type="text"
-          class="input input--search"
-          placeholder="Tìm kiếm tài sản"
-        />
-      </div>
-      <!-- Filter 01  -->
-      <div class="asset_type-filter">
-        <div id="dropdown--asset-type" class="dropdown--checkbox dropdown">
-          <div class="dropdown__icon">
-            <div class="icon center icon-18px icon_filter"></div>
-          </div>
-          <input
-            type="text"
-            class="input dropdown__input"
-            placeholder="Loại tài sản"
-          />
-          <div class="dropdown__button">
-            <div class="icon center icon_down"></div>
-          </div>
-          <div id="dropdown__data--asset-type" class="dropdown__data" hidden>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Máy vi tính xách tay</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Máy tính bàn</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Điện thoại di động</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Điện thoại bàn</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Đồ gia dụng</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Filter 02  -->
-      <div class="department-filter">
-        <div id="dropdown--department" class="dropdown--checkbox dropdown">
-          <div class="dropdown__icon">
-            <div class="icon center icon-18px icon_filter"></div>
-          </div>
-          <input
-            type="text"
-            class="input dropdown__input"
-            placeholder="Bộ phận sử dụng"
-          />
-          <div class="dropdown__button">
-            <div class="icon center icon_down"></div>
-          </div>
-          <div id="dropdown__data--department" class="dropdown__data" hidden>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Phòng ngoại giao</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Phòng giám đốc</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Phòng bảo vệ</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Phòng hành chính kế toán</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Phòng tài chính kế toán</p>
-            </div>
-            <div class="data">
-              <div class="checkbox__wrapper">
-                <input type="checkbox" class="center checkbox" />
-              </div>
-              <p>Phòng họp</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Input></Input>
+      <!-- Filter -->
+      <Dropdown
+        v-for="item in filters"
+        :key="item.id"
+        :id="item.id"
+        :parentClass="item.className"
+        :placeholder="resource.Placeholder[item.placeholder]"
+      ></Dropdown>
     </div>
     <!-- Right function bar  -->
     <div class="function__right">
       <!-- Button: add a new asset  -->
-      <button class="button button--add">
-        <div class="button--add__content-wrapper">
-          <div class="icon icon_add"></div>
-          <p class="add-asset">Thêm tài sản</p>
-        </div>
-      </button>
+      <Button
+        :buttonType="'button--add'"
+        :buttonName="'asset-add'"
+        :iconName="'icon--add'"
+      ></Button>
       <!-- Button: export a excel file  -->
-      <div class="button--export button--disable" title="Xuất dữ liệu">
-        <div class="icon icon-18px center icon_export"></div>
-      </div>
-      <!-- Button: delete many assets  -->
-      <div class="button--delete button--disable" title="Xóa bản ghi">
-        <div class="icon icon-18px center icon_delete"></div>
-      </div>
+      <ButtonFeature
+        v-for="item in features"
+        :key="item.buttonType"
+        :buttonType="item.buttonType"
+        :iconName="item.iconName"
+        :title="item.title"
+      ></ButtonFeature>
     </div>
   </div>
 </template>
 
 <script>
+import Input from "@/components/inputs/SearchInput.vue";
+import Dropdown from "@/components/dropdowns/DropdownCheckbox.vue";
+import Button from "@/components/buttons/ButtonIcon.vue";
+import ButtonFeature from "@/components/buttons/ButtonFeature.vue";
+import resource from "@/resource/resource";
 export default {
   name: "FunctionBar",
-  created() {},
-  components: {},
+  components: { Input, Dropdown, Button, ButtonFeature },
   props: {},
   emits: [],
   methods: {},
   data() {
-    return {};
+    return {
+      resource,
+      filters: [
+        {
+          id: "dropdown--asset-type",
+          className: "asset_type-filter",
+          placeholder: "asset-type",
+        },
+        {
+          id: "dropdown--department",
+          className: "department-filter",
+          placeholder: "department",
+        },
+      ],
+      features: [
+        {
+          buttonType: "button--export",
+          title: resource.Title.export,
+          iconName: "icon--export",
+        },
+        {
+          buttonType: "button--delete",
+          title: resource.Title.delete,
+          iconName: "icon--delete",
+        },
+      ],
+    };
   },
 };
 </script>

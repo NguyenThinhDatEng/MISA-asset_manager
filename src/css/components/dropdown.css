@@ -1,0 +1,89 @@
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #afafaf;
+    border-radius: 2.5px;
+    background-color: #fff;
+    outline: none;
+}
+
+.dropdown:hover,
+.dropdown:focus-within {
+    border: 1px solid var(--input--hover);
+}
+
+.dropdown__icon {
+    position: absolute;
+    left: 6px;
+    width: 24px;
+    height: 24px;
+}
+
+.dropdown__input {
+    position: absolute;
+    flex: 1;
+    left: 39px;
+}
+
+.dropdown__input.input {
+    border: none;
+}
+
+.dropdown__input.input::placeholder {
+    font-family: MISA Regular;
+    color: #000;
+}
+
+.dropdown__button {
+    position: absolute;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 2.5px;
+    background-color: transparent;
+}
+
+.dropdown__data {
+    position: absolute;
+    top: calc(100% + 1px);
+    width: 100%;
+    max-height: 200px;
+    border-radius: 2.5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+    line-height: 36px;
+    background-color: #fff;
+    overflow: auto;
+    z-index: 2;
+}
+
+.dropdown__data .data {
+    display: flex;
+}
+
+.dropdown__data .data:hover {
+    background-color: var(--combobox__data);
+}
+
+.dropdown__data .data p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown--checkbox .checkbox__wrapper {
+    width: 36px;
+    height: 36px;
+}
+
+.dropdown--checkbox p {
+    padding-left: 8px;
+    flex: 1
+}
+
+.data--active {
+    background-color: var(--combobox__data);
+}

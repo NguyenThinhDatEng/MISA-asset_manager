@@ -50,7 +50,7 @@
     height: 15px;
 }
 
-.icon-18px {
+.icon--18px {
     width: 18px;
     height: 18px;
 }
@@ -163,7 +163,7 @@
     background-position: -327px -107px;
 }
 
-.icon--search_input {
+.icon--search-input {
     background-position: -243px -23px;
 }
 
