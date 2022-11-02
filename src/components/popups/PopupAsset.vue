@@ -1,5 +1,5 @@
 <template>
-  <div id="popup--add" class="popup-wrapper" hidden>
+  <div id="popup--add" class="popup-wrapper" v-if="!isHidden">
     <div class="center popup">
       <!-- Popup Header -->
       <div class="popup__header">
@@ -290,7 +290,7 @@ export default {
   components: {},
   props: {},
   emits: [],
-  methods: {},
+  methods: { isHidden: Boolean },
   data() {
     return {};
   },
@@ -298,4 +298,5 @@ export default {
 </script>
 
 <style scoped>
+@import url(@/css/base.css);
 </style>

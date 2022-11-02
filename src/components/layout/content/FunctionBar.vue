@@ -27,8 +27,9 @@
         :buttonType="'button--add'"
         :buttonName="'asset-add'"
         :iconName="'icon--add'"
+        @click="hiddenPopup = false"
       ></Button>
-      <Popup></Popup>
+      <Popup :isHidden="false"></Popup>
       <!-- Button: export a excel file  -->
       <ButtonFeature
         v-for="item in features"
@@ -91,6 +92,7 @@ export default {
   data() {
     return {
       resource,
+      hiddenPopup: true,
       departments: [],
       categories: [],
       filters: [

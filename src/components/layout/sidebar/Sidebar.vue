@@ -11,12 +11,13 @@
     <!-- Body sidebar  -->
     <div class="sidebar__body">
       <Item
-        v-for="(value, key) in items"
-        v-bind:key="key"
-        :iconName="setIconName(key)"
-        :itemContent="value"
-        :title="setValue(value)"
-        @activeState="onClickItem"
+        v-for="item in items"
+        v-bind:key="item.id"
+        :iconName="setIconName(item.id)"
+        :itemContent="item.content"
+        :title="setTitle(item.id, item.content)"
+        :active="item.active"
+        @click="handleOnClickItem(item.id)"
       ></Item>
     </div>
     <!-- Footer sidebar -->
@@ -26,7 +27,7 @@
         class="sidebar-extension icon-item_wrapper"
         hidden
         :title="Title.extension"
-        @click="extendSidebar"
+        @click="hidden = !hidden"
       >
         <div class="icon center icon--sidebar-extension"></div>
       </div>
@@ -34,7 +35,7 @@
       <div
         class="sidebar-collapse icon-item_wrapper"
         :title="Title.collapse"
-        @click="collapseSidebar"
+        @click="hidden = !hidden"
       >
         <div class="icon center icon--sidebar-collapse"></div>
       </div>
@@ -46,51 +47,74 @@
 <script>
 import Item from "./ItemSidebar";
 import Resource from "@/resource/resource";
-import { ref } from "vue";
 
 export default {
   name: "TheSidebar",
+  created() {
+    try {
+      let isActive;
+      for (const key in this.itemContents) {
+        isActive = false;
+        if (key == "asset") isActive = true;
+        this.items.push({
+          id: key,
+          active: isActive,
+          content: this.itemContents[key],
+        });
+      }
+      console.log(this.items);
+    } catch (error) {
+      console.log("hook: create an item", error);
+    }
+  },
   components: {
     Item,
   },
   props: {},
-  setup() {
-    const items = ref(Resource.ItemContents);
-
-    // expose to template and other options API hooks
-    return {
-      items,
-    };
-  },
   methods: {
+    // Trả về tên icon class
     setIconName(name) {
-      return "icon--" + name;
-    },
-    setValue(value) {
-      if (value == "Tài sản HT-ĐB") {
-        return "Tài sản Hệ thống - Đường bộ";
+      try {
+        return "icon--" + name;
+      } catch (error) {
+        console.log(error);
       }
-      return value;
     },
-    collapseSidebar() {
-      this.hidden = true;
+    // Trả về title cho icon
+    setTitle(id, content) {
+      try {
+        if (id == "path") {
+          return Resource.Abbreviations.path;
+        }
+        return content;
+      } catch (error) {
+        console.log(error);
+      }
     },
-    extendSidebar() {
-      this.hidden = false;
-    },
-    onClickItem(active) {
-      console.log(active);
+    //
+    handleOnClickItem(id) {
+      try {
+        // Must use 'of' for obj
+        for (const item of this.items) {
+          if (item.id == id) item.active = true;
+          else item.active = false;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   data() {
     return {
       Resource,
+      itemContents: Resource.ItemContents,
       Title: Resource.Title,
       hidden: false,
+      items: [],
     };
   },
 };
 </script>
 <style scoped>
-@import url(../../../css/base.css);
+@import url(@/css/base.css);
 </style>

@@ -49,6 +49,10 @@ export default {
     setIconName(key) {
       return "icon--" + key;
     },
+    /**
+     * Lấy năm hiện tại
+     * author: Nguyen Van Thinh 02/11/2022
+     */
     getYear() {
       return new Date().getFullYear();
     },

@@ -46,5 +46,9 @@ export default {
   URLs: {
     department: "https://localhost:44385/api/v1/Departments",
     "asset-type": "https://localhost:44385/api/v1/AssetCategories",
+    getAllAsset: "https://localhost:44385/api/v1/Assets",
+  },
+  Abbreviations: {
+    path: "Tài sản Hệ thống - Đường bộ",
   },
 };

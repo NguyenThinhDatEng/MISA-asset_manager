@@ -43,6 +43,12 @@ export default {
   props: {},
   emits: [],
   methods: {
+    /**
+     * trả về thông tin số bản ghi thu được
+     * render bằng v-html
+     * author: Nguyen Van Thinh 02/11/2022
+     * @return String kiểu html
+     */
     records() {
       return "Tổng số: " + "<b>" + this.quantity + "</b>" + " bản ghi";
     },

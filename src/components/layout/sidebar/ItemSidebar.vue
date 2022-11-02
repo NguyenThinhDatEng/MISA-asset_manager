@@ -1,9 +1,5 @@
 <template>
-  <div
-    :id="id ? id : ''"
-    :class="['item', { 'item--active': active }]"
-    @click="changeActive"
-  >
+  <div :id="id ? id : ''" :class="{ item: true, 'item--active': active }">
     <div class="icon-item_wrapper" :title="title ? title : ''">
       <div :class="['icon icon-item center', iconName]"></div>
     </div>
@@ -27,20 +23,18 @@ export default {
     iconName: String,
     itemContent: String,
     title: String,
-  },
-  watch: {
     active: {
-      showActive() {
-        console.log(this.active);
-      },
+      type: Boolean,
+      default: false,
     },
   },
   emits: [],
   methods: {
-    changeActive() {
-      this.active = !this.active;
-      this.$emit("activeState", this.active);
-    },
+    /**
+     * Bỏ icon mũi tên đi xuống của những item không cần thiết
+     * @param {String} itemContent tên mục
+     * @return {Boolean}
+     */
     isShow(itemContent) {
       if (
         itemContent == this.content.general ||
@@ -53,12 +47,7 @@ export default {
   data() {
     return {
       content: resource.ItemContents,
-      active: false,
       hasArrowIcon: true,
-      // itemClass: {
-      //   item: true,
-      //   "item--active": this.active,
-      // },
     };
   },
 };

@@ -114,14 +114,6 @@ tfoot::before {
     background-color: var(--hover);
 }
 
-.td--asset-type {
-    max-width: 120px;
-}
-
-.td--department {
-    max-width: 110px;
-}
-
 .total-of-records__wrapper {
     position: relative;
     width: 150px;
@@ -165,4 +157,8 @@ tfoot::before {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.STT {
+    padding-right: 24px;
 }
