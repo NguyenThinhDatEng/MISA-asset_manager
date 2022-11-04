@@ -1,10 +1,14 @@
 <template>
-  <div id="popup--add" class="popup-wrapper" v-if="!isHidden">
+  <div id="popup--add" class="popup-wrapper">
     <div class="center popup">
       <!-- Popup Header -->
       <div class="popup__header">
-        <span>Title...</span>
-        <button class="icon icon-18px icon--close"></button>
+        <span>{{ theTitle }}</span>
+        <button
+          class="icon icon-18px icon--close"
+          :title="title.close"
+          @click="hidePopup"
+        ></button>
       </div>
       <!-- Popup body  -->
       <div class="popup__body">
@@ -276,23 +280,39 @@
       </div>
       <!-- Popup footer  -->
       <div class="popup__footer">
-        <button class="button button--save">Lưu</button>
-        <button class="button button--cancel">Hủy</button>
+        <button class="button button--save" :title="title.save">Lưu</button>
+        <button
+          class="button button--cancel"
+          :title="title.cancel"
+          @click="hidePopup"
+        >
+          Hủy
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import resource from "@/resource/resource";
+
 export default {
   name: "PopupAsset",
   created() {},
   components: {},
-  props: { isHidden: Boolean },
+  props: {
+    theTitle: {
+      type: String,
+    },
+  },
   emits: [],
-  methods: {},
+  methods: {
+    hidePopup() {
+      this.$emit("close-popup");
+    },
+  },
   data() {
-    return {};
+    return { title: resource.Title };
   },
 };
 </script>

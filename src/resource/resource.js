@@ -18,10 +18,19 @@ export default {
     decrease: "Giảm",
     "financial-department": "Sở tài chính",
     "search-input": "Tìm kiếm theo tên, mã tài sản",
+    "asset-category-filter": "Lọc theo loại tài sản",
+    "department-filter": "lọc theo bộ phận sử dụng",
+    add: "Thêm mới tài sản",
     export: "Xuất dữ liệu",
     delete: "Xóa bản ghi",
-    STT: "Số thứ tự",
+    edit: "Sửa",
+    duplicate: "Nhân bản",
     limit: "Số lượng bản ghi hiển thị",
+    pre: "Trang trước",
+    next: "Trang sau",
+    close: "Đóng",
+    save: "Lưu thông tin",
+    cancel: "Hủy",
   },
   Logo: {
     qlts: "MISA QLTS",
@@ -50,6 +59,8 @@ export default {
   },
   Abbreviations: {
     path: "Tài sản Hệ thống - Đường bộ",
+    depreciation: "Hao mòn/Khấu hao lũy kế",
+    STT: "Số thứ tự",
   },
   Columns: {
     stt: "STT",
@@ -62,5 +73,9 @@ export default {
     depreciation: "HM/KH lũy kế",
     "residual-value": "Giá trị còn lại",
     feature: "Tính năng",
+  },
+  PopupTitle: {
+    add: "Thêm mới tài sản",
+    edit: "Sửa tài sản",
   },
 };

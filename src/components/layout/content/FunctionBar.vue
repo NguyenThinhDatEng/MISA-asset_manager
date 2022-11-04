@@ -11,6 +11,7 @@
         :placeholder="resource.Placeholder[filters[0].placeholder]"
         :field="filters[0].field"
         :data="this.categories"
+        :title="resource.Title['asset-category-filter']"
       ></Dropdown>
       <Dropdown
         :id="filters[1].id"
@@ -18,6 +19,7 @@
         :placeholder="resource.Placeholder[filters[1].placeholder]"
         :field="filters[1].field"
         :data="this.departments"
+        :title="resource.Title['department-filter']"
       ></Dropdown>
     </div>
     <!-- Right function bar  -->
@@ -27,7 +29,8 @@
         :buttonType="'button--add'"
         :buttonName="'asset-add'"
         :iconName="'icon--add'"
-        @click="hiddenPopup = true"
+        :title="resource.Title.add"
+        @click="showPopup = true"
       ></Button>
       <!-- Button: export excel and delete -->
       <ButtonFeature
@@ -40,7 +43,11 @@
       ></ButtonFeature>
     </div>
   </div>
-  <Popup :isHidden="hiddenPopup"></Popup>
+  <Popup
+    v-if="showPopup"
+    :theTitle="resource.PopupTitle.add"
+    @close-popup="showPopup = false"
+  ></Popup>
 </template>
 
 <script>
@@ -106,7 +113,7 @@ export default {
   data() {
     return {
       resource,
-      hiddenPopup: true,
+      showPopup: false,
       showLoader: false,
       departments: [],
       categories: [],

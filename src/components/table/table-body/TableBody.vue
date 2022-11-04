@@ -6,13 +6,20 @@
       :obj="asset"
       :i="index + 1"
       @click="handleOnClickRow(asset)"
+      @dblclick="handleOnDblClickRow(asset)"
     ></Row>
   </tbody>
+  <Popup
+    v-if="showPopup"
+    :title="resource.PopupTitle.edit"
+    @close-popup="showPopup = false"
+  ></Popup>
 </template>
 
 <script>
 import Row from "./TableRow.vue";
 import resource from "@/resource/resource";
+import Popup from "@/components/popups/PopupAsset.vue";
 
 export default {
   name: "TableBody",
@@ -44,7 +51,7 @@ export default {
       console.log("Call get all assets API", error);
     }
   },
-  components: { Row },
+  components: { Row, Popup },
   methods: {
     /**
      * Thêm hoặc xóa tài sản khỏi mảng chứa các dòng được chọn
@@ -69,9 +76,15 @@ export default {
       // Thay đổi trạng thái active của dòng
       asset.isActive = !asset.isActive;
     },
+
+    handleOnDblClickRow: function (asset) {
+      this.showPopup = true;
+      // Thay đổi trạng thái active của dòng
+      asset.isActive = !asset.isActive;
+    },
   },
   data() {
-    return { resource, assets: [], selectedRows: [] };
+    return { resource, assets: [], selectedRows: [], showPopup: false };
   },
 };
 </script>

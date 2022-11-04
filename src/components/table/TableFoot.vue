@@ -11,7 +11,10 @@
           <!-- Paging  -->
           <div class="paging">
             <div class="paging__icon--wrapper">
-              <div class="icon center icon-footer icon--left-arrow"></div>
+              <div
+                class="icon center icon-footer icon--left-arrow"
+                :title="title.pre"
+              ></div>
             </div>
             <div class="page-numbers">
               <button class="number" value="1">1</button>
@@ -20,7 +23,10 @@
               <button class="number" value="10">10</button>
             </div>
             <div class="paging__icon--wrapper">
-              <div class="icon center icon-footer icon--right-arrow"></div>
+              <div
+                class="icon center icon-footer icon--right-arrow"
+                :title="title.next"
+              ></div>
             </div>
           </div>
         </div>
@@ -36,6 +42,8 @@
 
 <script>
 import Combobox from "@/components/comboboxes/ComboboxLimit.vue";
+import resource from "@/resource/resource";
+
 export default {
   name: "TableFoot",
   created() {},
@@ -56,6 +64,7 @@ export default {
   data() {
     return {
       quantity: 200,
+      title: resource.Title,
     };
   },
 };

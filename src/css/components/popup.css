@@ -137,3 +137,8 @@ input.input.input--error+.error-message {
     right: 0;
     border: none;
 }
+
+.popup .popup__header span {
+    font-family: MISA Bold;
+    font-size: 15px;
+}

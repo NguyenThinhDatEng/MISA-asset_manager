@@ -7,7 +7,7 @@
       <th
         v-for="(value, key) of ths"
         :key="key"
-        :title="value"
+        :title="setTitle(value)"
         :class="'col--' + key"
       >
         {{ value }}
@@ -21,6 +21,14 @@ import resource from "@/resource/resource";
 
 export default {
   name: "TableHead",
+  methods: {
+    setTitle: function (value) {
+      if (value == "STT") return resource.Abbreviations.STT;
+      else if (value == "HM/KH lũy kế")
+        return resource.Abbreviations.depreciation;
+      else return "";
+    },
+  },
   data() {
     return {
       ths: resource.Columns,

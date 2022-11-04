@@ -16,22 +16,50 @@
     <td class="col--residual-value">100</td>
     <td class="col--feature">
       <div class="feature">
-        <div class="icon icon--edit"></div>
-        <div class="icon icon--duplicate"></div>
+        <div
+          class="icon icon--edit"
+          :title="title.edit"
+          @click="
+            {
+              (showPopup = true), (action = 'edit');
+            }
+          "
+        ></div>
+        <div
+          class="icon icon--duplicate"
+          :title="title.duplicate"
+          @click="(showPopup = true), (action = 'duplicate')"
+        ></div>
       </div>
     </td>
   </tr>
+  <Popup
+    v-if="showPopup"
+    :theTitle="setPopupTitle()"
+    @close-popup="showPopup = false"
+  ></Popup>
 </template>
 
 <script>
+import resource from "@/resource/resource";
+
 export default {
   name: "TableRow",
   components: {},
   props: { obj: Object, i: Number },
   emits: [],
-  methods: {},
+  methods: {
+    setPopupTitle: function () {
+      if (this.action == "edit") return resource.PopupTitle.edit;
+      return resource.PopupTitle.add;
+    },
+  },
   data() {
-    return {};
+    return {
+      title: resource.Title,
+      showPopup: false,
+      action: "",
+    };
   },
 };
 </script>
