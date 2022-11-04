@@ -30,11 +30,6 @@
     height: 24px;
 }
 
-.icon-table {
-    width: 16px;
-    height: 16px;
-}
-
 .icon-footer {
     width: 8px;
     height: 13px;
@@ -187,10 +182,14 @@
 
 .icon--edit {
     background-position: -156px -68px;
+    width: 16px;
+    height: 16px;
 }
 
 .icon--duplicate {
     background-position: -244px -112px;
+    width: 16px;
+    height: 16px;
 }
 
 .icon--left-arrow {

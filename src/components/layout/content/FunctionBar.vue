@@ -29,7 +29,6 @@
         :iconName="'icon--add'"
         @click="hiddenPopup = false"
       ></Button>
-      <Popup :isHidden="false"></Popup>
       <!-- Button: export a excel file  -->
       <ButtonFeature
         v-for="item in features"
@@ -40,6 +39,7 @@
       ></ButtonFeature>
     </div>
   </div>
+  <Popup :isHidden="hiddenPopup"></Popup>
 </template>
 
 <script>
@@ -128,4 +128,7 @@ export default {
 
 <style scoped>
 @import url(@/css/base.css);
+Button + ButtonFeature {
+  margin-left: 11px;
+}
 </style>

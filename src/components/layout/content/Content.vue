@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <Loader :isShow="isShowLoader"></Loader>
     <!-- Function bar  -->
     <FunctionBar></FunctionBar>
     <!-- Table  -->
@@ -10,13 +11,14 @@
 <script>
 import FunctionBar from "./FunctionBar.vue";
 import TheTable from "@/components/table/Table.vue";
+import Loader from "@/components/more/Loader.vue";
+
 export default {
   name: "TheContent",
-  created() {},
-  components: { FunctionBar, TheTable },
-  props: {},
-  emits: [],
-  methods: {},
+  components: { FunctionBar, TheTable, Loader },
+  props: {
+    isShowLoader: Boolean,
+  },
   data() {
     return {};
   },

@@ -62,6 +62,7 @@
 
 .dropdown__data .data {
     display: flex;
+    cursor: context-menu;
 }
 
 .dropdown__data .data:hover {

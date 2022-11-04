@@ -288,9 +288,9 @@ export default {
   name: "PopupAsset",
   created() {},
   components: {},
-  props: {},
+  props: { isHidden: Boolean },
   emits: [],
-  methods: { isHidden: Boolean },
+  methods: {},
   data() {
     return {};
   },

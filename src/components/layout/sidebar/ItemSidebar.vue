@@ -1,6 +1,10 @@
 <template>
-  <div :id="id ? id : ''" :class="{ item: true, 'item--active': active }">
-    <div class="icon-item_wrapper" :title="title ? title : ''">
+  <div
+    :id="id ? id : ''"
+    :class="{ item: true, 'item--active': active }"
+    :title="title ? title : ''"
+  >
+    <div class="icon-item_wrapper">
       <div :class="['icon icon-item center', iconName]"></div>
     </div>
     <div class="item__content">

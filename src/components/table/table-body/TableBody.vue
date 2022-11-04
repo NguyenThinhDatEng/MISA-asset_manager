@@ -1,23 +1,12 @@
 <template>
   <tbody>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
-    <Row :obj="assets[0]"></Row>
+    <Row
+      v-for="(asset, index) in assets"
+      :key="index"
+      :obj="asset"
+      :i="index + 1"
+      @click="asset.isActive = !asset.isActive"
+    ></Row>
   </tbody>
 </template>
 
@@ -41,8 +30,12 @@ export default {
       })
         .then((res) => res.json())
         .then((data) => {
+          // Thêm thuộc tính active cho từng dòng dữ liệu trong dropdown
+          for (let item of data) {
+            item["isActive"] = false;
+          }
           this.assets = data;
-          console.log(data);
+          //   console.log(this.assets);
         })
         .catch((error) => {
           console.log("Call get all assets API", error);
@@ -56,7 +49,7 @@ export default {
   emits: [],
   methods: {},
   data() {
-    return { resource, assets: [] };
+    return { resource, assets: [], stt: 1 };
   },
 };
 </script>

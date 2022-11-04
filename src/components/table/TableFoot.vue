@@ -25,10 +25,10 @@
           </div>
         </div>
       </td>
-      <td style="font-family: MISA Bold" class="text-align_right">13</td>
-      <td style="font-family: MISA Bold" class="text-align_right">249000000</td>
-      <td style="font-family: MISA Bold" class="text-align_right">19716000</td>
-      <td style="font-family: MISA Bold" class="text-align_right">229284000</td>
+      <td class="value">13</td>
+      <td class="value">249000000</td>
+      <td class="value">19716000</td>
+      <td class="value">229284000</td>
       <td></td>
     </tr>
   </tfoot>

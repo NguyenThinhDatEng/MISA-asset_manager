@@ -1,28 +1,23 @@
 <template>
-  <tr>
-    <td class="checkbox__wrapper">
-      <input type="checkbox" class="checkbox" />
+  <tr :class="{ 'row--active': this.obj.isActive }">
+    <td class="checkbox__wrapper col--checkbox">
+      <input type="checkbox" class="checkbox" :checked="this.obj.isActive" />
     </td>
-    <td :style="setStyle('center', '')" class="STT">1</td>
-    <!-- <td>{{ obj.fixed_asset_code }}</td>
-    <td :style="setStyle('', '110px')">{{ obj.fixed_asset_name }}</td>
-    <td :style="setStyle('', '110px')">{{ obj.fixed_asset_category_name }}</td>
-    <td :style="setStyle('', '110px')">{{ obj.department_name }}</td>
-    <td :style="setStyle('right', '')">{{ obj.quantity }}</td>
-    <td :style="setStyle('right', '')">{{ obj.cost }}</td>
-    <td :style="setStyle('right', '')">{{ obj.depreciation_rate }}</td> -->
-    <td>ST0298</td>
-    <td :style="setStyle('', '110px')">Phần mềm MISA cukcuk</td>
-    <td :style="setStyle('', '110px')">Phần mềm ứng dụng</td>
-    <td :style="setStyle('', '110px')">Phòng kỹ thuật</td>
-    <td :style="setStyle('right', '')">3739515</td>
-    <td :style="setStyle('right', '')">921188906995579</td>
-    <td :style="setStyle('right', '')">2</td>
-    <td :style="setStyle('right', '')">21188906995</td>
-    <td>
+    <td class="col--stt">{{ i }}</td>
+    <td class="col--asset-code">{{ obj.fixed_asset_code }}</td>
+    <td class="col--asset-name">{{ obj.fixed_asset_name }}</td>
+    <td class="col--asset-category">
+      {{ obj.fixed_asset_category_name }}
+    </td>
+    <td class="col--department">{{ obj.department_name }}</td>
+    <td class="col--quantity">{{ obj.quantity }}</td>
+    <td class="col--cost">{{ obj.cost }}</td>
+    <td class="col--depreciation">{{ obj.depreciation_rate }}</td>
+    <td class="col--residual-value">100</td>
+    <td class="col--feature">
       <div class="feature">
-        <div class="icon icon-table icon_edit"></div>
-        <div class="icon icon-table icon_duplicate"></div>
+        <div class="icon icon--edit"></div>
+        <div class="icon icon--duplicate"></div>
       </div>
     </td>
   </tr>
@@ -32,35 +27,9 @@
 export default {
   name: "TableRow",
   components: {},
-  watch: {
-    obj() {},
-  },
-  mounted() {
-    console.log(this.obj);
-  },
-  props: { obj: Object },
+  props: { obj: Object, i: Number },
   emits: [],
-  methods: {
-    /**
-     * cấu hình style cho các table data
-     * @param {String} align căn chỉnh dữ liệu
-     * @param {String} maxWidth độ rộng cột lớn nhất
-     * @return {String} là nội dung của style
-     */
-    setStyle(align, maxWidth) {
-      try {
-        let alignProp = "text-align: " + align;
-        let widthProp = "max-width: " + maxWidth;
-        if (align && maxWidth) {
-          return alignProp + ";" + widthProp;
-        }
-        if (align) return alignProp;
-        if (maxWidth) return widthProp;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  },
+  methods: {},
   data() {
     return {};
   },

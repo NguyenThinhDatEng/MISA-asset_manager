@@ -3,16 +3,13 @@
     <table>
       <!-- Table columns -->
       <colgroup>
-        <col
-          :style="col.width ? 'min-width: ' + col.width + 'px' : ''"
-          v-for="col in cols"
-          :key="col.id"
-        />
+        <col v-for="obj in styleObject" :key="obj.col" :style="obj" />
       </colgroup>
       <!-- Table Header  -->
       <TableHead></TableHead>
       <!-- Table body  -->
       <TableBody></TableBody>
+      <!-- Table footer  -->
       <TableFoot></TableFoot>
     </table>
   </div>
@@ -22,6 +19,7 @@
 import TableHead from "./TableHead.vue";
 import TableBody from "./table-body/TableBody.vue";
 import TableFoot from "./TableFoot.vue";
+// import resource from "@/resource/resource";
 
 export default {
   name: "TheTable",
@@ -32,18 +30,66 @@ export default {
   methods: {},
   data() {
     return {
-      cols: [
-        { id: 1, width: 40 },
-        { id: 2, width: 40 },
-        { id: 3 },
-        { id: 4, width: 90 },
-        { id: 5, width: 70 },
-        { id: 6, width: 100 },
-        { id: 7, width: 60 },
-        { id: 8 },
-        { id: 9, width: 90 },
-        { id: 10, width: 80 },
-        { id: 11, width: 80 },
+      //   cols: resource.Columns,
+      styleObject: [
+        {
+          col: "checkbox",
+          "min-width": "40px",
+          "text-align": "center",
+        },
+        {
+          col: "stt",
+          "min-width": "40px",
+          "text-align": "left",
+        },
+        {
+          col: "asset-code",
+          "min-width": "70px",
+          "text-align": "left",
+        },
+        {
+          col: "asset-name",
+          "min-width": "90px",
+          "max-width": "160px",
+          "text-align": "left",
+        },
+        {
+          col: "asset-category",
+          "min-width": "70px",
+          "max-width": "120px",
+          "text-align": "left",
+        },
+        {
+          col: "department",
+          "min-width": "100px",
+          "max-width": "120px",
+          "text-align": "left",
+        },
+        {
+          col: "quantity",
+          "min-width": "60px",
+          "text-align": "right",
+        },
+        {
+          col: "cost",
+          "text-align": "right",
+        },
+        {
+          col: "depreciation",
+          "min-width": "90px",
+          "text-align": "right",
+        },
+        {
+          col: "residual-value",
+          "min-width": "80px",
+          "text-align": "right",
+        },
+        {
+          col: "feature",
+          "min-width": "60px",
+          "max-width": "80px",
+          "text-align": "center",
+        },
       ],
     };
   },

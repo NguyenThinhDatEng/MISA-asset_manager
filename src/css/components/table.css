@@ -20,14 +20,6 @@ thead {
     z-index: 1;
 }
 
-.th--text {
-    text-align: left;
-}
-
-.th--number {
-    text-align: right;
-}
-
 thead,
 tfoot {
     position: sticky;
@@ -49,8 +41,8 @@ tbody tr:focus {
 }
 
 tbody tr,
-th {
-    border-bottom: 1px solid #afafaf;
+thead tr {
+    border-bottom: 0.5px solid #afafaf;
     outline: none;
 }
 
@@ -114,6 +106,10 @@ tfoot::before {
     background-color: var(--hover);
 }
 
+.row--active .feature {
+    display: flex;
+}
+
 .total-of-records__wrapper {
     position: relative;
     width: 150px;
@@ -159,6 +155,61 @@ tfoot::before {
     transform: translateY(-50%);
 }
 
-.STT {
-    padding-right: 24px;
+tfoot .value {
+    font-family: MISA Bold;
+    text-align: right;
+}
+
+.col--checkbox {
+    text-align: center;
+}
+
+.col--stt {
+    text-align: left;
+}
+
+tbody .col--stt {
+    padding-left: 4px;
+}
+
+.col--asset-code {
+    text-align: left;
+}
+
+.col--asset-name {
+    max-width: 160px;
+    text-align: left;
+    padding-right: 4px;
+}
+
+.col--asset-category {
+    max-width: 120px;
+    text-align: left;
+    padding-right: 4px;
+}
+
+.col--department {
+    max-width: 120px;
+    text-align: left;
+    padding-right: 4px;
+}
+
+.col--quantity {
+    text-align: right;
+}
+
+.col--cost {
+    text-align: right;
+}
+
+.col--depreciation {
+    text-align: right;
+}
+
+.col--residual-value {
+    text-align: right;
+}
+
+.col--feature {
+    max-width: 80px;
 }

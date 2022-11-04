@@ -41,12 +41,14 @@
       </div>
     </div>
   </div>
+  <loader :isHidden="isShowLoader"></loader>
 </template>
 
 
 <script>
-import Item from "./ItemSidebar";
+import Item from "./ItemSidebar.vue";
 import Resource from "@/resource/resource";
+import Loader from "@/components/more/Loader.vue";
 
 export default {
   name: "TheSidebar",
@@ -69,6 +71,7 @@ export default {
   },
   components: {
     Item,
+    Loader,
   },
   props: {},
   methods: {
@@ -91,9 +94,13 @@ export default {
         console.log(error);
       }
     },
-    //
+    /**
+     * sự kiện nhấn vào mục trong sidebar
+     * @param {string} id định danh của item được nhấn
+     */
     handleOnClickItem(id) {
       try {
+        id == "asset" ? this.isShowLoader == true : this.isShowLoader == false;
         // Must use 'of' for obj
         for (const item of this.items) {
           if (item.id == id) item.active = true;
@@ -110,6 +117,7 @@ export default {
       itemContents: Resource.ItemContents,
       Title: Resource.Title,
       hidden: false,
+      isShowLoader: false,
       items: [],
     };
   },

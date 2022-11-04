@@ -51,4 +51,16 @@ export default {
   Abbreviations: {
     path: "Tài sản Hệ thống - Đường bộ",
   },
+  Columns: {
+    stt: "STT",
+    "asset-code": "Mã tài sản",
+    "asset-name": "Tên tài sản",
+    "asset-category": "Loại tài sản",
+    department: "Bộ phận sử dụng",
+    quantity: "Số lượng",
+    cost: "Nguyên giá",
+    depreciation: "HM/KH lũy kế",
+    "residual-value": "Giá trị còn lại",
+    feature: "Tính năng",
+  },
 };
