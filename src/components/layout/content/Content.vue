@@ -2,9 +2,9 @@
   <div class="content">
     <Loader :isShow="isShowLoader"></Loader>
     <!-- Function bar  -->
-    <FunctionBar></FunctionBar>
+    <FunctionBar :selectedRows="selectedRows"></FunctionBar>
     <!-- Table  -->
-    <TheTable></TheTable>
+    <TheTable @update-tr="UpdateTr"></TheTable>
   </div>
 </template>
 
@@ -19,8 +19,13 @@ export default {
   props: {
     isShowLoader: Boolean,
   },
+  methods: {
+    UpdateTr: function (selectedRows) {
+      this.selectedRows = selectedRows;
+    },
+  },
   data() {
-    return {};
+    return { selectedRows: [] };
   },
 };
 </script>

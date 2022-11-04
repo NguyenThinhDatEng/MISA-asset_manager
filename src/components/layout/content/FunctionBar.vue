@@ -27,15 +27,16 @@
         :buttonType="'button--add'"
         :buttonName="'asset-add'"
         :iconName="'icon--add'"
-        @click="hiddenPopup = false"
+        @click="hiddenPopup = true"
       ></Button>
-      <!-- Button: export a excel file  -->
+      <!-- Button: export excel and delete -->
       <ButtonFeature
         v-for="item in features"
         :key="item.buttonType"
         :buttonType="item.buttonType"
         :iconName="item.iconName"
         :title="item.title"
+        :isDisable="disableButton"
       ></ButtonFeature>
     </div>
   </div>
@@ -52,8 +53,13 @@ import resource from "@/resource/resource";
 
 export default {
   name: "FunctionBar",
+  /**
+   * Call API
+   * @author Nguyen Van Thinh 04/11/2022
+   */
   mounted() {
     try {
+      // Lay tat ca bo phan su dung
       fetch(resource.URLs.department, {
         method: "GET",
         headers: {
@@ -68,6 +74,7 @@ export default {
           console.log("Call get all departments API", error);
         });
 
+      // Lay tat ca loai tai san
       fetch(resource.URLs["asset-type"], {
         method: "GET",
         headers: {
@@ -76,6 +83,7 @@ export default {
       })
         .then((res) => res.json())
         .then((data) => {
+          // Gan data thu duoc vao du lieu cua component
           this.categories = data;
         })
         .catch((error) => {
@@ -86,13 +94,20 @@ export default {
     }
   },
   components: { Input, Dropdown, Button, ButtonFeature, Popup },
-  props: {},
+  props: { selectedRows: Array },
+  computed: {
+    disableButton: function () {
+      if (this.selectedRows.length > 0) return false;
+      return true;
+    },
+  },
   emits: [],
   methods: {},
   data() {
     return {
       resource,
       hiddenPopup: true,
+      showLoader: false,
       departments: [],
       categories: [],
       filters: [

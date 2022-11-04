@@ -5,7 +5,7 @@
       :key="index"
       :obj="asset"
       :i="index + 1"
-      @click="asset.isActive = !asset.isActive"
+      @click="handleOnClickRow(asset)"
     ></Row>
   </tbody>
 </template>
@@ -13,9 +13,9 @@
 <script>
 import Row from "./TableRow.vue";
 import resource from "@/resource/resource";
+
 export default {
   name: "TableBody",
-  created() {},
   mounted() {
     /**
      * Call API lấy tất cả bản ghi tài sản
@@ -45,11 +45,33 @@ export default {
     }
   },
   components: { Row },
-  props: {},
-  emits: [],
-  methods: {},
+  methods: {
+    /**
+     * Thêm hoặc xóa tài sản khỏi mảng chứa các dòng được chọn
+     * @param {Object} asset đối tượng tài sản được click
+     */
+    handleOnClickRow: function (asset) {
+      // Thêm tài sản vào mảng khi nhấn vào dòng chưa được chọn
+      if (asset.isActive == false) this.selectedRows.push(asset);
+      else {
+        // Xóa tài sản khỏi mảng khi nhấn vào dòng đang được chọn
+        const length = this.selectedRows.length;
+        for (let i = 0; i < length; i++) {
+          if (this.selectedRows[i].fixed_asset_id == asset.fixed_asset_id) {
+            this.selectedRows.splice(i, 1);
+            break;
+          }
+        }
+      }
+      // Bắn mảng các dòng được chọn lên thanh công cụ (sidebar)
+      this.$emit("update-tr", this.selectedRows);
+      console.log("Table body", this.selectedRows);
+      // Thay đổi trạng thái active của dòng
+      asset.isActive = !asset.isActive;
+    },
+  },
   data() {
-    return { resource, assets: [], stt: 1 };
+    return { resource, assets: [], selectedRows: [] };
   },
 };
 </script>

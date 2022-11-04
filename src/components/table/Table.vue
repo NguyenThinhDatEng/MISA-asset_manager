@@ -1,5 +1,5 @@
 <template>
-  <div class="table">
+  <div class="table" id="table">
     <table>
       <!-- Table columns -->
       <colgroup>
@@ -8,7 +8,7 @@
       <!-- Table Header  -->
       <TableHead></TableHead>
       <!-- Table body  -->
-      <TableBody></TableBody>
+      <TableBody @update-tr="updateTr"></TableBody>
       <!-- Table footer  -->
       <TableFoot></TableFoot>
     </table>
@@ -27,7 +27,11 @@ export default {
   components: { TableHead, TableBody, TableFoot },
   props: {},
   emits: [],
-  methods: {},
+  methods: {
+    updateTr: function (selectedRows) {
+      this.$emit("update-tr", selectedRows);
+    },
+  },
   data() {
     return {
       //   cols: resource.Columns,

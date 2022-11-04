@@ -41,14 +41,12 @@
       </div>
     </div>
   </div>
-  <loader :isHidden="isShowLoader"></loader>
 </template>
 
 
 <script>
 import Item from "./ItemSidebar.vue";
 import Resource from "@/resource/resource";
-import Loader from "@/components/more/Loader.vue";
 
 export default {
   name: "TheSidebar",
@@ -71,7 +69,6 @@ export default {
   },
   components: {
     Item,
-    Loader,
   },
   props: {},
   methods: {
