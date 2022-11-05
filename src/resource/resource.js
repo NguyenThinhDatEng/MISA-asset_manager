@@ -48,6 +48,8 @@ export default {
     "asset-search": "Tìm kiếm tài sản",
     category: "Loại tài sản",
     department: "Bộ phận sử dụng",
+    department_code: "Chọn mã bộ phận sử dụng",
+    asset_category_code: "Chọn mã loại tài sản",
   },
   ButtonName: {
     "asset-add": "Thêm tài sản",
@@ -77,5 +79,32 @@ export default {
   PopupTitle: {
     add: "Thêm mới tài sản",
     edit: "Sửa tài sản",
+  },
+  PopupLabel: {
+    asset_code: "Mã tài sản",
+    asset_name: "Tên tài sản",
+    department_code: "Mã bộ phận sử dụng",
+    department_name: "Tên bộ phận sử dụng",
+    fixed_asset_category_code: "Mã loại tài sản",
+    fixed_asset_category_name: "Tên loại tài sản",
+    quantity: "Số lượng",
+    cost: "Nguyên giá",
+    life_time: "Số năm sử dụng",
+    depreciation_rate: "Tỉ lệ hao mòn (%)",
+    depreciation_value: "Giá trị hao mòn năm",
+    tracked_year: "Năm theo dõi",
+    purchase_date: "Ngày mua",
+    production_date: "Ngày bắt đầu sử dụng",
+  },
+  InputLength: {
+    asset_code: 100,
+    asset_name: 255,
+    department_code: 50,
+    department_name: 255,
+    asset_category_code: 50,
+    asset_category_name: 255,
+  },
+  ComboboxInfo: {
+    firstCol: "Mã",
   },
 };

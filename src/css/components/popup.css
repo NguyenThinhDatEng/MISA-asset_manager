@@ -4,7 +4,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(22, 22, 22, 0.5);
+    background-color: rgba(16, 15, 15, 0.5);
     z-index: 2;
 }
 
@@ -13,9 +13,8 @@
     flex-direction: column;
     border-radius: 4px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, .16);
-    width: 60%;
+    width: 864px;
     background-color: #fff;
-    min-width: 730px;
 }
 
 .popup__header {
@@ -39,7 +38,6 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    /* background-color: bisque; */
     padding: 0 16px;
 }
 
@@ -63,7 +61,7 @@
 }
 
 .popup__body--right {
-    flex: 2;
+    flex: 2.06;
 }
 
 .popup__body--right .input-row {
@@ -95,9 +93,9 @@
 }
 
 
-.input-row span+input,
-.input-row span+button,
-.input-row span+div {
+.input-row label+input,
+.input-row label+button,
+.input-row label+div {
     margin-top: 8px;
 }
 
@@ -112,24 +110,6 @@
 
 input.input.input--error+.error-message {
     display: block;
-}
-
-.input--quantity {
-    position: relative;
-    height: 36px;
-}
-
-.input--quantity .input {
-    position: absolute;
-    text-align: right;
-    padding-right: 36px;
-}
-
-.input--quantity .icon_up_down {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
 }
 
 .purchase-date button {

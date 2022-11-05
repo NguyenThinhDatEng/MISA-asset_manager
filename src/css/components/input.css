@@ -119,3 +119,22 @@ input::placeholder {
     width: 21px;
     margin-left: 13px;
 }
+
+/* In popup  */
+.input--number {
+    position: relative;
+    height: 36px;
+}
+
+.input--number .input {
+    position: absolute;
+    text-align: right;
+    padding-right: 36px !important;
+}
+
+.input--number .icon--up_down {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}

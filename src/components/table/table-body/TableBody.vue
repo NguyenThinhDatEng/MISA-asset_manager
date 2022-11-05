@@ -5,21 +5,14 @@
       :key="index"
       :obj="asset"
       :i="index + 1"
-      @click="handleOnClickRow(asset)"
-      @dblclick="handleOnDblClickRow(asset)"
+      @update-row="UpdateRow"
     ></Row>
   </tbody>
-  <Popup
-    v-if="showPopup"
-    :title="resource.PopupTitle.edit"
-    @close-popup="showPopup = false"
-  ></Popup>
 </template>
 
 <script>
 import Row from "./TableRow.vue";
 import resource from "@/resource/resource";
-import Popup from "@/components/popups/PopupAsset.vue";
 
 export default {
   name: "TableBody",
@@ -37,12 +30,7 @@ export default {
       })
         .then((res) => res.json())
         .then((data) => {
-          // Thêm thuộc tính active cho từng dòng dữ liệu trong dropdown
-          for (let item of data) {
-            item["isActive"] = false;
-          }
           this.assets = data;
-          //   console.log(this.assets);
         })
         .catch((error) => {
           console.log("Call get all assets API", error);
@@ -51,36 +39,30 @@ export default {
       console.log("Call get all assets API", error);
     }
   },
-  components: { Row, Popup },
+  components: { Row },
   methods: {
     /**
      * Thêm hoặc xóa tài sản khỏi mảng chứa các dòng được chọn
-     * @param {Object} asset đối tượng tài sản được click
+     * @param {Boolean} isNewRow true - thêm dòng mới, false - xóa dòng cũ
+     * @param {Object} obj là tài sản được chọn
+     * @author Nguyen Van Thinh 05/11/2022
      */
-    handleOnClickRow: function (asset) {
-      // Thêm tài sản vào mảng khi nhấn vào dòng chưa được chọn
-      if (asset.isActive == false) this.selectedRows.push(asset);
+    UpdateRow: function (isNewRow, obj) {
+      // Thêm dòng mới vào mảng
+      if (isNewRow) this.selectedRows.push(obj);
       else {
-        // Xóa tài sản khỏi mảng khi nhấn vào dòng đang được chọn
+        // Xóa tài sản khỏi mảng
         const length = this.selectedRows.length;
         for (let i = 0; i < length; i++) {
-          if (this.selectedRows[i].fixed_asset_id == asset.fixed_asset_id) {
+          if (this.selectedRows[i].fixed_asset_id == obj.fixed_asset_id) {
             this.selectedRows.splice(i, 1);
             break;
           }
         }
       }
-      // Bắn mảng các dòng được chọn lên thanh công cụ (sidebar)
+      console.log("Table Body", this.selectedRows);
+      // Bắn mảng các dòng được chọn lên cha của nó (Table)
       this.$emit("update-tr", this.selectedRows);
-      console.log("Table body", this.selectedRows);
-      // Thay đổi trạng thái active của dòng
-      asset.isActive = !asset.isActive;
-    },
-
-    handleOnDblClickRow: function (asset) {
-      this.showPopup = true;
-      // Thay đổi trạng thái active của dòng
-      asset.isActive = !asset.isActive;
     },
   },
   data() {

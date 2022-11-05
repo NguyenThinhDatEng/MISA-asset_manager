@@ -13,11 +13,7 @@
       <div class="dropdown__button" @click="isHidden = false">
         <div class="icon center icon--down"></div>
       </div>
-      <div
-        id="dropdown__data--asset-type"
-        class="dropdown__data"
-        v-show="isHidden == false"
-      >
+      <div class="dropdown__data" v-show="isHidden == false">
         <div
           v-for="item in data"
           :key="item[field + '_id']"
