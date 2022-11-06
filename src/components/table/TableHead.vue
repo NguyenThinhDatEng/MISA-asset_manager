@@ -6,7 +6,7 @@
           id="checkbox-header"
           type="checkbox"
           class="checkbox"
-          @change="checkAll"
+          @change="checkAll($event)"
         />
       </th>
       <th
@@ -41,12 +41,12 @@ export default {
 
     /**
      * Cập nhật biến chọn tất cả và phát dữ liệu đến lớp cha (Table)
+     * @param {event} e
      * @author Nguyen Van Thinh 06/11/2022
      */
-    checkAll: function () {
+    checkAll: function (e) {
       try {
-        this.checked = !this.checked;
-        this.$emit("check-all", this.checked);
+        this.$emit("check-all", e.target.checked);
       } catch (error) {
         console.log(error);
       }
@@ -55,7 +55,6 @@ export default {
   data() {
     return {
       ths: resource.Columns,
-      checked: false,
     };
   },
 };

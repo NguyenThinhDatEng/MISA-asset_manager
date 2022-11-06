@@ -8,7 +8,10 @@
       <!-- Table Header  -->
       <TableHead @check-all="checkAll"></TableHead>
       <!-- Table body  -->
-      <TableBody @update-tr="updateTr" :check-all="isCheckAll"></TableBody>
+      <TableBody
+        @disabled-button="disabledButton"
+        :check-all="isCheckAll"
+      ></TableBody>
       <!-- Table footer  -->
       <TableFoot></TableFoot>
     </table>
@@ -24,25 +27,25 @@ import TableFoot from "./TableFoot.vue";
 export default {
   name: "TheTable",
   components: { TableHead, TableBody, TableFoot },
-  props: {},
+  emits: ["disabled-button"],
   methods: {
     /**
      * Phát dữ liệu đến class cha (Content)
      * @param {Array} selectedRows Các row được chọn trong grid
      * @author Nguyen Van Thinh 06/11/2022
      */
-    updateTr: function (selectedRows) {
+    disabledButton: function (disabled) {
       try {
-        this.$emit("update-tr", selectedRows);
+        this.$emit("disabled-button", disabled);
       } catch (error) {
-        console.log("The table", error);
+        console.log(error);
       }
     },
 
     // Cập nhật biến chọn tất cả các dòng
-    checkAll: function (isCheckAll) {
+    checkAll: function (checked) {
       try {
-        this.isCheckAll = isCheckAll;
+        this.isCheckAll = checked;
       } catch (error) {
         console.log(error);
       }

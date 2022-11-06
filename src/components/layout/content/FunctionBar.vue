@@ -39,7 +39,7 @@
         :buttonType="item.buttonType"
         :iconName="item.iconName"
         :title="item.title"
-        :isDisable="disableButton"
+        :isDisable="disabled"
       ></ButtonFeature>
     </div>
   </div>
@@ -101,11 +101,10 @@ export default {
     }
   },
   components: { Input, Dropdown, Button, ButtonFeature, Popup },
-  props: { selectedRows: Array },
-  computed: {
-    disableButton: function () {
-      if (this.selectedRows.length > 0) return false;
-      return true;
+  props: {
+    disabled: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

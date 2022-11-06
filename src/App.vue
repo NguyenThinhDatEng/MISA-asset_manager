@@ -22,7 +22,7 @@ export default {
     TheContent,
   },
   mounted() {
-    setTimeout(() => (this.isShowLoader = false), 2000);
+    setTimeout(() => (this.isShowLoader = false), 1500);
   },
   methods: {},
 

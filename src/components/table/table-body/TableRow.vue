@@ -49,6 +49,7 @@ export default {
   name: "TableRow",
   components: { Popup },
   props: { obj: Object, i: Number, isCheckAll: Boolean },
+  emits: ["update-row"],
   watch: {
     // Cập nhật trạng thái active của dòng
     isCheckAll: function () {
@@ -100,12 +101,13 @@ export default {
      */
     handleOnClickRow: function () {
       try {
-        // Bắn dữ liệu lên Table body
-        if (this.isActive == false) this.$emit("update-row", true, this.obj);
-        // isNew == true
+        // Nếu dòng chưa được chọn, phát dữ liệu với isNew = true lên class cha (TableBody)
+        const isNew = true;
+        if (this.isActive == false) this.$emit("update-row", isNew, this.obj);
         else {
-          this.$emit("update-row", false, this.obj); // isNew == false
+          this.$emit("update-row", !isNew, this.obj); // isNew == false
         }
+        // Thay đổi trạng thái của dòng
         this.isActive = !this.isActive;
         console.log("Table Row", this.obj);
       } catch (error) {

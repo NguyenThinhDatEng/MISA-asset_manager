@@ -2,9 +2,9 @@
   <div class="content">
     <Loader :isShow="isShowLoader"></Loader>
     <!-- Function bar  -->
-    <FunctionBar :selectedRows="selectedRows"></FunctionBar>
+    <FunctionBar :disabled="disabled"></FunctionBar>
     <!-- Table  -->
-    <TheTable @update-tr="UpdateTr"></TheTable>
+    <TheTable @disabled-button="disabledButton"></TheTable>
   </div>
 </template>
 
@@ -25,12 +25,12 @@ export default {
      * @param {Array} selectedRows mảng các dòng được chọn
      * @author Nguyen Van Thinh 06/11/2022
      */
-    UpdateTr: function (selectedRows) {
-      this.selectedRows = selectedRows;
+    disabledButton: function (disabled) {
+      this.disabled = disabled;
     },
   },
   data() {
-    return { selectedRows: [] };
+    return { disabled: true };
   },
 };
 </script>

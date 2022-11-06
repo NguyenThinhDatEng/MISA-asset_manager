@@ -19,6 +19,7 @@ export default {
   name: "TableBody",
   components: { Row },
   props: { checkAll: Boolean },
+  emits: ["disabled-button"],
   watch: {
     /**
      * Giám sát trạng thái chọn tất cả và cập nhật mảng dữ liệu
@@ -26,12 +27,13 @@ export default {
      */
     checkAll: function () {
       if (this.checkAll == true) {
+        this.selectedRows = this.assets;
+        this.$emit("disabled-button", false);
+      } else {
         this.selectedRows = [];
-        for (const asset in this.assets) {
-          this.selectedRows.push(asset);
-        }
-        // console.log(this.selectedRows);
-      } else this.selectedRows = [];
+        this.$emit("disabled-button", true);
+      }
+      // console.log(this.selectedRows);
     },
   },
   mounted() {
@@ -79,10 +81,10 @@ export default {
             }
           }
         }
-        // Bắn mảng các dòng được chọn lên cha của nó (Table)
-        this.$emit("update-tr", this.selectedRows);
+        // Bắn chiều dài mảng được chọn lên cha của nó (Table)
+        this.$emit("disabled-button", this.selectedRows.length ? false : true);
         // Hiển thị mảng
-        console.log(this.selectedRows);
+        // console.log(this.selectedRows);
       } catch (error) {
         console.log(error);
       }
