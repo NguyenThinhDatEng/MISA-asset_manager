@@ -48,7 +48,13 @@ import Popup from "@/components/popups/PopupAsset.vue";
 export default {
   name: "TableRow",
   components: { Popup },
-  props: { obj: Object, i: Number },
+  props: { obj: Object, i: Number, isCheckAll: Boolean },
+  watch: {
+    // Cập nhật trạng thái active của dòng
+    isCheckAll: function () {
+      this.isActive = this.isCheckAll;
+    },
+  },
   methods: {
     // Thay đổi tiêu đề của popup theo các hành động
     setPopupTitle: function () {

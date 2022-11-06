@@ -5,6 +5,7 @@
       :key="index"
       :obj="asset"
       :i="index + 1"
+      :is-check-all="checkAll"
       @update-row="UpdateRow"
     ></Row>
   </tbody>
@@ -17,6 +18,22 @@ import resource from "@/resource/resource";
 export default {
   name: "TableBody",
   components: { Row },
+  props: { checkAll: Boolean },
+  watch: {
+    /**
+     * Giám sát trạng thái chọn tất cả và cập nhật mảng dữ liệu
+     * @author Nguyen Van Thinh 06/11/2022
+     */
+    checkAll: function () {
+      if (this.checkAll == true) {
+        this.selectedRows = [];
+        for (const asset in this.assets) {
+          this.selectedRows.push(asset);
+        }
+        // console.log(this.selectedRows);
+      } else this.selectedRows = [];
+    },
+  },
   mounted() {
     /**
      * Call API lấy tất cả bản ghi tài sản
@@ -32,12 +49,13 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           this.assets = data;
+          console.log("Call API get all assets");
         })
         .catch((error) => {
-          console.log("Call get all assets API", error);
+          console.log("Call API get all assets", error);
         });
     } catch (error) {
-      console.log("Call get all assets API", error);
+      console.log("Call API get all assets", error);
     }
   },
   methods: {
@@ -63,13 +81,20 @@ export default {
         }
         // Bắn mảng các dòng được chọn lên cha của nó (Table)
         this.$emit("update-tr", this.selectedRows);
+        // Hiển thị mảng
+        console.log(this.selectedRows);
       } catch (error) {
         console.log(error);
       }
     },
   },
   data() {
-    return { resource, assets: [], selectedRows: [], showPopup: false };
+    return {
+      resource,
+      assets: [],
+      selectedRows: [],
+      showPopup: false,
+    };
   },
 };
 </script>

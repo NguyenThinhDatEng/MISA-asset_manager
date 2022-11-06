@@ -2,7 +2,12 @@
   <thead>
     <tr>
       <th class="th--checkbox checkbox__wrapper">
-        <input id="checkbox-header" type="checkbox" class="checkbox" />
+        <input
+          id="checkbox-header"
+          type="checkbox"
+          class="checkbox"
+          @change="checkAll"
+        />
       </th>
       <th
         v-for="(value, key) of ths"
@@ -33,10 +38,24 @@ export default {
         console.log("Table Header", error);
       }
     },
+
+    /**
+     * Cập nhật biến chọn tất cả và phát dữ liệu đến lớp cha (Table)
+     * @author Nguyen Van Thinh 06/11/2022
+     */
+    checkAll: function () {
+      try {
+        this.checked = !this.checked;
+        this.$emit("check-all", this.checked);
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
       ths: resource.Columns,
+      checked: false,
     };
   },
 };

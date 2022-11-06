@@ -6,9 +6,9 @@
         <col v-for="obj in styleObject" :key="obj.col" :style="obj" />
       </colgroup>
       <!-- Table Header  -->
-      <TableHead></TableHead>
+      <TableHead @check-all="checkAll"></TableHead>
       <!-- Table body  -->
-      <TableBody @update-tr="updateTr"></TableBody>
+      <TableBody @update-tr="updateTr" :check-all="isCheckAll"></TableBody>
       <!-- Table footer  -->
       <TableFoot></TableFoot>
     </table>
@@ -24,6 +24,7 @@ import TableFoot from "./TableFoot.vue";
 export default {
   name: "TheTable",
   components: { TableHead, TableBody, TableFoot },
+  props: {},
   methods: {
     /**
      * Phát dữ liệu đến class cha (Content)
@@ -37,9 +38,19 @@ export default {
         console.log("The table", error);
       }
     },
+
+    // Cập nhật biến chọn tất cả các dòng
+    checkAll: function (isCheckAll) {
+      try {
+        this.isCheckAll = isCheckAll;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
+      isCheckAll: false,
       //   cols: resource.Columns,
       styleObject: [
         {
