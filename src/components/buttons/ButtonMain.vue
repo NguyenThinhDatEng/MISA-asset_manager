@@ -1,13 +1,22 @@
 <template>
   <button
-    :class="['button', 'button--main', buttonName]"
+    :class="[
+      'button',
+      'button--main',
+      { 'button--delete-dialog': isDeleteDialog },
+      { 'button--ok': type == Type.Main ? true : false },
+    ]"
     :title="title"
     v-show="type == Type.Main"
   >
     {{ buttonContent }}
   </button>
   <button
-    :class="['button', 'button--secondary', buttonName]"
+    :class="[
+      'button',
+      'button--secondary',
+      { 'button--cancel': type == Type.Secondary ? true : false },
+    ]"
     :title="title"
     v-show="type == Type.Secondary"
   >
@@ -23,10 +32,13 @@ export default {
   created() {},
   components: {},
   props: {
-    buttonName: String,
     title: String,
     buttonContent: String,
     type: Number,
+    isDeleteDialog: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: [],
   methods: {},
@@ -73,5 +85,9 @@ export default {
 .button--secondary:disabled {
   color: #000;
   background-color: var(--outline-button--disabled);
+}
+
+.button--delete-dialog {
+  background-color: var(--delete-dialog--default);
 }
 </style>

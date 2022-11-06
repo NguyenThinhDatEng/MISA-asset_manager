@@ -20,7 +20,6 @@
 @import url(style.css); */
 
 :root {
-    --outline-button__border: #afafaf;
     --outline-button--hover: #1AA4C8;
     --menu-item: #1AA4C8;
     --input--hover: #1AA4C8;

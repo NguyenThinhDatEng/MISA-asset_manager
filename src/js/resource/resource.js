@@ -22,7 +22,6 @@ export default {
     "department-filter": "lọc theo bộ phận sử dụng",
     add: "Thêm mới tài sản",
     export: "Xuất dữ liệu",
-    delete: "Xóa bản ghi",
     edit: "Sửa",
     duplicate: "Nhân bản",
     limit: "Số lượng bản ghi hiển thị",
@@ -30,7 +29,8 @@ export default {
     next: "Trang sau",
     close: "Đóng",
     save: "Lưu thông tin",
-    cancel: "Hủy",
+    cancel: "Hủy bỏ",
+    delete: "Xóa tài sản",
   },
   Logo: {
     qlts: "MISA QLTS",
@@ -110,5 +110,7 @@ export default {
   ButtonContent: {
     save: "Lưu",
     cancel: "Hủy",
+    delete: "Xóa",
+    no: "Không",
   },
 };

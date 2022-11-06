@@ -5,9 +5,11 @@
     --focus: var(--default);
     --disabled: #8cd1e3;
     --border--focus: #D1EDF4;
+    --delete-dialog--default: #31B9E2;
     --button-cancel--hover: #1AA4C8;
     --sub-button: #1EA6C9;
     --outline-button--disabled: #F5F5F5;
+    --outline-button__border: #afafaf;
 }
 
 button {
@@ -91,9 +93,7 @@ button {
     margin-left: 10px;
 }
 
-.button--save {
-    background-color: #1aa4c8;
-    color: #fff;
+.button--ok {
     padding: 0 16px;
 }
 
@@ -146,6 +146,6 @@ button {
     cursor: context-menu;
 }
 
-.button--save+.button--cancel {
+.button--ok+.button--cancel {
     margin-right: 8px;
 }

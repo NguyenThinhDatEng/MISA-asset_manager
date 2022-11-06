@@ -174,13 +174,11 @@
       <!-- Popup footer  -->
       <div class="popup__footer">
         <ButtonMain
-          :button-name="'button--save'"
           :title="Title.save"
           :button-content="Resource.ButtonContent.save"
           :type="Enum.Type.Main"
         ></ButtonMain>
         <ButtonMain
-          :button-name="'button--cancel'"
           :title="Title.cancel"
           :button-content="Resource.ButtonContent.cancel"
           :type="Enum.Type.Secondary"

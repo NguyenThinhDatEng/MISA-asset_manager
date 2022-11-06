@@ -11,23 +11,36 @@
         </p>
       </div>
       <div class="dialog__footer">
-        <button class="button button--save">Xóa</button>
-        <button class="button button--cancel">Không</button>
+        <ButtonMainVue
+          :button-content="Resource.ButtonContent.delete"
+          :title="Resource.Title.delete"
+          :type="Enum.Type.Main"
+          :isDeleteDialog="true"
+        ></ButtonMainVue>
+        <ButtonOutlineVue
+          :button-content="Resource.ButtonContent.no"
+          :title="Resource.Title.cancel"
+        ></ButtonOutlineVue>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import ButtonMainVue from "../buttons/ButtonMain.vue";
+import ButtonOutlineVue from "../buttons/ButtonOutline.vue";
+import Resource from "@/js/resource/resource";
+import Enum from "@/js/enum/enum";
+
 export default {
   name: "DialogDelete",
   created() {},
-  components: {},
+  components: { ButtonMainVue, ButtonOutlineVue },
   props: {},
   emits: [],
   methods: {},
   data() {
-    return {};
+    return { Resource, Enum };
   },
 };
 </script>
