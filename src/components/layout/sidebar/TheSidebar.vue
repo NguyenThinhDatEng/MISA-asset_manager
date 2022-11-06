@@ -46,7 +46,7 @@
 
 <script>
 import Item from "./ItemSidebar.vue";
-import Resource from "@/resource/resource";
+import Resource from "@/js/resource/resource";
 
 export default {
   name: "TheSidebar",
@@ -70,7 +70,6 @@ export default {
   components: {
     Item,
   },
-  props: {},
   methods: {
     // Trả về tên icon class
     setIconName(name) {

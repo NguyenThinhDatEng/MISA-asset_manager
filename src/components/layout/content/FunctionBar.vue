@@ -56,7 +56,7 @@ import Dropdown from "@/components/dropdowns/DropdownCheckbox.vue";
 import Button from "@/components/buttons/ButtonIcon.vue";
 import ButtonFeature from "@/components/buttons/ButtonFeature.vue";
 import Popup from "@/components/popups/PopupAsset.vue";
-import resource from "@/resource/resource";
+import resource from "@/js/resource/resource";
 
 export default {
   name: "FunctionBar",
@@ -112,6 +112,7 @@ export default {
       resource,
       showPopup: false,
       showLoader: false,
+      showDialog: false,
       departments: [],
       categories: [],
       filters: [

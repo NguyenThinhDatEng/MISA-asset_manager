@@ -15,19 +15,23 @@
     </td>
     <td class="col--department">{{ obj.department_name }}</td>
     <td class="col--quantity">{{ obj.quantity }}</td>
-    <td class="col--cost">{{ formatMoney(obj.cost) }}</td>
-    <td class="col--depreciation">{{ formatMoney(depreciation_value) }}</td>
-    <td class="col--residual_value">{{ formatMoney(residual_value) }}</td>
+    <td class="col--cost">{{ Function.formatMoney(obj.cost) }}</td>
+    <td class="col--depreciation">
+      {{ Function.formatMoney(depreciation_value) }}
+    </td>
+    <td class="col--residual_value">
+      {{ Function.formatMoney(residual_value) }}
+    </td>
     <td class="col--feature">
       <div class="feature">
         <div
           class="icon icon--edit"
-          :title="title.edit"
+          :title="Title.edit"
           @click="OnClickFeatureButton('edit')"
         ></div>
         <div
           class="icon icon--duplicate"
-          :title="title.duplicate"
+          :title="Title.duplicate"
           @click="OnClickFeatureButton('duplicate')"
         ></div>
       </div>
@@ -42,14 +46,15 @@
 </template>
 
 <script>
-import resource from "@/resource/resource";
+import Resource from "@/js/resource/resource";
+import Function from "@/js/common/function";
 import Popup from "@/components/popups/PopupAsset.vue";
 
 export default {
   name: "TableRow",
   components: { Popup },
   props: { obj: Object, i: Number, isCheckAll: Boolean },
-  emits: ["update-row"],
+  emits: ["update-row", "update-checked-header"],
   watch: {
     // Cập nhật trạng thái active của dòng
     isCheckAll: function () {
@@ -60,20 +65,10 @@ export default {
     // Thay đổi tiêu đề của popup theo các hành động
     setPopupTitle: function () {
       try {
-        if (this.action == "edit") return resource.PopupTitle.edit;
-        return resource.PopupTitle.add;
+        if (this.action == "edit") return Resource.PopupTitle.edit;
+        return Resource.PopupTitle.add;
       } catch (error) {
         console.log("Table Row", error);
-      }
-    },
-
-    // Định dạng cho dữ liệu kiểu tiền
-    formatMoney: function (money) {
-      try {
-        var formatter = new Intl.NumberFormat("de-DE");
-        return formatter.format(Math.round(money));
-      } catch (error) {
-        console.log("Tham số truyền vào không đúng định dạng");
       }
     },
 
@@ -101,14 +96,16 @@ export default {
      */
     handleOnClickRow: function () {
       try {
-        // Nếu dòng chưa được chọn, phát dữ liệu với isNew = true lên class cha (TableBody)
         const isNew = true;
-        if (this.isActive == false) this.$emit("update-row", isNew, this.obj);
-        else {
-          this.$emit("update-row", !isNew, this.obj); // isNew == false
-        }
         // Thay đổi trạng thái của dòng
         this.isActive = !this.isActive;
+        // Nếu dòng được active, bắn đối tượng đến Table
+        if (this.isActive == isNew) this.$emit("update-row", isNew, this.obj);
+        else {
+          if (this.isCheckAll == true)
+            this.$emit("update-checked-header", false);
+          this.$emit("update-row", !isNew, this.obj); // isNew == false
+        }
         console.log("Table Row", this.obj);
       } catch (error) {
         console.log(error);
@@ -117,8 +114,9 @@ export default {
   },
   data() {
     return {
-      resource,
-      title: resource.Title,
+      Resource,
+      Function,
+      Title: Resource.Title,
       showPopup: false,
       isActive: false,
       action: "",

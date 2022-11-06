@@ -107,4 +107,8 @@ export default {
   ComboboxInfo: {
     firstCol: "Mã",
   },
+  ButtonContent: {
+    save: "Lưu",
+    cancel: "Hủy",
+  },
 };

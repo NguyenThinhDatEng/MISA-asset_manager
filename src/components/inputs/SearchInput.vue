@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Resource from "@/resource/resource";
+import Resource from "@/js/resource/resource";
 
 export default {
   name: "SearchInput",

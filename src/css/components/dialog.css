@@ -1,0 +1,65 @@
+.dialog__wrapper {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(22, 22, 22, 0.5);
+    z-index: 2;
+}
+
+.dialog {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, .16);
+    background-color: white;
+    padding: 0 24px;
+}
+
+.dialog__header {
+    height: 44px;
+    padding: 24px 0 0;
+}
+
+.dialog__body {
+    display: flex;
+    flex: 1;
+}
+
+#dialog--no-header {
+    padding-top: 0;
+}
+
+#dialog--no-header .dialog__body__text {
+    width: 100%;
+    padding: 6px 0 24px 24px;
+}
+
+#dialog--error.dialog__body__text {
+    padding-right: 64px;
+}
+
+.dialog__body__text span {
+    font-family: MISA Bold;
+}
+
+.dialog__footer {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row-reverse;
+    height: 36px;
+    margin: 24px 0;
+}
+
+.dialog__footer .button--cancel {
+    border: 1px solid var(--outline-button__border);
+}
+
+.dialog__footer .button--cancel:focus {
+    border: 2px solid #D1EDF4;
+}

@@ -1,17 +1,18 @@
 :root {
-    --button--focus: #D1EDF4;
+    --default: #1aa4c8;
+    --hover: #0582a2;
+    --active: #28b7dc;
+    --focus: var(--default);
+    --disabled: #8cd1e3;
+    --border--focus: #D1EDF4;
     --button-cancel--hover: #1AA4C8;
     --sub-button: #1EA6C9;
+    --outline-button--disabled: #F5F5F5;
 }
 
 button {
     padding: 0;
     cursor: pointer;
-}
-
-button:focus {
-    border: 1px solid var(--input--hover);
-    outline: none;
 }
 
 .button {
@@ -23,20 +24,8 @@ button:focus {
     border: 1px solid transparent;
 }
 
-.button:hover {
-    background-color: #0582A2;
-    color: #fff;
-}
-
-.button:active {
-    background-color: #28B7DC;
-    color: #fff;
-}
-
 .button:focus {
-    background-color: #1AA4C8;
-    border: 1px solid #D1EDF4;
-    color: #fff;
+    border: 2px solid var(--border--focus);
 }
 
 .button:disabled {
@@ -155,4 +144,8 @@ button:focus {
 
 .button--disable:hover {
     cursor: context-menu;
+}
+
+.button--save+.button--cancel {
+    margin-right: 8px;
 }

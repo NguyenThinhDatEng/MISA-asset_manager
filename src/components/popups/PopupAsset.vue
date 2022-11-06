@@ -6,7 +6,7 @@
         <span>{{ theTitle }}</span>
         <button
           class="icon icon-18px icon--close"
-          :title="title.close"
+          :title="Title.close"
           @click="hidePopup"
         ></button>
       </div>
@@ -173,29 +173,35 @@
       </div>
       <!-- Popup footer  -->
       <div class="popup__footer">
-        <button class="button button--save" :title="title.save">Lưu</button>
-        <button
-          class="button button--cancel"
-          :title="title.cancel"
-          @click="hidePopup"
-        >
-          Hủy
-        </button>
+        <ButtonMain
+          :button-name="'button--save'"
+          :title="Title.save"
+          :button-content="Resource.ButtonContent.save"
+          :type="Enum.Type.Main"
+        ></ButtonMain>
+        <ButtonMain
+          :button-name="'button--cancel'"
+          :title="Title.cancel"
+          :button-content="Resource.ButtonContent.cancel"
+          :type="Enum.Type.Secondary"
+        ></ButtonMain>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import resource from "@/resource/resource";
+import Resource from "@/js/resource/resource";
+import Enum from "@/js/enum/enum";
 import Input from "@/components/inputs/Input.vue";
 import InputNumber from "@/components/inputs/NumberInput.vue";
 import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
+import ButtonMain from "@/components/buttons/ButtonMain.vue";
 // import { DatePicker } from "element-plus";
 
 export default {
   name: "PopupAsset",
-  components: { Input, ComboboxDetail, InputNumber },
+  components: { Input, ComboboxDetail, InputNumber, ButtonMain },
   /**
    * Call API
    * @author Nguyen Van Thinh 05/11/2022
@@ -203,7 +209,7 @@ export default {
   mounted() {
     try {
       // Lay tat ca bo phan su dung
-      fetch(resource.URLs.department, {
+      fetch(Resource.URLs.department, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -218,7 +224,7 @@ export default {
         });
 
       // Lay tat ca loai tai san
-      fetch(resource.URLs["asset-type"], {
+      fetch(Resource.URLs["asset-type"], {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -239,7 +245,7 @@ export default {
   props: {
     theTitle: {
       type: String,
-      default: resource.PopupTitle.add,
+      default: Resource.PopupTitle.add,
     },
     obj: {
       type: Object,
@@ -268,10 +274,12 @@ export default {
   },
   data() {
     return {
-      title: resource.Title,
-      label: resource.PopupLabel,
-      placeholder: resource.Placeholder,
-      maxLength: resource.InputLength,
+      Resource,
+      Enum,
+      Title: Resource.Title,
+      label: Resource.PopupLabel,
+      placeholder: Resource.Placeholder,
+      maxLength: Resource.InputLength,
       departments: [],
       categories: [],
     };

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import Resource from "@/resource/resource";
+import Resource from "@/js/resource/resource";
 import Icon from "@/components/layout/header/IconHeader.vue";
 
 export default {

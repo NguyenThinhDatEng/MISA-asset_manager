@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import resource from "@/resource/resource";
+import resource from "@/js/resource/resource";
 
 export default {
   name: "ButtonIcon",

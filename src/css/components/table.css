@@ -37,7 +37,7 @@ tbody {
 
 tbody tr:hover,
 tbody tr:focus {
-    background-color: var(--hover);
+    background-color: var(--row--hover);
 }
 
 tbody tr,

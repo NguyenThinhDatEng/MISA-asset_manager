@@ -84,10 +84,6 @@
     padding-right: 16px;
 }
 
-.button--save+.button--cancel {
-    margin-right: 10px;
-}
-
 .input-row .combobox input {
     padding-right: 36px;
 }
