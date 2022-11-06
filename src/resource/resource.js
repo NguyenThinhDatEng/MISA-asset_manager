@@ -73,7 +73,7 @@ export default {
     quantity: "Số lượng",
     cost: "Nguyên giá",
     depreciation: "HM/KH lũy kế",
-    "residual-value": "Giá trị còn lại",
+    residual_value: "Giá trị còn lại",
     feature: "Tính năng",
   },
   PopupTitle: {

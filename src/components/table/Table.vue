@@ -23,13 +23,19 @@ import TableFoot from "./TableFoot.vue";
 
 export default {
   name: "TheTable",
-  created() {},
   components: { TableHead, TableBody, TableFoot },
-  props: {},
-  emits: [],
   methods: {
+    /**
+     * Phát dữ liệu đến class cha (Content)
+     * @param {Array} selectedRows Các row được chọn trong grid
+     * @author Nguyen Van Thinh 06/11/2022
+     */
     updateTr: function (selectedRows) {
-      this.$emit("update-tr", selectedRows);
+      try {
+        this.$emit("update-tr", selectedRows);
+      } catch (error) {
+        console.log("The table", error);
+      }
     },
   },
   data() {
@@ -84,7 +90,7 @@ export default {
           "text-align": "right",
         },
         {
-          col: "residual-value",
+          col: "residual_value",
           "min-width": "80px",
           "text-align": "right",
         },

@@ -15,12 +15,9 @@
 
 <script>
 import Resource from "@/resource/resource";
+
 export default {
   name: "SearchInput",
-  components: {},
-  props: {},
-  emits: [],
-  methods: {},
   data() {
     return { Resource, maxLength: 255 };
   },

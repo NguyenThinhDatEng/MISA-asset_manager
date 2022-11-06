@@ -46,10 +46,7 @@ import resource from "@/resource/resource";
 
 export default {
   name: "TableFoot",
-  created() {},
   components: { Combobox },
-  props: {},
-  emits: [],
   methods: {
     /**
      * trả về thông tin số bản ghi thu được
@@ -63,8 +60,8 @@ export default {
   },
   data() {
     return {
-      quantity: 200,
       title: resource.Title,
+      quantity: 200,
     };
   },
 };

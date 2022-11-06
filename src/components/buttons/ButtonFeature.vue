@@ -7,15 +7,12 @@
   <script>
 export default {
   name: "ButtonFeature",
-  components: {},
   props: {
     buttonType: String,
     title: String,
     iconName: String,
     isDisable: Boolean,
   },
-  emits: [],
-  methods: {},
   data() {
     return {};
   },

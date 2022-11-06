@@ -56,11 +56,8 @@ export default {
     field: String,
     data: Object,
   },
-  emits: [],
   methods: {
-    handleFocusOut: function () {
-      this.isHidden = true;
-    },
+    // Thay đổi trạng thái của dòng dữ liệu khi được nhấn
     onClickData: function (item) {
       item.active = !item.active;
     },

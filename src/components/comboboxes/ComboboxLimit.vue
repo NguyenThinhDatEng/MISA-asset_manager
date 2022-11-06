@@ -14,11 +14,6 @@
 import resource from "@/resource/resource";
 export default {
   name: "SimpleCombobox",
-  created() {},
-  components: {},
-  props: {},
-  emits: [],
-  methods: {},
   data() {
     return { resource, value: 20, data: [10, 20, 50, 100] };
   },

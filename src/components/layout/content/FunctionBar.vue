@@ -108,8 +108,6 @@ export default {
       return true;
     },
   },
-  emits: [],
-  methods: {},
   data() {
     return {
       resource,

@@ -9,16 +9,14 @@
 
 <script>
 import resource from "@/resource/resource";
+
 export default {
   name: "ButtonIcon",
-  components: {},
   props: {
     buttonType: String,
     iconName: String,
     buttonName: String,
   },
-  emits: [],
-  methods: {},
   data() {
     return {
       resource,

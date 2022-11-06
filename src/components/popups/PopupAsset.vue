@@ -15,15 +15,19 @@
         <!-- Row 01: Ma tai san & Ten tai san -->
         <div class="input-row">
           <div class="popup__body--left">
+            <!-- input 01 -->
             <Input
               :label-content="label.asset_code"
               :maxlength="maxLength.asset_code"
+              :value="obj.fixed_asset_code"
             ></Input>
           </div>
           <div class="popup__body--right">
+            <!-- input 02 -->
             <Input
               :label-content="label.asset_name"
               :maxlength="maxLength.asset_name"
+              :value="obj.fixed_asset_name"
             ></Input>
           </div>
         </div>
@@ -34,17 +38,24 @@
               >{{ label.department_code }}
               <span style="color: red">*</span></label
             >
-            <!-- Combobox  -->
+            <!-- Combobox -->
             <ComboboxDetail
               :placeholder="placeholder.department_code"
               :data="departments"
               :field="'department'"
+              :value="obj.department_code"
             ></ComboboxDetail>
             <p class="error-message"></p>
           </div>
           <div class="popup__body--right">
+            <!-- Input -->
             <label>{{ label.department_name }}</label>
-            <input type="text" class="input input--disabled" disabled />
+            <input
+              type="text"
+              class="input input--disabled"
+              :value="obj.department_name"
+              disabled
+            />
           </div>
         </div>
         <!-- Row 03: Ma loai tai san & Ten loai tai san-->
@@ -59,13 +70,19 @@
               :placeholder="placeholder.asset_category_code"
               :data="categories"
               :field="'fixed_asset_category'"
+              :value="obj.fixed_asset_category_code"
             ></ComboboxDetail>
             <p class="error-message"></p>
           </div>
-          <!-- Disable input  -->
+          <!-- Input  -->
           <div class="popup__body--right">
             <label>{{ label.fixed_asset_category_name }}</label>
-            <input type="text" class="input input--disabled" disabled />
+            <input
+              type="text"
+              class="input input--disabled"
+              :value="obj.fixed_asset_category_name"
+              disabled
+            />
           </div>
         </div>
         <!-- Row 04: So luong & Nguyen gia & So nam su dung -->
@@ -73,18 +90,23 @@
           <div class="popup__body--left">
             <InputNumber
               :label-content="label.quantity"
-              :value="1"
+              :value="obj.quantity"
             ></InputNumber>
           </div>
           <div class="popup__body--right">
             <div class="input-row">
               <div class="popup__body--left">
-                <Input :label-content="label.cost" :type="'number'"></Input>
+                <Input
+                  :label-content="label.cost"
+                  :type="'number'"
+                  :value="formatMoney(obj.cost)"
+                ></Input>
               </div>
               <div class="popup__body--right-child">
                 <Input
                   :label-content="label.life_time"
                   :type="'number'"
+                  :value="obj.life_time"
                 ></Input>
               </div>
             </div>
@@ -95,7 +117,7 @@
           <div class="popup__body--left">
             <InputNumber
               :label-content="label.depreciation_rate"
-              :value="0"
+              :value="obj.depreciation_rate"
             ></InputNumber>
             <p class="error-message"></p>
           </div>
@@ -105,9 +127,10 @@
                 <Input
                   :label-content="label.depreciation_value"
                   :type="'number'"
+                  :value="formatMoney(obj.depreciation_value)"
                 ></Input>
               </div>
-              <div id="year-tracking" class="popup__body--right-child">
+              <div class="popup__body--right-child">
                 <Input
                   :label-content="label.tracked_year"
                   :type="'number'"
@@ -121,14 +144,19 @@
         <!-- Row 06: Ngay mua & Ngay bat dau su dung -->
         <div class="input-row">
           <div class="popup__body--left">
-            <DatePickerVue></DatePickerVue>
+            <label
+              >{{ label.purchase_date }}
+              <span style="color: red">*</span></label
+            >
+            <el-date-picker />
             <p class="error-message"></p>
           </div>
           <div class="popup__body--right">
             <div class="input-row">
               <div class="popup__body--left">
-                <span mandatory
-                  >Ngày bắt đầu sử dụng <span style="color: red">*</span></span
+                <label
+                  >{{ label.production_date }}
+                  <span style="color: red">*</span></label
                 >
                 <div class="popup-date">
                   <input type="date" class="input" value="2022-10-12" />
@@ -163,11 +191,11 @@ import resource from "@/resource/resource";
 import Input from "@/components/inputs/Input.vue";
 import InputNumber from "@/components/inputs/NumberInput.vue";
 import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
-import DatePickerVue from "../inputs/DatePicker.vue";
+// import { DatePicker } from "element-plus";
 
 export default {
   name: "PopupAsset",
-  components: { Input, ComboboxDetail, InputNumber, DatePickerVue },
+  components: { Input, ComboboxDetail, InputNumber },
   /**
    * Call API
    * @author Nguyen Van Thinh 05/11/2022
@@ -213,14 +241,27 @@ export default {
       type: String,
       default: resource.PopupTitle.add,
     },
+    obj: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
   },
   emits: [],
   methods: {
-    // Đóng popup bằng cách bắn dữ liệu lên parent
+    // Định dạng cho dữ liệu kiểu tiền
+    formatMoney: function (money) {
+      var formatter = new Intl.NumberFormat("de-DE");
+      return formatter.format(Math.round(money));
+    },
+
+    // Đóng popup bằng cách bắn dữ liệu lên class cha
     hidePopup() {
       this.$emit("close-popup");
     },
 
+    // Lấy năm hiện tại
     getCurrentYear: function () {
       return new Date().getFullYear();
     },

@@ -14,8 +14,6 @@ import resource from "@/resource/resource";
 
 export default {
   name: "InputNumber",
-  created() {},
-  components: {},
   props: {
     labelContent: String,
     maxlength: Number,
@@ -24,8 +22,6 @@ export default {
       default: 1,
     },
   },
-  emits: [],
-  methods: {},
   data() {
     return { resource };
   },

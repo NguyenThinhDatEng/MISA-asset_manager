@@ -20,6 +20,11 @@ export default {
     isShowLoader: Boolean,
   },
   methods: {
+    /**
+     * Lấy thông tin các tài sản được chọn
+     * @param {Array} selectedRows mảng các dòng được chọn
+     * @author Nguyen Van Thinh 06/11/2022
+     */
     UpdateTr: function (selectedRows) {
       this.selectedRows = selectedRows;
     },

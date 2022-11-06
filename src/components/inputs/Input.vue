@@ -4,7 +4,7 @@
     :type="type"
     :class="['input', { 'input--disabled': isDisabled }]"
     :maxlength="maxlength"
-    :value="type == 'text' ? '' : value ? value : 0"
+    :value="type == 'text' ? (value ? value : '') : value ? value : 0"
     :disabled="isDisabled"
     :style="{
       'text-align': type == 'text' ? 'left' : 'right',
@@ -16,8 +16,6 @@
 <script>
 export default {
   name: "NormalInput",
-  created() {},
-  components: {},
   props: {
     labelContent: String,
     maxlength: Number,
@@ -31,8 +29,6 @@ export default {
       default: false,
     },
   },
-  emits: [],
-  methods: {},
   data() {
     return {};
   },

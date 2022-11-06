@@ -47,11 +47,15 @@ export default {
   emits: [],
   methods: {
     setIconName(key) {
-      return "icon--" + key;
+      try {
+        return "icon--" + key;
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Lấy năm hiện tại
-     * author: Nguyen Van Thinh 02/11/2022
+     * @author Nguyen Van Thinh 02/11/2022
      */
     getYear() {
       return new Date().getFullYear();

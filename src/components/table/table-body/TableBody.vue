@@ -16,6 +16,7 @@ import resource from "@/resource/resource";
 
 export default {
   name: "TableBody",
+  components: { Row },
   mounted() {
     /**
      * Call API lấy tất cả bản ghi tài sản
@@ -39,7 +40,6 @@ export default {
       console.log("Call get all assets API", error);
     }
   },
-  components: { Row },
   methods: {
     /**
      * Thêm hoặc xóa tài sản khỏi mảng chứa các dòng được chọn
@@ -48,21 +48,24 @@ export default {
      * @author Nguyen Van Thinh 05/11/2022
      */
     UpdateRow: function (isNewRow, obj) {
-      // Thêm dòng mới vào mảng
-      if (isNewRow) this.selectedRows.push(obj);
-      else {
-        // Xóa tài sản khỏi mảng
-        const length = this.selectedRows.length;
-        for (let i = 0; i < length; i++) {
-          if (this.selectedRows[i].fixed_asset_id == obj.fixed_asset_id) {
-            this.selectedRows.splice(i, 1);
-            break;
+      try {
+        // Thêm dòng mới vào mảng
+        if (isNewRow) this.selectedRows.push(obj);
+        else {
+          // Xóa tài sản khỏi mảng
+          const length = this.selectedRows.length;
+          for (let i = 0; i < length; i++) {
+            if (this.selectedRows[i].fixed_asset_id == obj.fixed_asset_id) {
+              this.selectedRows.splice(i, 1);
+              break;
+            }
           }
         }
+        // Bắn mảng các dòng được chọn lên cha của nó (Table)
+        this.$emit("update-tr", this.selectedRows);
+      } catch (error) {
+        console.log(error);
       }
-      console.log("Table Body", this.selectedRows);
-      // Bắn mảng các dòng được chọn lên cha của nó (Table)
-      this.$emit("update-tr", this.selectedRows);
     },
   },
   data() {

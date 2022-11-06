@@ -21,7 +21,6 @@ import resource from "@/resource/resource";
 
 export default {
   name: "ItemSidebar",
-  components: {},
   props: {
     id: String,
     iconName: String,
@@ -32,7 +31,6 @@ export default {
       default: false,
     },
   },
-  emits: [],
   methods: {
     /**
      * Bỏ icon mũi tên đi xuống của những item không cần thiết
@@ -40,12 +38,16 @@ export default {
      * @return {Boolean}
      */
     isShow(itemContent) {
-      if (
-        itemContent == this.content.general ||
-        itemContent == this.content.category
-      )
-        return false;
-      return true;
+      try {
+        if (
+          itemContent == this.content.general ||
+          itemContent == this.content.category
+        )
+          return false;
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   data() {

@@ -22,11 +22,16 @@ import resource from "@/resource/resource";
 export default {
   name: "TableHead",
   methods: {
+    // Thiếp lập title cho từ viết tắt
     setTitle: function (value) {
-      if (value == "STT") return resource.Abbreviations.STT;
-      else if (value == "HM/KH lũy kế")
-        return resource.Abbreviations.depreciation;
-      else return "";
+      try {
+        if (value == "STT") return resource.Abbreviations.STT;
+        else if (value == "HM/KH lũy kế")
+          return resource.Abbreviations.depreciation;
+        else return "";
+      } catch (error) {
+        console.log("Table Header", error);
+      }
     },
   },
   data() {

@@ -6,6 +6,7 @@
       :placeholder="placeholder"
       :maxlength="maxlength"
       @click="isShow = !isShow"
+      :value="value"
     />
     <div class="combobox__button" @click="isShow = !isShow">
       <div class="icon center icon--down"></div>
@@ -34,19 +35,17 @@ import resource from "@/resource/resource";
 
 export default {
   name: "ComboboxDetail",
-  watch: {
-    data: function () {
-      console.log("in Popup", this.data);
-      console.log("in Popup", this.field);
-    },
-    field: {
-      field: function () {},
+  components: {},
+  props: {
+    placeholder: String,
+    maxlength: Number,
+    data: Array,
+    field: String,
+    value: {
+      type: String,
+      default: "",
     },
   },
-  components: {},
-  props: { placeholder: String, maxlength: Number, data: Array, field: String },
-  emits: [],
-  methods: {},
   data() {
     return { isShow: false, resource };
   },
