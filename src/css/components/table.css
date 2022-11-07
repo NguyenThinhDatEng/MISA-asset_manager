@@ -86,15 +86,6 @@ tfoot {
     cursor: pointer;
 }
 
-#combobox--limit .combobox__data {
-    top: unset;
-    bottom: calc(100% + 1px);
-}
-
-#combobox--limit .combobox__data .data {
-    justify-content: center;
-}
-
 .row--active {
     background-color: var(--row--hover);
 }

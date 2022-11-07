@@ -90,7 +90,7 @@
     padding-left: 24px;
 }
 
-.combobox__data .data:first-child {
+.combobox--detail .combobox__data .data:first-child {
     background-color: var(--combobox__first-data);
     border-radius: 2.5px;
 }
@@ -157,4 +157,14 @@
 
 .data--selected {
     background-color: var(--combobox__data);
+}
+
+.combobox__data--up {
+    top: unset;
+    bottom: calc(100% + 1px);
+    padding: 8px;
+}
+
+.combobox__data--up .data {
+    justify-content: center;
 }

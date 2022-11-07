@@ -111,7 +111,7 @@
                 <Input
                   :label-content="label.cost"
                   :type="'number'"
-                  :value="Function.formatMoney(obj.cost)"
+                  :value="obj.cost"
                 ></Input>
               </div>
               <div class="popup__body--right-child">
@@ -142,7 +142,7 @@
                 <Input
                   :label-content="label.depreciation_value"
                   :type="'number'"
-                  :value="Function.formatMoney(obj.depreciation_value)"
+                  :value="obj.depreciation_value"
                 ></Input>
               </div>
               <div class="popup__body--right-child">

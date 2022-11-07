@@ -4,16 +4,16 @@
       <td colspan="6">
         <div class="footer__left">
           <div class="total-of-records__wrapper">
-            <p class="total-of-records" v-html="records()"></p>
+            <p class="total-of-records" v-html="numberOfRecords()"></p>
           </div>
           <!-- Combobox: Limit of records  -->
-          <Combobox></Combobox>
+          <ComboboxPagingVue :title="Resource.Title.limit"></ComboboxPagingVue>
           <!-- Paging  -->
           <div class="paging">
             <div class="paging__icon--wrapper">
               <div
                 class="icon center icon-footer icon--left-arrow"
-                :title="title.pre"
+                :title="Resource.Title.pre"
               ></div>
             </div>
             <div class="page-numbers">
@@ -25,7 +25,7 @@
             <div class="paging__icon--wrapper">
               <div
                 class="icon center icon-footer icon--right-arrow"
-                :title="title.next"
+                :title="Resource.Title.next"
               ></div>
             </div>
           </div>
@@ -41,12 +41,15 @@
 </template>
 
 <script>
-import Combobox from "@/components/comboboxes/ComboboxLimit.vue";
-import resource from "@/js/resource/resource";
+import Resource from "@/js/resource/resource";
+import ComboboxPagingVue from "../comboboxes/ComboboxPaging.vue";
 
 export default {
   name: "TableFoot",
-  components: { Combobox },
+  components: { ComboboxPagingVue },
+  props: {
+    records: Array,
+  },
   methods: {
     /**
      * trả về thông tin số bản ghi thu được
@@ -54,14 +57,13 @@ export default {
      * author: Nguyen Van Thinh 02/11/2022
      * @return String kiểu html
      */
-    records() {
-      return "Tổng số: " + "<b>" + this.quantity + "</b>" + " bản ghi";
+    numberOfRecords() {
+      return "Tổng số: " + "<b>" + this.records.length + "</b>" + " bản ghi";
     },
   },
   data() {
     return {
-      title: resource.Title,
-      quantity: 200,
+      Resource,
     };
   },
 };

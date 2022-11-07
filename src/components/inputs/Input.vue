@@ -1,21 +1,31 @@
 <template>
   <label> {{ labelContent }} <span style="color: red">*</span></label>
   <input
-    :type="type"
     :class="['input', { 'input--disabled': isDisabled }]"
     :maxlength="maxlength"
     :style="{
       'text-align': type == 'text' ? 'left' : 'right',
     }"
-    :value="type == 'text' ? (value ? value : '') : value ? value : 0"
+    :value="
+      type == 'text'
+        ? value
+          ? value
+          : ''
+        : value
+        ? isDisabled
+          ? value
+          : Function.formatMoney(value)
+        : 0
+    "
     :field="field"
     :disabled="isDisabled"
-    @keyup="updateInput($event)"
+    @change="updateInput($event)"
   />
   <p class="error-message"></p>
 </template>
 
 <script>
+import Function from "@/js/common/function";
 export default {
   name: "NormalInput",
   props: {
@@ -46,6 +56,7 @@ export default {
   data() {
     return {
       newValue: "",
+      Function,
     };
   },
 };

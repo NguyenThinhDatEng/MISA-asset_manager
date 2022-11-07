@@ -40,7 +40,7 @@
         ></Row>
       </tbody>
       <!-- Table footer  -->
-      <TableFoot></TableFoot>
+      <TableFoot :records="assets"></TableFoot>
     </table>
   </div>
 </template>
