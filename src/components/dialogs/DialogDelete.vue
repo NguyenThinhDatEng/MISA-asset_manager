@@ -1,14 +1,11 @@
 <template>
-  <!-- Bạn có muốn xóa tài sản -->
   <div class="dialog__wrapper">
-    <div class="dialog">
+    <!-- Delete -->
+    <div class="dialog" v-if="mode == Enum.Mode.Delete">
       <div class="dialog__header"></div>
       <div id="dialog--no-header" class="dialog__body">
         <div class="dialog__body__icon icon icon--warning"></div>
-        <p class="dialog__body__text">
-          Bạn có muốn xóa tài sản <b>&lt;&lt;</b><span>Mã - Tên tài sản</span
-          ><b>&gt;&gt;</b> ?
-        </p>
+        <p class="dialog__body__text" v-html="text.delete"></p>
       </div>
       <div class="dialog__footer">
         <ButtonMainVue
@@ -20,6 +17,28 @@
         <ButtonOutlineVue
           :button-content="Resource.ButtonContent.no"
           :title="Resource.Title.cancel"
+          @click="closeDialog"
+        ></ButtonOutlineVue>
+      </div>
+    </div>
+    <!-- Dialog Delete Multi  -->
+    <div class="dialog" v-else>
+      <div class="dialog__header"></div>
+      <div id="dialog--no-header" class="dialog__body">
+        <div class="dialog__body__icon icon icon--warning"></div>
+        <p class="dialog__body__text" v-html="text.deleteMulti"></p>
+      </div>
+      <div class="dialog__footer">
+        <ButtonMainVue
+          :button-content="Resource.ButtonContent.delete"
+          :title="Resource.Title.delete"
+          :type="Enum.Type.Main"
+          :isDeleteDialog="true"
+        ></ButtonMainVue>
+        <ButtonOutlineVue
+          :button-content="Resource.ButtonContent.no"
+          :title="Resource.Title.cancel"
+          @click="closeDialog"
         ></ButtonOutlineVue>
       </div>
     </div>
@@ -36,11 +55,32 @@ export default {
   name: "DialogDelete",
   created() {},
   components: { ButtonMainVue, ButtonOutlineVue },
-  props: {},
-  emits: [],
-  methods: {},
+  props: { info: String, mode: Number },
+  emits: ["close-dialog"],
+  methods: {
+    closeDialog: function () {
+      try {
+        this.$emit("close-dialog");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
   data() {
-    return { Resource, Enum };
+    return {
+      Resource,
+      Enum,
+      text: {
+        delete:
+          "Bạn có muốn xóa tài sản <b>&lt;&lt;</b><span>" +
+          this.info +
+          "</span><b>&gt;&gt;</b> ?",
+        deleteMulti:
+          "<span>" +
+          this.info +
+          "</span> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?",
+      },
+    };
   },
 };
 </script>

@@ -4,11 +4,13 @@
     :type="type"
     :class="['input', { 'input--disabled': isDisabled }]"
     :maxlength="maxlength"
-    :value="type == 'text' ? (value ? value : '') : value ? value : 0"
-    :disabled="isDisabled"
     :style="{
       'text-align': type == 'text' ? 'left' : 'right',
     }"
+    :value="type == 'text' ? (value ? value : '') : value ? value : 0"
+    :field="field"
+    :disabled="isDisabled"
+    @keyup="updateInput($event)"
   />
   <p class="error-message"></p>
 </template>
@@ -28,9 +30,23 @@ export default {
       type: Boolean,
       default: false,
     },
+    field: String,
+  },
+  emits: ["update-input"],
+  methods: {
+    // Gửi nội dung dữ liệu được thay đổi lên class cha
+    updateInput: function (e) {
+      try {
+        this.$emit("update-input", e.target.value, this.field);
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
-    return {};
+    return {
+      newValue: "",
+    };
   },
 };
 </script>

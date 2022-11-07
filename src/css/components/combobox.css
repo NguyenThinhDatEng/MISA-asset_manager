@@ -68,7 +68,7 @@
     position: relative;
     display: flex;
     height: 36px;
-    background-color: #fff;
+    /* background-color: #fff; */
     cursor: context-menu;
 }
 
@@ -153,4 +153,8 @@
 
 .combobox--checked .data .icon__wrapper--checked {
     opacity: 1;
+}
+
+.data--selected {
+    background-color: var(--combobox__data);
 }

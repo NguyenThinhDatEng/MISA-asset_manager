@@ -68,13 +68,6 @@ tfoot {
     background-color: #fff;
 }
 
-tfoot::before {
-    width: 10px;
-    height: 10px;
-    color: red;
-    background-color: red;
-}
-
 .footer__left {
     display: flex;
     align-items: center;
@@ -103,7 +96,7 @@ tfoot::before {
 }
 
 .row--active {
-    background-color: var(--hover);
+    background-color: var(--row--hover);
 }
 
 .row--active .feature {

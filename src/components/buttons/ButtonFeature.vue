@@ -1,28 +1,21 @@
 <template>
-  <div
-    :class="[buttonType, { 'button--disable': isDisable }]"
-    :title="title"
-    @click="showDialog = true"
-  >
+  <div :class="[buttonName, { 'button--disable': isDisable }]" :title="title">
     <div :class="['icon icon--18px center', iconName]"></div>
   </div>
-  <DialogDelete v-if="showDialog"></DialogDelete>
 </template>
   
   <script>
-import DialogDelete from "@/components/dialogs/DialogDelete.vue";
-
 export default {
   name: "ButtonFeature",
-  components: { DialogDelete },
+  components: {},
   props: {
-    buttonType: String,
+    buttonName: String,
     title: String,
     iconName: String,
     isDisable: Boolean,
   },
   data() {
-    return { showDialog: false };
+    return {};
   },
 };
 </script>

@@ -7,18 +7,18 @@
       { 'button--ok': type == Type.Main ? true : false },
     ]"
     :title="title"
-    v-show="type == Type.Main"
+    v-if="type == Type.Main"
   >
     {{ buttonContent }}
   </button>
   <button
+    v-else
     :class="[
       'button',
       'button--secondary',
       { 'button--cancel': type == Type.Secondary ? true : false },
     ]"
     :title="title"
-    v-show="type == Type.Secondary"
   >
     {{ buttonContent }}
   </button>

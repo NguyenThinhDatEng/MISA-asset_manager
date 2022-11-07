@@ -40,13 +40,15 @@
   <Popup
     v-if="showPopup"
     :theTitle="setPopupTitle()"
-    @close-popup="showPopup = false"
     :obj="popupObj"
+    :mode="Enum.Mode.Update"
+    @close-popup="showPopup = false"
   ></Popup>
 </template>
 
 <script>
 import Resource from "@/js/resource/resource";
+import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import Popup from "@/components/popups/PopupAsset.vue";
 
@@ -106,7 +108,7 @@ export default {
             this.$emit("update-checked-header", false);
           this.$emit("update-row", !isNew, this.obj); // isNew == false
         }
-        console.log("Table Row", this.obj);
+        // console.log("Table Row", this.obj);
       } catch (error) {
         console.log(error);
       }
@@ -116,6 +118,7 @@ export default {
     return {
       Resource,
       Function,
+      Enum,
       Title: Resource.Title,
       showPopup: false,
       isActive: false,

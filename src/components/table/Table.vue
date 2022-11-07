@@ -53,7 +53,7 @@ import Resource from "@/js/resource/resource";
 export default {
   name: "TheTable",
   components: { Row, TableFoot },
-  emits: ["disabled-button"],
+  emits: ["update-rows"],
   watch: {
     isCheckAll: function () {
       if (this.isCheckAll == true) {
@@ -64,8 +64,7 @@ export default {
       } else {
         this.selectedRows = [];
       }
-      if (this.selectedRows.length == 0) this.$emit("disabled-button", true);
-      else this.$emit("disabled-button", false);
+      this.$emit("update-rows", this.selectedRows);
       this.checkedHeader = this.isCheckAll;
     },
   },
@@ -115,7 +114,7 @@ export default {
           }
         }
         // Bắn chiều dài mảng được chọn lên cha của nó (Table)
-        this.$emit("disabled-button", this.selectedRows.length ? false : true);
+        this.$emit("update-rows", this.selectedRows);
         // console.log(this.selectedRows);
       } catch (error) {
         console.log(error);
@@ -140,18 +139,6 @@ export default {
         else return "";
       } catch (error) {
         console.log("Table Header", error);
-      }
-    },
-    /**
-     * Phát dữ liệu đến class cha (Content)
-     * @param {Array} selectedRows Các row được chọn trong grid
-     * @author Nguyen Van Thinh 06/11/2022
-     */
-    disabledButton: function (disabled) {
-      try {
-        this.$emit("disabled-button", disabled);
-      } catch (error) {
-        console.log(error);
       }
     },
 

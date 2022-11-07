@@ -113,4 +113,8 @@ export default {
     delete: "Xóa",
     no: "Không",
   },
+  Name: {
+    export: "export",
+    delete: "delete",
+  },
 };

@@ -40,6 +40,11 @@ import resource from "@/js/resource/resource";
 export default {
   name: "DropdownCheckbox",
   created() {
+    window.addEventListener("click", (e) => {
+      if (!this.$el.contains(e.target)) {
+        this.isHidden = true;
+      }
+    });
     // Thêm thuộc tính active cho từng dòng dữ liệu trong dropdown
     try {
       for (let item of this.data) {

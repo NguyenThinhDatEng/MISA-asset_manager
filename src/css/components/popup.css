@@ -118,3 +118,7 @@ input.input.input--error+.error-message {
     font-family: MISA Bold;
     font-size: 15px;
 }
+
+.popup__date {
+    position: relative;
+}

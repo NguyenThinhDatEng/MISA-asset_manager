@@ -13,7 +13,7 @@
       ></Icon>
       <div class="header_year">
         <p>{{ Title.year }}</p>
-        <input class="input year" v-model.number="year" />
+        <input type="text" class="input year" v-model.number="year" />
         <div class="icon--up_down">
           <div
             id="year-up"
