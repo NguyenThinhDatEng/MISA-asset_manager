@@ -25,6 +25,9 @@
 <script>
 export default {
   name: "ComboboxPaging",
+  props: {
+    title: String,
+  },
   watch: {
     value: function () {
       for (let obj of this.data) {
@@ -33,11 +36,13 @@ export default {
       }
     },
   },
-  props: {
-    title: String,
+  created() {
+    window.addEventListener("click", (e) => {
+      if (!this.$el.contains(e.target)) {
+        this.isShow = false;
+      }
+    });
   },
-  emits: [],
-  methods: {},
   data() {
     return {
       isShow: false,

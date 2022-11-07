@@ -4,7 +4,7 @@
       <td colspan="6">
         <div class="footer__left">
           <div class="total-of-records__wrapper">
-            <p class="total-of-records" v-html="numberOfRecords()"></p>
+            <p class="total-of-records" v-html="records()"></p>
           </div>
           <!-- Combobox: Limit of records  -->
           <ComboboxPagingVue :title="Resource.Title.limit"></ComboboxPagingVue>
@@ -31,10 +31,9 @@
           </div>
         </div>
       </td>
-      <td class="value">13</td>
-      <td class="value">249000000</td>
-      <td class="value">19716000</td>
-      <td class="value">229284000</td>
+      <td class="value" v-for="(val, key) of footerData" :key="key">
+        {{ Function.formatMoney(val) }}
+      </td>
       <td></td>
     </tr>
   </tfoot>
@@ -43,27 +42,33 @@
 <script>
 import Resource from "@/js/resource/resource";
 import ComboboxPagingVue from "../comboboxes/ComboboxPaging.vue";
+import Function from "@/js/common/function";
 
 export default {
   name: "TableFoot",
   components: { ComboboxPagingVue },
   props: {
-    records: Array,
+    footerData: Array,
+    numberOfRecords: Number,
+  },
+  mounted() {
+    console.log(this.records);
+    console.log(this.totalOfCost);
   },
   methods: {
     /**
-     * trả về thông tin số bản ghi thu được
-     * render bằng v-html
-     * author: Nguyen Van Thinh 02/11/2022
+     * trả về thông tin số bản ghi thu được render bằng v-html
      * @return String kiểu html
+     * @author Nguyen Van Thinh 02/11/2022
      */
-    numberOfRecords() {
-      return "Tổng số: " + "<b>" + this.records.length + "</b>" + " bản ghi";
+    records() {
+      return "Tổng số: " + "<b>" + this.numberOfRecords + "</b>" + " bản ghi";
     },
   },
   data() {
     return {
       Resource,
+      Function,
     };
   },
 };

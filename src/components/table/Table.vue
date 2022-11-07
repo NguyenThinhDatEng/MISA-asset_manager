@@ -40,7 +40,10 @@
         ></Row>
       </tbody>
       <!-- Table footer  -->
-      <TableFoot :records="assets"></TableFoot>
+      <TableFoot
+        :footerData="footerData"
+        :number-of-records="assets.length"
+      ></TableFoot>
     </table>
   </div>
 </template>
@@ -83,6 +86,15 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           this.assets = data;
+          for (const obj of data) {
+            // console.log("@!@", obj);
+            this.footerData.totalOfQuantities += obj.quantity;
+            this.footerData.totalOfCost += obj.cost;
+            this.footerData.totalDepreciationValue +=
+              obj.cost * obj.depreciation_rate;
+            this.footerData.totalResidualValue +=
+              obj.cost * (1 - obj.depreciation_rate / 100);
+          }
           console.log("Call API get all assets");
         })
         .catch((error) => {
@@ -159,6 +171,12 @@ export default {
       checkedHeader: false,
       assets: [],
       selectedRows: [],
+      footerData: {
+        totalOfQuantities: 0,
+        totalOfCost: 0,
+        totalDepreciationValue: 0,
+        totalResidualValue: 0,
+      },
       showPopup: false,
       //   cols: resource.Columns,
       styleObject: [
