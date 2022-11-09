@@ -71,7 +71,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .error-message {
     position: absolute;
-    display: none;
+    /* display: none; */
     color: var(--input--error);
     padding-top: 2px;
     max-width: 240px;
@@ -137,4 +137,15 @@ input::placeholder {
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.input--date__icon__wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: none;
+    width: 36px;
+    height: 36px;
+    background-color: transparent;
+    z-index: -1;
 }

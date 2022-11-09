@@ -117,4 +117,7 @@ export default {
     export: "export",
     delete: "delete",
   },
+  ErrorMessage: {
+    blank: "là thông tin bắt buộc",
+  },
 };

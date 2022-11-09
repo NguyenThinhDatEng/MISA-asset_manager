@@ -1,7 +1,12 @@
 <template>
   <label> {{ labelContent }} <span style="color: red">*</span></label>
+
   <input
-    :class="['input', { 'input--disabled': isDisabled }]"
+    :class="[
+      'input',
+      { 'input--disabled': isDisabled },
+      { 'input--error': isError },
+    ]"
     :maxlength="maxlength"
     :style="{
       'text-align': type == 'text' ? 'left' : 'right',
@@ -21,11 +26,18 @@
     :disabled="isDisabled"
     @change="updateInput($event)"
   />
-  <p class="error-message"></p>
+
+  <p
+    class="error-message"
+    v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
+    v-show="isError"
+  ></p>
 </template>
 
 <script>
 import Function from "@/js/common/function";
+import Resource from "@/js/resource/resource";
+
 export default {
   name: "NormalInput",
   props: {
@@ -41,6 +53,10 @@ export default {
       default: false,
     },
     field: String,
+    isError: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ["update-input"],
   methods: {
@@ -57,6 +73,7 @@ export default {
     return {
       newValue: "",
       Function,
+      Resource,
     };
   },
 };

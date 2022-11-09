@@ -1,5 +1,6 @@
 <template>
   <label>{{ labelContent }} <span style="color: red">*</span></label>
+
   <div class="input--number">
     <input
       type="text"
@@ -12,12 +13,12 @@
     <div class="icon--up_down">
       <div
         class="icon icon--up"
-        :title="resource.Title.increase"
+        :title="Resource.Title.increase"
         @click="increase"
       ></div>
       <div
         class="icon icon--down"
-        :title="resource.Title.decrease"
+        :title="Resource.Title.decrease"
         @click="decrease"
       ></div>
     </div>
@@ -25,7 +26,7 @@
 </template>
 
 <script>
-import resource from "@/js/resource/resource";
+import Resource from "@/js/resource/resource";
 import Function from "@/js/common/function";
 import Enum from "@/js/enum/enum";
 
@@ -81,7 +82,7 @@ export default {
     },
   },
   data() {
-    return { resource, val: -1, Function };
+    return { Resource, val: -1, Function };
   },
 };
 </script>

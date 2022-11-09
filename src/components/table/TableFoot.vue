@@ -31,6 +31,7 @@
           </div>
         </div>
       </td>
+      <td class="value">{{ totalOfQuantities }}</td>
       <td class="value" v-for="(val, key) of footerData" :key="key">
         {{ Function.formatMoney(val) }}
       </td>
@@ -48,12 +49,9 @@ export default {
   name: "TableFoot",
   components: { ComboboxPagingVue },
   props: {
-    footerData: Array,
+    footerData: Object,
     numberOfRecords: Number,
-  },
-  mounted() {
-    console.log(this.records);
-    console.log(this.totalOfCost);
+    totalOfQuantities: Number,
   },
   methods: {
     /**

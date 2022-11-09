@@ -8,9 +8,20 @@ export default {
       console.log(error);
     }
   },
+  // Lấy ngày tháng năm hiện tại
+  getCurrentDate: function () {
+    const date = new Date();
+    return (
+      this.formatNumber(date.getDate()) +
+      "/" +
+      this.formatNumber(date.getMonth() + 1) +
+      "/" +
+      date.getFullYear()
+    );
+  },
   // Lấy năm hiện tại
   getCurrentYear: function () {
-    return new Date().getFullYear();
+    return new Date().getFullYear;
   },
   // Format dữ liệu số
   formatNumber: function (value) {

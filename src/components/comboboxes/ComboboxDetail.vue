@@ -82,9 +82,9 @@ export default {
      */
     handleOnClickData: function (id) {
       try {
-        const ID = this.field + "_id";
-        const codeField = this.field + "_code";
-        const nameField = this.field + "_name";
+        const ID = this.field + "_id"; // Ex: department_id
+        const codeField = this.field + "_code"; // Ex: department_code
+        const nameField = this.field + "_name"; // // Ex: department_name
         // Lọc ra obj được chọn
         for (let obj of this.popupData) {
           if (id == obj[ID]) {

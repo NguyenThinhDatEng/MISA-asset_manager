@@ -1,0 +1,21 @@
+@import url(../font.css);
+
+.dp__input {
+    height: 36px;
+    background-color: transparent;
+    border: 1px solid #afafaf;
+    font-family: MISA Regular;
+}
+
+.dp__input::placeholder {
+    color: #000;
+}
+
+.dp__input_focus {
+    border: 1px solid #1AA4C8;
+}
+
+.dp__input:hover,
+.dp__input:active {
+    border: 1px solid #1AA4C8;
+}

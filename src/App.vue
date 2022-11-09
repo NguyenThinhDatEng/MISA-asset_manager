@@ -33,5 +33,4 @@ export default {
 </script>
 
 <style>
-@import url(./css/base.css);
 </style>

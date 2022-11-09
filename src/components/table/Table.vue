@@ -43,6 +43,7 @@
       <TableFoot
         :footerData="footerData"
         :number-of-records="assets.length"
+        :totalOfQuantities="totalOfQuantities"
       ></TableFoot>
     </table>
   </div>
@@ -88,7 +89,7 @@ export default {
           this.assets = data;
           for (const obj of data) {
             // console.log("@!@", obj);
-            this.footerData.totalOfQuantities += obj.quantity;
+            this.totalOfQuantities += obj.quantity;
             this.footerData.totalOfCost += obj.cost;
             this.footerData.totalDepreciationValue +=
               obj.cost * obj.depreciation_rate;
@@ -171,8 +172,8 @@ export default {
       checkedHeader: false,
       assets: [],
       selectedRows: [],
+      totalOfQuantities: 0,
       footerData: {
-        totalOfQuantities: 0,
         totalOfCost: 0,
         totalDepreciationValue: 0,
         totalResidualValue: 0,

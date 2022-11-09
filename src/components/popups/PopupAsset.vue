@@ -50,7 +50,9 @@
               :value="obj.department_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
-            <p class="error-message"></p>
+            <p class="error-message">
+              {{ label.department_code + " " + Resource.ErrorMessage.blank }}
+            </p>
           </div>
           <div class="popup__body--right">
             <!-- Input -->
@@ -78,7 +80,9 @@
               :value="obj.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
-            <p class="error-message"></p>
+            <p class="error-message">
+              {{ label.department_code + " " + Resource.ErrorMessage.blank }}
+            </p>
           </div>
           <!-- Input  -->
           <div class="popup__body--right">
@@ -164,10 +168,7 @@
               <span style="color: red">*</span></label
             >
             <div class="popup__date">
-              <input type="date" class="input" value="2022-10-12" />
-              <button class="button--icon__wrapper">
-                <div class="icon icon-item center icon--calendar"></div>
-              </button>
+              <InputCalendar></InputCalendar>
             </div>
             <p class="error-message"></p>
           </div>
@@ -179,10 +180,7 @@
                   <span style="color: red">*</span></label
                 >
                 <div class="popup__date">
-                  <input type="date" class="input" value="2022-10-12" />
-                  <button class="button--icon__wrapper">
-                    <div class="icon icon-item center icon--calendar"></div>
-                  </button>
+                  <InputCalendar></InputCalendar>
                 </div>
                 <p class="error-message"></p>
               </div>
@@ -217,10 +215,11 @@ import Input from "@/components/inputs/Input.vue";
 import InputNumber from "@/components/inputs/NumberInput.vue";
 import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
 import ButtonMain from "@/components/buttons/ButtonMain.vue";
+import InputCalendar from "@/components/datepicker/InputCalendar.vue";
 
 export default {
   name: "PopupAsset",
-  components: { Input, ComboboxDetail, InputNumber, ButtonMain },
+  components: { Input, ComboboxDetail, InputNumber, ButtonMain, InputCalendar },
   props: {
     theTitle: {
       type: String,
@@ -238,6 +237,10 @@ export default {
     popupObject: function () {
       console.log(this.popupObject);
     },
+  },
+  created() {
+    this.currentDate = Function.getCurrentDate();
+    console.log(this.currentDate);
   },
   /**
    * Call API
@@ -312,12 +315,13 @@ export default {
   data() {
     return {
       Resource,
-      Enum,
-      Function,
       Title: Resource.Title,
       label: Resource.PopupLabel,
       placeholder: Resource.Placeholder,
       maxLength: Resource.InputLength,
+      Enum,
+      Function,
+      currentDate: null,
       departments: [],
       categories: [],
       popupObject: {},
