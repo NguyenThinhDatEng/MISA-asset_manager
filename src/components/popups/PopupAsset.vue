@@ -219,6 +219,7 @@
       </div>
     </div>
   </div>
+
   <DialogValidate
     v-if="showDialogValidate"
     :required-data="requiredData"
@@ -311,12 +312,28 @@ export default {
       console.log(error);
     }
   },
-  emits: ["close-popup"],
+  emits: ["close-popup", "show-toast"],
   methods: {
-    // Đóng popup bằng cách phát tín hiệu lên class cha
+    /**
+     * Emit: Đóng popup
+     * @author Nguyen Van Thinh 11/11/2022
+     */
     closePopup: function () {
       try {
         this.$emit("close-popup");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Emit: Hiển thị toast thông báo
+     * @author Nguyen Van Thinh 11/11/2022
+     */
+    showToast: function () {
+      try {
+        this.$emit("show-toast");
+        this.closePopup();
       } catch (error) {
         console.log(error);
       }
@@ -379,6 +396,8 @@ export default {
             this.requiredData.push(Resource.WarningMessage.depreciation);
             this.showDialogValidate = true;
           }
+          // Hiển thị toast thông báo và đóng popup
+          this.showToast();
         }
       } catch (error) {
         console.log(error);
@@ -396,6 +415,7 @@ export default {
       Function,
       currentYear: Function.getCurrentYear(),
       showDialogValidate: false,
+      isShowToast: false,
       dlgValidateCategory: "blank",
       isShowError: false,
       departments: [],

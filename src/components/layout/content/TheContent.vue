@@ -60,6 +60,7 @@
     :theTitle="Resource.PopupTitle.add"
     :mode="Enum.Mode.Add"
     @close-popup="showPopup = false"
+    @show-toast="isShowToast = true"
   ></Popup>
   <DialogDeleteVue
     v-if="showDialogDelete"
@@ -67,6 +68,7 @@
     :mode="this.mode"
     @close-dialog="showDialogDelete = false"
   ></DialogDeleteVue>
+  <ToastVue v-show="isShowToast"></ToastVue>
 </template>
 
 <script>
@@ -81,6 +83,7 @@ import DialogDeleteVue from "@/components/dialogs/DialogDelete.vue";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
+import ToastVue from "@/components/toast/ToastVue.vue";
 
 export default {
   name: "TheContent",
@@ -93,6 +96,14 @@ export default {
     ButtonFeature,
     Popup,
     DialogDeleteVue,
+    ToastVue,
+  },
+  watch: {
+    isShowToast: function () {
+      setTimeout(() => {
+        this.isShowToast = false;
+      }, 1000);
+    },
   },
   /**
    * Call API
@@ -184,6 +195,7 @@ export default {
       showPopup: false,
       showLoader: false,
       showDialogDelete: false,
+      isShowToast: false,
       selectedRows: [],
       departments: [],
       categories: [],

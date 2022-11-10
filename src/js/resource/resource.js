@@ -157,4 +157,7 @@ export default {
     purchase_date: "purchase_date",
     production_date: "production_date",
   },
+  ToastInfo: {
+    save: "Lưu dữ liệu thành công",
+  },
 };
