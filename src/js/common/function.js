@@ -21,13 +21,15 @@ export default {
   },
   // Lấy năm hiện tại
   getCurrentYear: function () {
-    return new Date().getFullYear;
+    let date = new Date();
+    return date.getFullYear();
   },
   // Format dữ liệu số
-  formatNumber: function (value) {
+  formatNumber: function (num) {
     try {
-      if (value < 10 && value > 0) return "0" + value;
-      return value;
+      // Kiểm tra là số nguyên
+      if (Number.isInteger(num) && num < 10 && num > 0) return "0" + num;
+      return num;
     } catch (error) {
       console.log(error);
     }

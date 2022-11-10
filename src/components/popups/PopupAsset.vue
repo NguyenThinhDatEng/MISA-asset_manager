@@ -17,8 +17,8 @@
           <div class="popup__body--left">
             <!-- input 01 -->
             <Input
-              :label-content="label.asset_code"
-              :maxlength="maxLength.asset_code"
+              :label-content="Label.fixed_asset_code"
+              :maxlength="maxLength.fixed_asset_code"
               :value="obj.fixed_asset_code"
               :field="fields.fixed_asset_code"
               @update-input="updateInput"
@@ -27,7 +27,7 @@
           <div class="popup__body--right">
             <!-- input 02 -->
             <Input
-              :label-content="label.asset_name"
+              :label-content="Label.fixed_asset_name"
               :maxlength="maxLength.asset_name"
               :value="obj.fixed_asset_name"
               :field="fields.fixed_asset_name"
@@ -39,7 +39,7 @@
         <div class="input-row">
           <div class="popup__body--left">
             <label
-              >{{ label.department_code }}
+              >{{ Label.department_code }}
               <span style="color: red">*</span></label
             >
             <!-- Combobox -->
@@ -50,15 +50,14 @@
               :value="obj.department_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
-            <p class="error-message">
-              {{ label.department_code + " " + Resource.ErrorMessage.blank }}
+            <p class="error-message" v-show="isShowError">
+              {{ Label.department_code + " " + Resource.ErrorMessage.blank }}
             </p>
           </div>
           <div class="popup__body--right">
             <!-- Input -->
-            <label>{{ label.department_name }}</label>
+            <label>{{ Label.department_name }}</label>
             <input
-              type="text"
               class="input input--disabled"
               :value="obj.department_name || popupObject.department_name"
               disabled
@@ -69,7 +68,7 @@
         <div class="input-row">
           <div class="popup__body--left">
             <label
-              >{{ label.fixed_asset_category_code }}
+              >{{ Label.fixed_asset_category_code }}
               <span style="color: red">*</span></label
             >
             <!-- Combobox  -->
@@ -80,15 +79,14 @@
               :value="obj.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
-            <p class="error-message">
-              {{ label.department_code + " " + Resource.ErrorMessage.blank }}
+            <p class="error-message" v-show="isShowError">
+              {{ Label.department_code + " " + Resource.ErrorMessage.blank }}
             </p>
           </div>
           <!-- Input  -->
           <div class="popup__body--right">
-            <label>{{ label.fixed_asset_category_name }}</label>
+            <label>{{ Label.fixed_asset_category_name }}</label>
             <input
-              type="text"
               class="input input--disabled"
               :value="
                 obj.fixed_asset_category_name ||
@@ -102,7 +100,7 @@
         <div class="input-row">
           <div class="popup__body--left">
             <InputNumber
-              :label-content="label.quantity"
+              :label-content="Label.quantity"
               :value="obj.quantity || 1"
               :field="fields.quantity"
               :mode="mode"
@@ -113,16 +111,20 @@
             <div class="input-row">
               <div class="popup__body--left">
                 <Input
-                  :label-content="label.cost"
-                  :type="'number'"
-                  :value="obj.cost"
+                  :label-content="Label.cost"
+                  :type="Enum.DataType.Money"
+                  :value="obj.cost || popupObject.cost"
+                  :field="fields.cost"
+                  @update-input="updateInput"
                 ></Input>
               </div>
               <div class="popup__body--right-child">
                 <Input
-                  :label-content="label.life_time"
-                  :type="'number'"
-                  :value="obj.life_time"
+                  :label-content="Label.life_time"
+                  :type="Enum.DataType.Number"
+                  :value="obj.life_time || popupObject.life_time"
+                  :field="fields.life_time"
+                  @update-input="updateInput"
                 ></Input>
               </div>
             </div>
@@ -132,8 +134,10 @@
         <div class="input-row">
           <div class="popup__body--left">
             <InputNumber
-              :label-content="label.depreciation_rate"
-              :value="obj.depreciation_rate || 0"
+              :label-content="Label.depreciation_rate"
+              :value="
+                popupObject.depreciation_rate || obj.depreciation_rate || 0
+              "
               :field="fields.depreciation_rate"
               :mode="mode"
               @update-input="updateInput"
@@ -144,15 +148,18 @@
             <div class="input-row">
               <div class="popup__body--left">
                 <Input
-                  :label-content="label.depreciation_value"
-                  :type="'number'"
-                  :value="obj.depreciation_value"
+                  :label-content="Label.depreciation_value"
+                  :type="Enum.DataType.Money"
+                  :value="
+                    obj.depreciation_value || popupObject.depreciation_value
+                  "
+                  :field="fields.depreciation_value"
                 ></Input>
               </div>
               <div class="popup__body--right-child">
                 <Input
-                  :label-content="label.tracked_year"
-                  :type="'number'"
+                  :label-content="Label.tracked_year"
+                  :type="Enum.DataType.Year"
                   :value="obj.tracked_year"
                   :isDisabled="true"
                 ></Input>
@@ -164,11 +171,14 @@
         <div class="input-row">
           <div class="popup__body--left">
             <label
-              >{{ label.purchase_date }}
+              >{{ Label.purchase_date }}
               <span style="color: red">*</span></label
             >
             <div class="popup__date">
-              <InputCalendar></InputCalendar>
+              <InputCalendar
+                @update-input="updateInput"
+                :field="fields.purchase_date"
+              ></InputCalendar>
             </div>
             <p class="error-message"></p>
           </div>
@@ -176,11 +186,14 @@
             <div class="input-row">
               <div class="popup__body--left">
                 <label
-                  >{{ label.production_date }}
+                  >{{ Label.production_date }}
                   <span style="color: red">*</span></label
                 >
                 <div class="popup__date">
-                  <InputCalendar></InputCalendar>
+                  <InputCalendar
+                    @update-input="updateInput"
+                    :field="fields.production_date"
+                  ></InputCalendar>
                 </div>
                 <p class="error-message"></p>
               </div>
@@ -195,6 +208,7 @@
           :title="Title.save"
           :button-content="Resource.ButtonContent.save"
           :type="Enum.Type.Main"
+          @click="validateData"
         ></ButtonMain>
         <ButtonMain
           :title="Title.cancel"
@@ -205,6 +219,12 @@
       </div>
     </div>
   </div>
+  <DialogValidate
+    v-if="showDialogValidate"
+    :required-data="requiredData"
+    :category="this.dlgValidateCategory"
+    @close-dialog="showDialogValidate = false"
+  ></DialogValidate>
 </template>
 
 <script>
@@ -216,10 +236,18 @@ import InputNumber from "@/components/inputs/NumberInput.vue";
 import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
 import ButtonMain from "@/components/buttons/ButtonMain.vue";
 import InputCalendar from "@/components/datepicker/InputCalendar.vue";
+import DialogValidate from "@/components/dialogs/DialogValidate.vue";
 
 export default {
   name: "PopupAsset",
-  components: { Input, ComboboxDetail, InputNumber, ButtonMain, InputCalendar },
+  components: {
+    Input,
+    ComboboxDetail,
+    InputNumber,
+    ButtonMain,
+    InputCalendar,
+    DialogValidate,
+  },
   props: {
     theTitle: {
       type: String,
@@ -235,12 +263,12 @@ export default {
   },
   watch: {
     popupObject: function () {
-      console.log(this.popupObject);
+      console.log("@!@", this.popupObject);
     },
-  },
-  created() {
-    this.currentDate = Function.getCurrentDate();
-    console.log(this.currentDate);
+    obj: function () {
+      console.log("@!@", this.obj);
+      this.popupObject = this.obj;
+    },
   },
   /**
    * Call API
@@ -294,19 +322,64 @@ export default {
       }
     },
 
+    // Cập nhật dữ liệu nhận được từ component con (Input)
     updateInput: function (value, field) {
       try {
         this.popupObject[field] = value;
+        if (field == this.fields.cost)
+          this.popupObject[this.fields.depreciation_value] =
+            (value * this.popupObject[this.fields.depreciation_rate]) / 100;
         console.log(this.popupObject);
       } catch (error) {
         console.log(error);
       }
     },
 
-    updateCombobox: function (val1, field1, val2, field2) {
+    updateCombobox: function (data) {
       try {
-        this.popupObject[field1] = val1;
-        this.popupObject[field2] = val2;
+        for (let obj of data) {
+          if (obj.value) {
+            this.popupObject[obj.field] = obj.value;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
+     * Validate dữ liệu khi nhấn vào nút lưu
+     * @author Nguyen Van Thinh 09/11/2022
+     */
+    validateData: function () {
+      try {
+        // Thiết lập lại giá trị
+        this.requiredData = [];
+        // Kiểm tra thông tin yêu cầu
+        for (const field in this.fields) {
+          // console.log("@!@", this.popupObject[field], this.Label[field]);
+          if (Resource.RequiredData[field])
+            if (
+              this.popupObject[field] == undefined ||
+              this.popupObject[field] == ""
+            )
+              this.requiredData.push(this.Label[field]);
+        }
+        // Kiểm tra sự phù hợp dữ liệu
+        if (this.requiredData.length > 0) {
+          // Hiển thị dialog
+          this.showDialogValidate = true;
+        } else {
+          const depreciation_rate =
+            (1 / this.popupObject[this.fields.life_time]) * 100;
+          if (
+            this.popupObject[this.fields.depreciation_rate].toFixed(2) !=
+            depreciation_rate.toFixed(2)
+          ) {
+            this.dlgValidateCategory = "depreciation";
+            this.requiredData.push(Resource.WarningMessage.depreciation);
+            this.showDialogValidate = true;
+          }
+        }
       } catch (error) {
         console.log(error);
       }
@@ -316,31 +389,20 @@ export default {
     return {
       Resource,
       Title: Resource.Title,
-      label: Resource.PopupLabel,
+      Label: Resource.PopupLabel,
       placeholder: Resource.Placeholder,
       maxLength: Resource.InputLength,
       Enum,
       Function,
-      currentDate: null,
+      currentYear: Function.getCurrentYear(),
+      showDialogValidate: false,
+      dlgValidateCategory: "blank",
+      isShowError: false,
       departments: [],
       categories: [],
       popupObject: {},
-      fields: {
-        fixed_asset_code: "fixed_asset_code",
-        fixed_asset_name: "fixed_asset_name",
-        department_code: "department_code",
-        department_name: "department_name",
-        fixed_asset_category_code: "fixed_asset_category_code",
-        fixed_asset_category_name: "fixed_asset_category_name",
-        quantity: "quantity",
-        cost: "cost",
-        life_time: "life_time",
-        depreciation_rate: "depreciation_rate",
-        depreciation_value: "depreciation_value",
-        tracked_year: "tracked_year",
-        purchase_date: "purchase_date",
-        production_date: "production_date",
-      },
+      requiredData: [],
+      fields: Resource.PopupField,
     };
   },
 };

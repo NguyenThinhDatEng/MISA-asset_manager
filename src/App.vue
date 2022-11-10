@@ -3,7 +3,7 @@
     <TheSidebar></TheSidebar>
     <div class="header-content">
       <TheHeader></TheHeader>
-      <TheContent :isShowLoader="isShowLoader"></TheContent>
+      <TheContent></TheContent>
     </div>
   </div>
 </template>
@@ -21,13 +21,9 @@ export default {
     TheHeader,
     TheContent,
   },
-  mounted() {
-    setTimeout(() => (this.isShowLoader = false), 1500);
-  },
-  methods: {},
 
   data() {
-    return { isShowLoader: true };
+    return {};
   },
 };
 </script>

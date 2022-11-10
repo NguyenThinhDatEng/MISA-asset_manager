@@ -1,14 +1,14 @@
 export default {
   Mode: {
-    Add: 0,
-    Update: 1,
-    Delete: 2,
-    DeleteMulti: 3,
-    Duplicate: 4,
+    Add: 0, // Thêm mới
+    Update: 1, // Chỉnh sửa
+    Delete: 2, // Xóa 1 bản ghi
+    DeleteMulti: 3, // Xóa nhiều bản ghi
+    Duplicate: 4, // Nhân bản
   },
   Type: {
-    Main: 1,
-    Secondary: 2,
+    Main: 1, // Button chính
+    Secondary: 2, // Button phụ
   },
   // Phím tắt
   KeyCode: {
@@ -26,5 +26,11 @@ export default {
     F9: 120,
     // Phím `
     SelectTable: 115,
+  },
+  DataType: {
+    Text: 0,
+    Number: 1,
+    Money: 2,
+    Year: 3,
   },
 };

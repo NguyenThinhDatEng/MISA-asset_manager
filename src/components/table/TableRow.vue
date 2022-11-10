@@ -40,7 +40,7 @@
   <Popup
     v-if="showPopup"
     :theTitle="setPopupTitle()"
-    :obj="popupObj"
+    :obj="popupObject"
     :mode="Enum.Mode.Update"
     @close-popup="showPopup = false"
   ></Popup>
@@ -56,7 +56,7 @@ export default {
   name: "TableRow",
   components: { Popup },
   props: { obj: Object, i: Number, isCheckAll: Boolean },
-  emits: ["update-row", "update-checked-header"],
+  emits: ["update-row", "update-checked-header", "update-popup-object"],
   watch: {
     // Cập nhật trạng thái active của dòng
     isCheckAll: function () {
@@ -83,7 +83,11 @@ export default {
         let controlObj = this.obj;
         controlObj.depreciation_value = this.depreciation_value;
         if (action == "edit") {
-          this.popupObj = controlObj;
+          // this.popupObj = controlObj;
+          for (const field in this.fields) {
+            this.popupObject[field] = controlObj[field];
+          }
+          console.log("@!@", this.popupObject);
         }
         this.showPopup = true;
         this.action = action;
@@ -117,6 +121,7 @@ export default {
   data() {
     return {
       Resource,
+      fields: Resource.PopupField,
       Function,
       Enum,
       Title: Resource.Title,
@@ -126,7 +131,7 @@ export default {
       depreciation_value: (this.obj.cost * this.obj.depreciation_rate) / 100,
       residual_value:
         this.obj.cost - (this.obj.cost * this.obj.depreciation_rate) / 100,
-      popupObj: {},
+      popupObject: {},
     };
   },
 };

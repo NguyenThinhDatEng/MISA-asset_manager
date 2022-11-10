@@ -15,9 +15,9 @@
       <div class="first-data">
         <div class="data">
           <div class="text__wrapper">
-            <p>{{ resource.ComboboxInfo.firstCol }}</p>
+            <p>{{ Resource.ComboboxInfo.firstCol }}</p>
           </div>
-          <p>{{ resource.PopupLabel[field + "_name"] }}</p>
+          <p>{{ Resource.PopupLabel[field + "_name"] }}</p>
         </div>
       </div>
       <Data
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import resource from "@/js/resource/resource";
+import Resource from "@/js/resource/resource";
 import Data from "./DataDetail.vue";
 
 export default {
@@ -82,28 +82,41 @@ export default {
      */
     handleOnClickData: function (id) {
       try {
+        let data = []; // dữ liệu phát lên lớp cha
         const ID = this.field + "_id"; // Ex: department_id
         const codeField = this.field + "_code"; // Ex: department_code
-        const nameField = this.field + "_name"; // // Ex: department_name
+        const nameField = this.field + "_name"; // Ex: department_name
         // Lọc ra obj được chọn
         for (let obj of this.popupData) {
           if (id == obj[ID]) {
             // Cập nhật giá trị
             this.val = obj[codeField];
-            // Gửi dữ liệu lên class cha
-            const name = obj[nameField];
-            this.$emit("update-combobox", this.val, codeField, name, nameField);
+            // Cập nhật dữ liệu trong data
+            data.push({ field: codeField, value: this.val });
+            data.push({ field: nameField, value: obj[nameField] });
+            data.push({
+              field: Resource.PopupField.life_time,
+              value: obj.life_time,
+            });
+            data.push({
+              field: Resource.PopupField.depreciation_rate,
+              value: obj.depreciation_rate,
+            });
+            // Phát dữ liệu đến lớp cha
+            this.$emit("update-combobox", data);
             // Thay đổi trạng thái
             obj.isActive = true;
           } else obj.isActive = false;
         }
+        // Ẩn Data Combobox
+        this.isShow = false;
       } catch (error) {
         console.log(error);
       }
     },
   },
   data() {
-    return { isShow: false, resource, val: "", indexOfData: 0, popupData: [] };
+    return { isShow: false, Resource, val: "", indexOfData: 0, popupData: [] };
   },
 };
 </script>

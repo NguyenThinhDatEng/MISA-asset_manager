@@ -94,15 +94,13 @@ export default {
     Popup,
     DialogDeleteVue,
   },
-  props: {
-    isShowLoader: Boolean,
-  },
   /**
    * Call API
    * @author Nguyen Van Thinh 04/11/2022
    */
   mounted() {
     try {
+      this.isShowLoader = true;
       // Lay tat ca bo phan su dung
       fetch(Resource.URLs.department, {
         method: "GET",
@@ -112,6 +110,7 @@ export default {
       })
         .then((res) => res.json())
         .then((data) => {
+          this.isShowLoader = false;
           this.departments = data;
         })
         .catch((error) => {
@@ -178,6 +177,7 @@ export default {
       Resource,
       Function,
       Enum,
+      isShowLoader: false,
       info: "",
       mode: 0,
       isDisabledButton: true,

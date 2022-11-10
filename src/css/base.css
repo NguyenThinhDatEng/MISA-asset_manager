@@ -40,12 +40,14 @@
     font-size: 13px
 }
 
-body {
+body,
+p,
+ul {
     margin: 0;
 }
 
-p {
-    margin: 0;
+ul {
+    padding-left: 15px;
 }
 
 .center {

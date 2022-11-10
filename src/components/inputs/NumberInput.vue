@@ -34,7 +34,11 @@ export default {
   name: "InputNumber",
   created() {
     if (this.mode == Enum.Mode.Update) this.val = this.value;
-    else this.$emit("update-input", this.val + 2, this.field);
+    else {
+      if (this.field.includes("rate"))
+        this.$emit("update-input", 0, this.field);
+      else this.$emit("update-input", 1, this.field);
+    }
   },
   props: {
     labelContent: String,
@@ -46,7 +50,12 @@ export default {
   emits: ["update-input"],
   watch: {
     val: function () {
-      this.$emit("update-input", this.val, this.field);
+      // Phát dữ liệu khi cập nhật giá trị
+      try {
+        this.$emit("update-input", this.val, this.field);
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   methods: {
