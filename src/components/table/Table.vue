@@ -53,10 +53,17 @@
 import Row from "./TableRow.vue";
 import TableFoot from "./TableFoot.vue";
 import Resource from "@/js/resource/resource";
+import axios from "axios";
 
 export default {
   name: "TheTable",
   components: { Row, TableFoot },
+  props: {
+    isReload: {
+      type: Boolean,
+      default: false,
+    },
+  },
   emits: ["update-rows"],
   watch: {
     isCheckAll: function () {
@@ -71,39 +78,12 @@ export default {
       this.$emit("update-rows", this.selectedRows);
       this.checkedHeader = this.isCheckAll;
     },
+    isReload: function () {
+      this.getAllAssets();
+    },
   },
   mounted() {
-    /**
-     * Call API lấy tất cả bản ghi tài sản
-     * Author: Nguyen Van Thinh 2/11/2022
-     */
-    try {
-      fetch(Resource.URLs.getAllAsset, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          this.assets = data;
-          for (const obj of data) {
-            // console.log("@!@", obj);
-            this.totalOfQuantities += obj.quantity;
-            this.footerData.totalOfCost += obj.cost;
-            this.footerData.totalDepreciationValue +=
-              obj.cost * obj.depreciation_rate;
-            this.footerData.totalResidualValue +=
-              obj.cost * (1 - obj.depreciation_rate / 100);
-          }
-          console.log("Call API get all assets");
-        })
-        .catch((error) => {
-          console.log("Call API get all assets", error);
-        });
-    } catch (error) {
-      console.log("Call API get all assets", error);
-    }
+    this.getAllAssets();
   },
   methods: {
     /**
@@ -159,6 +139,30 @@ export default {
     checkAll: function (checked) {
       try {
         this.isCheckAll = checked;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Gọi API lấy tất cả tài sản
+     * @author Nguyen Van Thinh 11/11/2022
+     */
+    getAllAssets: async function () {
+      try {
+        const res = await axios.get(Resource.URLs.getAllAsset);
+        console.log("Call API get all assets");
+        // Cập nhật các dữ liệu trên table footer
+        for (const obj of res.data) {
+          this.totalOfQuantities += obj.quantity;
+          this.footerData.totalOfCost += obj.cost;
+          this.footerData.totalDepreciationValue +=
+            obj.cost * obj.depreciation_rate;
+          this.footerData.totalResidualValue +=
+            obj.cost * (1 - obj.depreciation_rate / 100);
+        }
+        // Cập nhật mảng tài sản
+        this.assets = res.data;
       } catch (error) {
         console.log(error);
       }

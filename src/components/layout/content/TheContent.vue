@@ -53,7 +53,7 @@
       </div>
     </div>
     <!-- Table  -->
-    <TheTable @update-rows="updateRows"></TheTable>
+    <TheTable @update-rows="updateRows" :isReload="reload"></TheTable>
   </div>
   <Popup
     v-if="showPopup"
@@ -61,6 +61,7 @@
     :mode="Enum.Mode.Add"
     @close-popup="showPopup = false"
     @show-toast="isShowToast = true"
+    @reload-content="reload = !reload"
   ></Popup>
   <DialogDeleteVue
     v-if="showDialogDelete"
@@ -102,7 +103,7 @@ export default {
     isShowToast: function () {
       setTimeout(() => {
         this.isShowToast = false;
-      }, 1000);
+      }, 1500);
     },
   },
   /**
@@ -196,6 +197,7 @@ export default {
       showLoader: false,
       showDialogDelete: false,
       isShowToast: false,
+      reload: false,
       selectedRows: [],
       departments: [],
       categories: [],

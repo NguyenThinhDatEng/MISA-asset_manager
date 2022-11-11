@@ -55,9 +55,9 @@ export default {
     "asset-add": "Thêm tài sản",
   },
   URLs: {
-    department: "https://localhost:44385/api/v1/Departments",
-    "asset-type": "https://localhost:44385/api/v1/AssetCategories",
-    getAllAsset: "https://localhost:44385/api/v1/Assets",
+    department: "http://localhost:11799/api/v1/Departments",
+    "asset-type": "http://localhost:11799/api/v1/FixedAssetCategories",
+    getAllAsset: "http://localhost:11799/api/v1/FixedAssets",
   },
   Abbreviations: {
     path: "Tài sản Hệ thống - Đường bộ",

@@ -238,6 +238,7 @@ import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
 import ButtonMain from "@/components/buttons/ButtonMain.vue";
 import InputCalendar from "@/components/datepicker/InputCalendar.vue";
 import DialogValidate from "@/components/dialogs/DialogValidate.vue";
+import axios from "axios";
 
 export default {
   name: "PopupAsset",
@@ -271,6 +272,7 @@ export default {
       this.popupObject = this.obj;
     },
   },
+
   /**
    * Call API
    * @author Nguyen Van Thinh 05/11/2022
@@ -312,7 +314,9 @@ export default {
       console.log(error);
     }
   },
-  emits: ["close-popup", "show-toast"],
+
+  emits: ["close-popup", "show-toast", "reload-content"],
+
   methods: {
     /**
      * Emit: Đóng popup
@@ -395,10 +399,31 @@ export default {
             this.dlgValidateCategory = "depreciation";
             this.requiredData.push(Resource.WarningMessage.depreciation);
             this.showDialogValidate = true;
+          } else {
+            // Call API tạo mới tài sản
+            this.insertAsset();
           }
-          // Hiển thị toast thông báo và đóng popup
-          this.showToast();
         }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Gọi API tạo mới tài sản
+     * @author Nguyen Van Thinh 11/11/2022
+     */
+    insertAsset: async function () {
+      try {
+        const res = await axios.post(
+          "http://localhost:11799/api/v1/FixedAssets",
+          this.popupObject
+        );
+        console.log(res);
+        // Hiển thị toast thông báo và đóng popup
+        this.showToast();
+        // Gửi thông báo load lại trang
+        this.$emit("reload-content");
       } catch (error) {
         console.log(error);
       }
@@ -420,7 +445,10 @@ export default {
       isShowError: false,
       departments: [],
       categories: [],
-      popupObject: {},
+      popupObject: {
+        created_by: "Nguyễn Văn Thịnh",
+        modified_by: "Nguyễn Văn Thịnh",
+      },
       requiredData: [],
       fields: Resource.PopupField,
     };
