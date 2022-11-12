@@ -37,6 +37,7 @@
           :is-check-all="isCheckAll"
           @update-row="updateRow"
           @update-checked-header="updateCheckedHeader"
+          @reload-content="getAllAssets"
         ></Row>
       </tbody>
       <!-- Table footer  -->
@@ -64,7 +65,7 @@ export default {
       default: false,
     },
   },
-  emits: ["update-rows"],
+  emits: ["update-rows", "reload-content"],
   watch: {
     isCheckAll: function () {
       if (this.isCheckAll == true) {

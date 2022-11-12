@@ -43,7 +43,10 @@
     :tableRowObj="popupObject"
     :fixedAssetID="tableRowObj.fixed_asset_id"
     @close-popup="showPopup = false"
+    @show-toast="isShowToast = true"
+    @reload-content="this.$emit('reload-content')"
   ></Popup>
+  <ToastVue v-show="isShowToast" :mode="Enum.Mode.Update"></ToastVue>
 </template>
 
 <script>
@@ -51,16 +54,27 @@ import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import Popup from "@/components/popups/PopupAsset.vue";
+import ToastVue from "@/components/toast/ToastVue.vue";
 
 export default {
   name: "TableRow",
-  components: { Popup },
+  components: { Popup, ToastVue },
   props: { tableRowObj: Object, index: Number, isCheckAll: Boolean },
-  emits: ["update-row", "update-checked-header", "update-popup-object"],
+  emits: [
+    "update-row",
+    "update-checked-header",
+    "update-popup-object",
+    "reload-content",
+  ],
   watch: {
     // Cập nhật trạng thái active của dòng
     isCheckAll: function () {
       this.isActive = this.isCheckAll;
+    },
+    isShowToast: function () {
+      setTimeout(() => {
+        this.isShowToast = false;
+      }, 1500);
     },
   },
   methods: {
@@ -120,6 +134,7 @@ export default {
       Enum,
       Title: Resource.Title,
       showPopup: false,
+      isShowToast: false,
       isActive: false,
       popupMode: 0,
       depreciation_value:

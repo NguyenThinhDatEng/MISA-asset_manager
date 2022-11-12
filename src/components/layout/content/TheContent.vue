@@ -68,7 +68,7 @@
     :mode="this.mode"
     @close-dialog="showDialogDelete = false"
   ></DialogDeleteVue>
-  <ToastVue v-show="isShowToast"></ToastVue>
+  <ToastVue v-show="isShowToast" :mode="Enum.Mode.Add" ></ToastVue>
 </template>
 
 <script>

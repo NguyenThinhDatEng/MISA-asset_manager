@@ -159,6 +159,7 @@ export default {
     production_date: "production_date",
   },
   ToastInfo: {
-    save: "Lưu dữ liệu thành công",
+    addSuccess: "Lưu dữ liệu thành công",
+    updateSuccess: "Cập nhật dữ liệu thành công",
   },
 };
