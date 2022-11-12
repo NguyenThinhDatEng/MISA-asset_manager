@@ -57,7 +57,6 @@
   </div>
   <Popup
     v-if="showPopup"
-    :theTitle="Resource.PopupTitle.add"
     :mode="Enum.Mode.Add"
     @close-popup="showPopup = false"
     @show-toast="isShowToast = true"

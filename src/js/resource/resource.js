@@ -79,6 +79,7 @@ export default {
   PopupTitle: {
     add: "Thêm mới tài sản",
     edit: "Sửa tài sản",
+    duplicate: "Nhân bản tài sản",
   },
   PopupLabel: {
     fixed_asset_code: "Mã tài sản",

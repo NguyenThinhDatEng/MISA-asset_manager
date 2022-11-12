@@ -2,20 +2,20 @@
   <tr
     :class="{ 'row--active': isActive }"
     @click="handleOnClickRow"
-    @dblclick="OnClickFeatureButton('edit')"
+    @dblclick="carryOutFeature('edit')"
   >
     <td class="checkbox__wrapper col--checkbox">
       <input type="checkbox" class="checkbox" :checked="isActive" />
     </td>
-    <td class="col--stt">{{ i }}</td>
-    <td class="col--asset-code">{{ obj.fixed_asset_code }}</td>
-    <td class="col--asset-name">{{ obj.fixed_asset_name }}</td>
+    <td class="col--stt">{{ index }}</td>
+    <td class="col--asset-code">{{ tableRowObj.fixed_asset_code }}</td>
+    <td class="col--asset-name">{{ tableRowObj.fixed_asset_name }}</td>
     <td class="col--asset-category">
-      {{ obj.fixed_asset_category_name }}
+      {{ tableRowObj.fixed_asset_category_name }}
     </td>
-    <td class="col--department">{{ obj.department_name }}</td>
-    <td class="col--quantity">{{ obj.quantity }}</td>
-    <td class="col--cost">{{ Function.formatMoney(obj.cost) }}</td>
+    <td class="col--department">{{ tableRowObj.department_name }}</td>
+    <td class="col--quantity">{{ tableRowObj.quantity }}</td>
+    <td class="col--cost">{{ Function.formatMoney(tableRowObj.cost) }}</td>
     <td class="col--depreciation">
       {{ Function.formatMoney(depreciation_value) }}
     </td>
@@ -27,21 +27,21 @@
         <div
           class="icon icon--edit"
           :title="Title.edit"
-          @click="OnClickFeatureButton('edit')"
+          @click="carryOutFeature('edit')"
         ></div>
         <div
           class="icon icon--duplicate"
           :title="Title.duplicate"
-          @click="OnClickFeatureButton('duplicate')"
+          @click="carryOutFeature('duplicate')"
         ></div>
       </div>
     </td>
   </tr>
   <Popup
     v-if="showPopup"
-    :theTitle="setPopupTitle()"
-    :obj="popupObject"
-    :mode="Enum.Mode.Update"
+    :mode="popupMode"
+    :tableRowObj="popupObject"
+    :fixedAssetID="tableRowObj.fixed_asset_id"
     @close-popup="showPopup = false"
   ></Popup>
 </template>
@@ -55,7 +55,7 @@ import Popup from "@/components/popups/PopupAsset.vue";
 export default {
   name: "TableRow",
   components: { Popup },
-  props: { obj: Object, i: Number, isCheckAll: Boolean },
+  props: { tableRowObj: Object, index: Number, isCheckAll: Boolean },
   emits: ["update-row", "update-checked-header", "update-popup-object"],
   watch: {
     // Cập nhật trạng thái active của dòng
@@ -64,33 +64,26 @@ export default {
     },
   },
   methods: {
-    // Thay đổi tiêu đề của popup theo các hành động
-    setPopupTitle: function () {
-      try {
-        if (this.action == "edit") return Resource.PopupTitle.edit;
-        return Resource.PopupTitle.add;
-      } catch (error) {
-        console.log("Table Row", error);
-      }
-    },
-
     /**
      * Sự kiện nhấn vào tính năng chỉnh sửa hoặc nhân bản
      * @author Nguyen Van Thinh 05/11/2022
      */
-    OnClickFeatureButton: function (action) {
+    carryOutFeature: function (action) {
       try {
-        let controlObj = this.obj;
-        controlObj.depreciation_value = this.depreciation_value;
-        if (action == "edit") {
-          // this.popupObj = controlObj;
-          for (const field in this.fields) {
-            this.popupObject[field] = controlObj[field];
-          }
-          console.log("@!@", this.popupObject);
+        // Thiết lập kiểu popup hiển thị
+        if (action == "edit") this.popupMode = Enum.Mode.Update;
+        else this.popupMode = Enum.Mode.Duplicate;
+        // Bind dữ liệu vào đối tượng Popup
+        for (const field in this.fields) {
+          this.popupObject[field] = this.tableRowObj[field];
         }
+        // Cập nhật giá trị hao mòn năm
+        this.popupObject[this.fields.depreciation_value] =
+          (this.popupObject[this.fields.depreciation_rate] *
+            this.popupObject[this.fields.cost]) /
+          100;
+        // Hiển thị Popup
         this.showPopup = true;
-        this.action = action;
       } catch (error) {
         console.log(error);
       }
@@ -106,13 +99,14 @@ export default {
         // Thay đổi trạng thái của dòng
         this.isActive = !this.isActive;
         // Nếu dòng được active, bắn đối tượng đến Table
-        if (this.isActive == isNew) this.$emit("update-row", isNew, this.obj);
+        if (this.isActive == isNew)
+          this.$emit("update-row", isNew, this.tableRowObj);
         else {
           if (this.isCheckAll == true)
             this.$emit("update-checked-header", false);
-          this.$emit("update-row", !isNew, this.obj); // isNew == false
+          this.$emit("update-row", !isNew, this.tableRowObj); // isNew == false
         }
-        // console.log("Table Row", this.obj);
+        // console.log("Table Row", this.tableRowObj);
       } catch (error) {
         console.log(error);
       }
@@ -127,10 +121,12 @@ export default {
       Title: Resource.Title,
       showPopup: false,
       isActive: false,
-      action: "",
-      depreciation_value: (this.obj.cost * this.obj.depreciation_rate) / 100,
+      popupMode: 0,
+      depreciation_value:
+        (this.tableRowObj.cost * this.tableRowObj.depreciation_rate) / 100,
       residual_value:
-        this.obj.cost - (this.obj.cost * this.obj.depreciation_rate) / 100,
+        this.tableRowObj.cost -
+        (this.tableRowObj.cost * this.tableRowObj.depreciation_rate) / 100,
       popupObject: {},
     };
   },

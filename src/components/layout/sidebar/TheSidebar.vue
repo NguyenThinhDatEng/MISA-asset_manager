@@ -62,7 +62,6 @@ export default {
           content: this.itemContents[key],
         });
       }
-      console.log(this.items);
     } catch (error) {
       console.log("hook: create an item", error);
     }

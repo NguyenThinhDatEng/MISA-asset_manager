@@ -36,13 +36,6 @@ export default {
     field: String,
   },
   emits: ["update-input"],
-  created() {
-    try {
-      this.$emit("update-input", this.date.toISOString(), this.field); // "2020-05-25T07:01:14",
-    } catch (error) {
-      console.log(error);
-    }
-  },
   watch: {
     date: function () {
       try {

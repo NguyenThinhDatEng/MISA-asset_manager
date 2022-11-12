@@ -32,8 +32,8 @@
         <Row
           v-for="(asset, index) in assets"
           :key="index"
-          :obj="asset"
-          :i="index + 1"
+          :tableRowObj="asset"
+          :index="index + 1"
           :is-check-all="isCheckAll"
           @update-row="updateRow"
           @update-checked-header="updateCheckedHeader"

@@ -11,13 +11,7 @@ export default {
   // Lấy ngày tháng năm hiện tại
   getCurrentDate: function () {
     const date = new Date();
-    return (
-      this.formatNumber(date.getDate()) +
-      "/" +
-      this.formatNumber(date.getMonth() + 1) +
-      "/" +
-      date.getFullYear()
-    );
+    return date.toISOString();
   },
   // Lấy năm hiện tại
   getCurrentYear: function () {

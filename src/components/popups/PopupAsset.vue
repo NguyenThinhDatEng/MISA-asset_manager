@@ -19,7 +19,7 @@
             <Input
               :label-content="Label.fixed_asset_code"
               :maxlength="maxLength.fixed_asset_code"
-              :value="obj.fixed_asset_code"
+              :value="tableRowObj.fixed_asset_code"
               :field="fields.fixed_asset_code"
               @update-input="updateInput"
             ></Input>
@@ -29,7 +29,7 @@
             <Input
               :label-content="Label.fixed_asset_name"
               :maxlength="maxLength.asset_name"
-              :value="obj.fixed_asset_name"
+              :value="tableRowObj.fixed_asset_name"
               :field="fields.fixed_asset_name"
               @update-input="updateInput"
             ></Input>
@@ -47,7 +47,7 @@
               :placeholder="placeholder.department_code"
               :data="departments"
               :field="'department'"
-              :value="obj.department_code"
+              :value="tableRowObj.department_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
             <p class="error-message" v-show="isShowError">
@@ -59,7 +59,9 @@
             <label>{{ Label.department_name }}</label>
             <input
               class="input input--disabled"
-              :value="obj.department_name || popupObject.department_name"
+              :value="
+                tableRowObj.department_name || popupObject.department_name
+              "
               disabled
             />
           </div>
@@ -76,7 +78,7 @@
               :placeholder="placeholder.asset_category_code"
               :data="categories"
               :field="'fixed_asset_category'"
-              :value="obj.fixed_asset_category_code"
+              :value="tableRowObj.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
             <p class="error-message" v-show="isShowError">
@@ -89,7 +91,7 @@
             <input
               class="input input--disabled"
               :value="
-                obj.fixed_asset_category_name ||
+                tableRowObj.fixed_asset_category_name ||
                 popupObject.fixed_asset_category_name
               "
               disabled
@@ -101,7 +103,7 @@
           <div class="popup__body--left">
             <InputNumber
               :label-content="Label.quantity"
-              :value="obj.quantity || 1"
+              :value="tableRowObj.quantity || 1"
               :field="fields.quantity"
               :mode="mode"
               @update-input="updateInput"
@@ -113,7 +115,7 @@
                 <Input
                   :label-content="Label.cost"
                   :type="Enum.DataType.Money"
-                  :value="obj.cost || popupObject.cost"
+                  :value="tableRowObj.cost || popupObject.cost"
                   :field="fields.cost"
                   @update-input="updateInput"
                 ></Input>
@@ -122,7 +124,7 @@
                 <Input
                   :label-content="Label.life_time"
                   :type="Enum.DataType.Number"
-                  :value="obj.life_time || popupObject.life_time"
+                  :value="tableRowObj.life_time || popupObject.life_time"
                   :field="fields.life_time"
                   @update-input="updateInput"
                 ></Input>
@@ -136,7 +138,9 @@
             <InputNumber
               :label-content="Label.depreciation_rate"
               :value="
-                popupObject.depreciation_rate || obj.depreciation_rate || 0
+                popupObject.depreciation_rate ||
+                tableRowObj.depreciation_rate ||
+                0
               "
               :field="fields.depreciation_rate"
               :mode="mode"
@@ -151,7 +155,8 @@
                   :label-content="Label.depreciation_value"
                   :type="Enum.DataType.Money"
                   :value="
-                    obj.depreciation_value || popupObject.depreciation_value
+                    tableRowObj.depreciation_value ||
+                    popupObject.depreciation_value
                   "
                   :field="fields.depreciation_value"
                 ></Input>
@@ -160,7 +165,7 @@
                 <Input
                   :label-content="Label.tracked_year"
                   :type="Enum.DataType.Year"
-                  :value="obj.tracked_year"
+                  :value="tableRowObj.tracked_year"
                   :isDisabled="true"
                 ></Input>
               </div>
@@ -251,28 +256,37 @@ export default {
     DialogValidate,
   },
   props: {
-    theTitle: {
-      type: String,
-      default: Resource.PopupTitle.add,
-    },
-    obj: {
+    tableRowObj: {
       type: Object,
       default: () => {
         return {};
       },
     },
     mode: Number,
+    fixedAssetID: String,
   },
-  watch: {
-    popupObject: function () {
-      console.log("@!@", this.popupObject);
-    },
-    obj: function () {
-      console.log("@!@", this.obj);
-      this.popupObject = this.obj;
-    },
+  created() {
+    // Khởi tạo giá trị mặc định cho popup Object
+    for (let prop in this.defaultValue) {
+      this.popupObject[prop] = this.defaultValue[prop];
+    }
+    // Thiết lập tiêu đề cho popup
+    switch (this.mode) {
+      case Enum.Mode.Update:
+        this.theTitle = Resource.PopupTitle.edit;
+        // Bind dữ liệu của table row được chọn vào popup object
+        for (let prop in this.tableRowObj) {
+          this.popupObject[prop] = this.tableRowObj[prop];
+        }
+        break;
+      case Enum.Mode.Duplicate:
+        this.theTitle = Resource.PopupTitle.duplicate;
+        break;
+      default:
+        this.theTitle = Resource.PopupTitle.add;
+        break;
+    }
   },
-
   /**
    * Call API
    * @author Nguyen Van Thinh 05/11/2022
@@ -400,8 +414,19 @@ export default {
             this.requiredData.push(Resource.WarningMessage.depreciation);
             this.showDialogValidate = true;
           } else {
-            // Call API tạo mới tài sản
-            this.insertAsset();
+            switch (this.mode) {
+              case Enum.Mode.Add:
+                // Call API tạo mới tài sản
+                this.insertAsset();
+                break;
+              case Enum.Mode.Update:
+                // Call API cập nhật tài sản
+                this.updateAsset(this.fixedAssetID);
+                break;
+              default:
+                console.log("Default!!!!!!");
+                break;
+            }
           }
         }
       } catch (error) {
@@ -419,7 +444,27 @@ export default {
           "http://localhost:11799/api/v1/FixedAssets",
           this.popupObject
         );
-        console.log(res);
+        console.log("result of get all assets", res);
+        // Hiển thị toast thông báo và đóng popup
+        this.showToast();
+        // Gửi thông báo load lại trang
+        this.$emit("reload-content");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Gọi API cập nhật tài sản
+     * @author Nguyen Van Thinh 12/11/2022
+     */
+    updateAsset: async function (fixedAssetID) {
+      try {
+        const res = await axios.put(
+          "http://localhost:11799/api/v1/FixedAssets/" + fixedAssetID,
+          this.popupObject
+        );
+        console.log("result of update an asset", res);
         // Hiển thị toast thông báo và đóng popup
         this.showToast();
         // Gửi thông báo load lại trang
@@ -432,12 +477,14 @@ export default {
   data() {
     return {
       Resource,
+      Enum,
+      Function,
       Title: Resource.Title,
       Label: Resource.PopupLabel,
       placeholder: Resource.Placeholder,
       maxLength: Resource.InputLength,
-      Enum,
-      Function,
+      fields: Resource.PopupField,
+      theTitle: "",
       currentYear: Function.getCurrentYear(),
       showDialogValidate: false,
       isShowToast: false,
@@ -445,12 +492,16 @@ export default {
       isShowError: false,
       departments: [],
       categories: [],
-      popupObject: {
+      popupObject: {},
+      requiredData: [],
+      defaultValue: {
+        quantity: 1,
+        depreciation_rate: 0,
+        purchase_date: Function.getCurrentDate(),
+        production_date: Function.getCurrentDate(),
         created_by: "Nguyễn Văn Thịnh",
         modified_by: "Nguyễn Văn Thịnh",
       },
-      requiredData: [],
-      fields: Resource.PopupField,
     };
   },
 };

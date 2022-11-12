@@ -34,11 +34,6 @@ export default {
   name: "InputNumber",
   created() {
     if (this.mode == Enum.Mode.Update) this.val = this.value;
-    else {
-      if (this.field.includes("rate"))
-        this.$emit("update-input", 0, this.field);
-      else this.$emit("update-input", 1, this.field);
-    }
   },
   props: {
     labelContent: String,
