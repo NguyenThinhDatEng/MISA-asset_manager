@@ -3,6 +3,7 @@ import App from "./App.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import axios from "axios";
 import VueAxios from "vue-axios";
+import MoneySpinner from "v-money-spinner";
 import TheContentVue from "./components/layout/content/TheContent.vue";
 
 const app = createApp(App);
@@ -21,6 +22,7 @@ const router = createRouter({
 });
 
 app.use(VueAxios, axios);
+app.use(MoneySpinner);
 app.use(router);
 app.provide("axios", app.config.globalProperties.axios);
 app.mount("#app");

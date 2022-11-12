@@ -17,7 +17,7 @@
     <td class="col--quantity">{{ tableRowObj.quantity }}</td>
     <td class="col--cost">{{ Function.formatMoney(tableRowObj.cost) }}</td>
     <td class="col--depreciation">
-      {{ Function.formatMoney(depreciation_value) }}
+      {{ Function.formatMoney(accumulated_depreciation) }}
     </td>
     <td class="col--residual_value">
       {{ Function.formatMoney(residual_value) }}
@@ -45,8 +45,9 @@
     @close-popup="showPopup = false"
     @show-toast="isShowToast = true"
     @reload-content="this.$emit('reload-content')"
+    @update-table-row="updateTableRow"
   ></Popup>
-  <ToastVue v-show="isShowToast" :mode="Enum.Mode.Update"></ToastVue>
+  <ToastVue v-if="isShowToast" :mode="Enum.Mode.Update"></ToastVue>
 </template>
 
 <script>
@@ -60,6 +61,22 @@ export default {
   name: "TableRow",
   components: { Popup, ToastVue },
   props: { tableRowObj: Object, index: Number, isCheckAll: Boolean },
+  created() {
+    // Cập nhật giá trị hao mòn năm
+    const depreciation_value = Function.depreciationValue(
+      this.tableRowObj.cost,
+      this.tableRowObj.depreciation_rate
+    );
+
+    // Cập nhật giá trị hao mòn lũy kế
+    this.accumulated_depreciation = Function.accumulatedDepreciation(
+      depreciation_value,
+      this.tableRowObj.production_date
+    );
+
+    // Cập nhật giá trị còn lại
+    this.residual_value = this.tableRowObj.cost - this.accumulated_depreciation;
+  },
   emits: [
     "update-row",
     "update-checked-header",
@@ -91,11 +108,6 @@ export default {
         for (const field in this.fields) {
           this.popupObject[field] = this.tableRowObj[field];
         }
-        // Cập nhật giá trị hao mòn năm
-        this.popupObject[this.fields.depreciation_value] =
-          (this.popupObject[this.fields.depreciation_rate] *
-            this.popupObject[this.fields.cost]) /
-          100;
         // Hiển thị Popup
         this.showPopup = true;
       } catch (error) {
@@ -125,6 +137,25 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * Cập nhật hao mòn lũy kế và giá trị còn lại khi nguyên giá thay đổi
+     * @param {double} depreciation_value giá trị hao mòn năm
+     */
+    updateTableRow: function (depreciation_value) {
+      try {
+        // Cập nhật hao mòn lũy kế
+        this.accumulated_depreciation = Function.accumulatedDepreciation(
+          depreciation_value,
+          this.tableRowObj.production_date
+        );
+        // Cập nhật giá trị còn lại
+        this.residual_value =
+          this.tableRowObj.cost - this.accumulated_depreciation;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
@@ -137,11 +168,8 @@ export default {
       isShowToast: false,
       isActive: false,
       popupMode: 0,
-      depreciation_value:
-        (this.tableRowObj.cost * this.tableRowObj.depreciation_rate) / 100,
-      residual_value:
-        this.tableRowObj.cost -
-        (this.tableRowObj.cost * this.tableRowObj.depreciation_rate) / 100,
+      accumulated_depreciation: 0,
+      residual_value: 0,
       popupObject: {},
     };
   },

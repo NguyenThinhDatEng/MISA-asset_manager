@@ -149,3 +149,7 @@ input::placeholder {
     background-color: transparent;
     z-index: -1;
 }
+
+.input--money {
+    text-align: right;
+}

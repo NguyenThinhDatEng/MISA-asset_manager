@@ -112,13 +112,12 @@
           <div class="popup__body--right">
             <div class="input-row">
               <div class="popup__body--left">
-                <Input
-                  :label-content="Label.cost"
-                  :type="Enum.DataType.Money"
-                  :value="tableRowObj.cost || popupObject.cost"
+                <InputMoney
+                  :labelContent="Label.cost"
+                  :value="popupObject[fields.cost]"
                   :field="fields.cost"
                   @update-input="updateInput"
-                ></Input>
+                ></InputMoney>
               </div>
               <div class="popup__body--right-child">
                 <Input
@@ -151,15 +150,12 @@
           <div class="popup__body--right">
             <div class="input-row">
               <div class="popup__body--left">
-                <Input
-                  :label-content="Label.depreciation_value"
-                  :type="Enum.DataType.Money"
-                  :value="
-                    tableRowObj.depreciation_value ||
-                    popupObject.depreciation_value
-                  "
+                <InputMoney
+                  :labelContent="Label.depreciation_value"
                   :field="fields.depreciation_value"
-                ></Input>
+                  :value="depreciation_value"
+                  @update-input="updateInput"
+                ></InputMoney>
               </div>
               <div class="popup__body--right-child">
                 <Input
@@ -181,8 +177,10 @@
             >
             <div class="popup__date">
               <InputCalendar
-                @update-input="updateInput"
                 :field="fields.purchase_date"
+                :mode="mode"
+                :value="tableRowObj[fields.purchase_date]"
+                @update-input="updateInput"
               ></InputCalendar>
             </div>
             <p class="error-message"></p>
@@ -196,8 +194,10 @@
                 >
                 <div class="popup__date">
                   <InputCalendar
-                    @update-input="updateInput"
                     :field="fields.production_date"
+                    :mode="mode"
+                    :value="tableRowObj[fields.production_date]"
+                    @update-input="updateInput"
                   ></InputCalendar>
                 </div>
                 <p class="error-message"></p>
@@ -243,16 +243,18 @@ import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
 import ButtonMain from "@/components/buttons/ButtonMain.vue";
 import InputCalendar from "@/components/datepicker/InputCalendar.vue";
 import DialogValidate from "@/components/dialogs/DialogValidate.vue";
+import InputMoney from "../inputs/InputMoney.vue";
 import axios from "axios";
 
 export default {
   name: "PopupAsset",
   components: {
     Input,
-    ComboboxDetail,
     InputNumber,
-    ButtonMain,
+    InputMoney,
     InputCalendar,
+    ButtonMain,
+    ComboboxDetail,
     DialogValidate,
   },
   props: {
@@ -266,10 +268,7 @@ export default {
     fixedAssetID: String,
   },
   created() {
-    // Khởi tạo giá trị mặc định cho popup Object
-    for (let prop in this.defaultValue) {
-      this.popupObject[prop] = this.defaultValue[prop];
-    }
+    console.log("tableObj", this.tableRowObj);
     // Thiết lập tiêu đề cho popup
     switch (this.mode) {
       case Enum.Mode.Update:
@@ -278,14 +277,32 @@ export default {
         for (let prop in this.tableRowObj) {
           this.popupObject[prop] = this.tableRowObj[prop];
         }
+        // Cập nhật giá trị hao mòn năm
+        this.depreciation_value = Function.depreciationValue(
+          this.popupObject[this.fields.cost],
+          this.popupObject[this.fields.depreciation_rate]
+        );
+        this.popupObject[this.fields.depreciation_value] =
+          this.depreciation_value;
+        console.log("created in popup", this.popupObject);
         break;
       case Enum.Mode.Duplicate:
         this.theTitle = Resource.PopupTitle.duplicate;
         break;
       default:
+        // Khởi tạo giá trị mặc định cho popup Object
+        for (let prop in this.defaultValue) {
+          this.popupObject[prop] = this.defaultValue[prop];
+        }
         this.theTitle = Resource.PopupTitle.add;
         break;
     }
+  },
+  emits: ["close-popup", "show-toast", "reload-content", "update-table-row"],
+  watch: {
+    depreciation_value: function () {
+      console.log("depreciation_value is changed");
+    },
   },
   /**
    * Call API
@@ -329,8 +346,6 @@ export default {
     }
   },
 
-  emits: ["close-popup", "show-toast", "reload-content"],
-
   methods: {
     /**
      * Emit: Đóng popup
@@ -361,9 +376,17 @@ export default {
     updateInput: function (value, field) {
       try {
         this.popupObject[field] = value;
-        if (field == this.fields.cost)
-          this.popupObject[this.fields.depreciation_value] =
+        console.log("updateInput", value);
+        // Cập nhật các giá trị tương ứng khi nguyên giá thay đổi
+        if (field == this.fields.cost) {
+          // Hao mòn năm
+          this.depreciation_value =
             (value * this.popupObject[this.fields.depreciation_rate]) / 100;
+          this.popupObject[this.fields.depreciation_value] =
+            this.depreciation_value;
+          // Gửi giá trị hao mòn năm lên table row để cập nhật hao mòn lũy kế và giá trị còn lại
+          this.$emit("update-table-row", this.depreciation_value);
+        }
         console.log(this.popupObject);
       } catch (error) {
         console.log(error);
@@ -399,11 +422,12 @@ export default {
             )
               this.requiredData.push(this.Label[field]);
         }
-        // Kiểm tra sự phù hợp dữ liệu
+        // Validate nghiệp vụ (Thông tin hao mòn/Khấu hao)
         if (this.requiredData.length > 0) {
           // Hiển thị dialog
           this.showDialogValidate = true;
         } else {
+          // Tỉ lệ hao mòn <> 1/Số năm sử dụng
           const depreciation_rate =
             (1 / this.popupObject[this.fields.life_time]) * 100;
           if (
@@ -414,6 +438,8 @@ export default {
             this.requiredData.push(Resource.WarningMessage.depreciation);
             this.showDialogValidate = true;
           } else {
+            // if (false) console.log("abc");
+            // else {
             switch (this.mode) {
               case Enum.Mode.Add:
                 // Call API tạo mới tài sản
@@ -426,6 +452,7 @@ export default {
               default:
                 console.log("Default!!!!!!");
                 break;
+              // }
             }
           }
         }
@@ -490,17 +517,19 @@ export default {
       isShowToast: false,
       dlgValidateCategory: "blank",
       isShowError: false,
+      depreciation_value: 0,
       departments: [],
       categories: [],
-      popupObject: {},
+      popupObject: {
+        created_by: "Nguyễn Văn Thịnh",
+        modified_by: "Nguyễn Văn Thịnh",
+      },
       requiredData: [],
       defaultValue: {
         quantity: 1,
         depreciation_rate: 0,
         purchase_date: Function.getCurrentDate(),
         production_date: Function.getCurrentDate(),
-        created_by: "Nguyễn Văn Thịnh",
-        modified_by: "Nguyễn Văn Thịnh",
       },
     };
   },

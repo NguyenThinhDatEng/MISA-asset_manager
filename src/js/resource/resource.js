@@ -137,7 +137,7 @@ export default {
     cost: true,
     life_time: true,
     depreciation_rate: false,
-    depreciation_value: false,
+    depreciation_value: true,
     tracked_year: false,
     purchase_date: false,
     production_date: false,
@@ -161,5 +161,6 @@ export default {
   ToastInfo: {
     addSuccess: "Lưu dữ liệu thành công",
     updateSuccess: "Cập nhật dữ liệu thành công",
+    deleteSuccess: "Xóa bản ghi thành công",
   },
 };

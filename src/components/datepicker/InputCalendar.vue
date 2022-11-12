@@ -28,12 +28,15 @@ import { ref } from "vue";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Function from "@/js/common/function";
+import Enum from "@/js/enum/enum";
 
 export default {
   name: "InputCalendar",
   components: { Datepicker },
   props: {
     field: String,
+    mode: Number,
+    value: String,
   },
   emits: ["update-input"],
   watch: {
@@ -61,6 +64,9 @@ export default {
       format,
       Function,
     };
+  },
+  mounted() {
+    if (this.mode == Enum.Mode.Update) this.date = new Date(this.value);
   },
 };
 </script>

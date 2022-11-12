@@ -65,10 +65,11 @@
   <DialogDeleteVue
     v-if="showDialogDelete"
     :info="info"
-    :mode="this.mode"
+    :mode="mode"
     @close-dialog="showDialogDelete = false"
+    @delete-records="deleteRecords"
   ></DialogDeleteVue>
-  <ToastVue v-show="isShowToast" :mode="Enum.Mode.Add" ></ToastVue>
+  <ToastVue v-if="isShowToast" :mode="mode"></ToastVue>
 </template>
 
 <script>
@@ -84,6 +85,7 @@ import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import ToastVue from "@/components/toast/ToastVue.vue";
+import axios from "axios";
 
 export default {
   name: "TheContent",
@@ -167,10 +169,12 @@ export default {
         if (this.isDisabledButton == false) {
           if (this.selectedRows.length == 1) {
             this.mode = Enum.Mode.Delete;
+            // Cập nhật nội dung hiển thị của dialog
             this.info =
               this.selectedRows[0].fixed_asset_code +
               " - " +
               this.selectedRows[0].fixed_asset_name;
+            this.isShowToast = true;
           } else {
             this.mode = Enum.Mode.DeleteMulti;
             this.info = Function.formatNumber(this.selectedRows.length);
@@ -178,6 +182,34 @@ export default {
 
           this.showDialogDelete = true;
         }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    // Xóa bản ghi
+    deleteRecords: function () {
+      // Thực hiện
+      this.deleteAsset(this.selectedRows[0].fixed_asset_id);
+      // Đóng dialog
+      this.showDialogDelete = false;
+      // Hiển thị toast
+      this.isShowToast = true;
+      // Tải lại trang
+      this.reload = !this.reload;
+    },
+
+    /**
+     * API xóa 1 tài sản
+     * @param {string} fixedAssetID id của bản ghi cần xóa
+     * @author Nguyen Van Thinh 12/11/2022
+     */
+    deleteAsset: async function (fixedAssetID) {
+      try {
+        const res = await axios.delete(
+          "http://localhost:11799/api/v1/FixedAssets/" + fixedAssetID
+        );
+        console.log("Result of Delete an asset", res);
       } catch (error) {
         console.log(error);
       }

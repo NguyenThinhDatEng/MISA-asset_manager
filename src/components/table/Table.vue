@@ -80,6 +80,7 @@ export default {
       this.checkedHeader = this.isCheckAll;
     },
     isReload: function () {
+      console.log("isReload is changed");
       this.getAllAssets();
     },
   },
@@ -153,6 +154,9 @@ export default {
       try {
         const res = await axios.get(Resource.URLs.getAllAsset);
         console.log("Call API get all assets");
+        // Khởi tạo lại các giá trị trên footer table
+        this.totalOfQuantities = 0;
+        for (const key in this.footerData) this.footerData[key] = 0;
         // Cập nhật các dữ liệu trên table footer
         for (const obj of res.data) {
           this.totalOfQuantities += obj.quantity;

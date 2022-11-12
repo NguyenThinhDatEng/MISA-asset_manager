@@ -23,10 +23,13 @@ export default {
   created() {
     switch (this.mode) {
       case Enum.Mode.Add:
-        this.theInfo = Resource.ToastInfo.addSuccess;
+        this.theInfo = this.toastInfo.addSuccess;
         break;
       case Enum.Mode.Update:
-        this.theInfo = Resource.ToastInfo.updateSuccess;
+        this.theInfo = this.toastInfo.updateSuccess;
+        break;
+      case Enum.Mode.Delete:
+        this.theInfo = this.toastInfo.deleteSuccess;
         break;
       default:
         console.log("Default!!!!!!!!!");
@@ -34,7 +37,7 @@ export default {
     }
   },
   data() {
-    return { Resource, Enum, theInfo: "" };
+    return { toastInfo: Resource.ToastInfo, Enum, theInfo: "" };
   },
 };
 </script>

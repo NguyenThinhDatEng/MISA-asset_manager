@@ -13,6 +13,7 @@
           :title="Resource.Title.delete"
           :type="Enum.Type.Main"
           :isDeleteDialog="true"
+          @click="this.$emit('delete-records')"
         ></ButtonMainVue>
         <ButtonOutlineVue
           :button-content="Resource.ButtonContent.no"
@@ -56,7 +57,7 @@ export default {
   created() {},
   components: { ButtonMainVue, ButtonOutlineVue },
   props: { info: String, mode: Number },
-  emits: ["close-dialog"],
+  emits: ["close-dialog", "delete-records"],
   methods: {
     closeDialog: function () {
       try {

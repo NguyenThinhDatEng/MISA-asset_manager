@@ -28,4 +28,23 @@ export default {
       console.log(error);
     }
   },
+
+  // Tính hao mòn lũy kế
+  accumulatedDepreciation: function (depreciation_value, production_date) {
+    try {
+      if (!production_date) return 0;
+      const production_year = Number(production_date.slice(0, 4));
+      const numberOfUsedYear = Math.abs(
+        this.getCurrentYear() - production_year
+      );
+      return numberOfUsedYear * depreciation_value;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  // Tính hao mòn năm
+  depreciationValue: function (cost, depreciation_rate) {
+    return (cost * depreciation_rate) / 100;
+  },
 };
