@@ -125,6 +125,7 @@ export default {
   WarningMessage: {
     info: "Cần phải nhập thông tin",
     depreciation: "Tỉ lệ hao mòn phải bằng 1/Số năm sử dụng",
+    costAndDepreciationValue: "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá",
   },
   RequiredData: {
     fixed_asset_code: true,

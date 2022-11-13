@@ -40,9 +40,9 @@ export default {
         return [1, 2, 3, 4, 5];
       },
     },
-    category: {
-      type: String,
-      default: "blank",
+    dlgType: {
+      type: Number,
+      default: Enum.DlgType.RequiredInfo,
     },
   },
   emits: ["close-dialog"],
@@ -58,7 +58,7 @@ export default {
 
     // Thiết lập nội dung hiển thị
     setVueHtml: function (val) {
-      if (this.category == "blank")
+      if (this.dlgType == Enum.DlgType.RequiredInfo)
         return (
           Resource.WarningMessage.info +
           " <b>&lt;&lt;<b><span> " +

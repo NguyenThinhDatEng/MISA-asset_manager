@@ -10,6 +10,10 @@ export default {
     Main: 1, // Button chính
     Secondary: 2, // Button phụ
   },
+  DlgType: {
+    RequiredInfo: 0, // Thông tin bắt buộc
+    Describe: 1, // Miêu tả thông tin có tính nghiệp vụ
+  },
   // Phím tắt
   KeyCode: {
     // Phím Enter
@@ -28,9 +32,10 @@ export default {
     SelectTable: 115,
   },
   DataType: {
-    Text: 0,
-    Number: 1,
-    Money: 2,
-    Year: 3,
+    Text: 0, // Kiểu chuỗi
+    Number: 1, // Kiểu số
+    Money: 2, // Kiểu tiền
+    Year: 3, // Kiểu năm (thời gian)
+    Rate: 4, // Kiểu tỉ lệ
   },
 };

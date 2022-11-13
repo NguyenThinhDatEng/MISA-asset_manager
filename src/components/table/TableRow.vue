@@ -101,12 +101,14 @@ export default {
      */
     carryOutFeature: function (action) {
       try {
-        // Thiết lập kiểu popup hiển thị
-        if (action == "edit") this.popupMode = Enum.Mode.Update;
-        else this.popupMode = Enum.Mode.Duplicate;
         // Bind dữ liệu vào đối tượng Popup
         for (const field in this.fields) {
           this.popupObject[field] = this.tableRowObj[field];
+        }
+        // Thiết lập kiểu popup hiển thị
+        if (action == "edit") this.popupMode = Enum.Mode.Update;
+        else {
+          this.popupMode = Enum.Mode.Duplicate;
         }
         // Hiển thị Popup
         this.showPopup = true;
@@ -142,7 +144,7 @@ export default {
      * Cập nhật hao mòn lũy kế và giá trị còn lại khi nguyên giá thay đổi
      * @param {double} depreciation_value giá trị hao mòn năm
      */
-    updateTableRow: function (depreciation_value) {
+    updateTableRow: function (cost, depreciation_value) {
       try {
         // Cập nhật hao mòn lũy kế
         this.accumulated_depreciation = Function.accumulatedDepreciation(
@@ -150,8 +152,7 @@ export default {
           this.tableRowObj.production_date
         );
         // Cập nhật giá trị còn lại
-        this.residual_value =
-          this.tableRowObj.cost - this.accumulated_depreciation;
+        this.residual_value = cost - this.accumulated_depreciation;
       } catch (error) {
         console.log(error);
       }

@@ -174,7 +174,6 @@ export default {
               this.selectedRows[0].fixed_asset_code +
               " - " +
               this.selectedRows[0].fixed_asset_name;
-            this.isShowToast = true;
           } else {
             this.mode = Enum.Mode.DeleteMulti;
             this.info = Function.formatNumber(this.selectedRows.length);

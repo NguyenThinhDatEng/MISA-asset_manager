@@ -1,5 +1,5 @@
 <template>
-  <div id="popup--add" class="popup-wrapper">
+  <div id="popup--add" class="popup-wrapper" v-on:keyup.esc="closePopup">
     <div class="center popup">
       <!-- Popup Header -->
       <div class="popup__header">
@@ -19,8 +19,9 @@
             <Input
               :label-content="Label.fixed_asset_code"
               :maxlength="maxLength.fixed_asset_code"
-              :value="tableRowObj.fixed_asset_code"
+              :value="popupObject[fields.fixed_asset_code]"
               :field="fields.fixed_asset_code"
+              :isFocus="true"
               @update-input="updateInput"
             ></Input>
           </div>
@@ -103,9 +104,7 @@
           <div class="popup__body--left">
             <InputNumber
               :label-content="Label.quantity"
-              :value="tableRowObj.quantity || 1"
               :field="fields.quantity"
-              :mode="mode"
               @update-input="updateInput"
             ></InputNumber>
           </div>
@@ -136,13 +135,9 @@
           <div class="popup__body--left">
             <InputNumber
               :label-content="Label.depreciation_rate"
-              :value="
-                popupObject.depreciation_rate ||
-                tableRowObj.depreciation_rate ||
-                0
-              "
+              :type="Enum.DataType.Rate"
               :field="fields.depreciation_rate"
-              :mode="mode"
+              :value="this.popupObject[this.fields.depreciation_rate]"
               @update-input="updateInput"
             ></InputNumber>
             <p class="error-message"></p>
@@ -228,34 +223,42 @@
   <DialogValidate
     v-if="showDialogValidate"
     :required-data="requiredData"
-    :category="this.dlgValidateCategory"
+    :dlg-type="this.dlgType"
     @close-dialog="showDialogValidate = false"
   ></DialogValidate>
+  <DialogCancelVue
+    v-if="isShowDlgCancel"
+    :mode="Enum.Mode.Add"
+    @close-dialog="isShowDlgCancel = false"
+    @close-popup="this.$emit('close-popup')"
+  ></DialogCancelVue>
 </template>
 
 <script>
+import DialogCancelVue from "../dialogs/DialogCancel.vue";
+import Input from "@/components/inputs/Input.vue";
+import InputNumber from "../inputs/InputNumber.vue";
+import InputMoney from "../inputs/InputMoney.vue";
+import InputCalendar from "@/components/datepicker/InputCalendar.vue";
+import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
+import ButtonMain from "@/components/buttons/ButtonMain.vue";
+import DialogValidate from "@/components/dialogs/DialogValidate.vue";
+import axios from "axios";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import Input from "@/components/inputs/Input.vue";
-import InputNumber from "@/components/inputs/NumberInput.vue";
-import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
-import ButtonMain from "@/components/buttons/ButtonMain.vue";
-import InputCalendar from "@/components/datepicker/InputCalendar.vue";
-import DialogValidate from "@/components/dialogs/DialogValidate.vue";
-import InputMoney from "../inputs/InputMoney.vue";
-import axios from "axios";
 
 export default {
   name: "PopupAsset",
   components: {
     Input,
-    InputNumber,
     InputMoney,
+    InputNumber,
     InputCalendar,
     ButtonMain,
     ComboboxDetail,
     DialogValidate,
+    DialogCancelVue,
   },
   props: {
     tableRowObj: {
@@ -268,7 +271,6 @@ export default {
     fixedAssetID: String,
   },
   created() {
-    console.log("tableObj", this.tableRowObj);
     // Thiết lập tiêu đề cho popup
     switch (this.mode) {
       case Enum.Mode.Update:
@@ -282,28 +284,42 @@ export default {
           this.popupObject[this.fields.cost],
           this.popupObject[this.fields.depreciation_rate]
         );
+        // Cập nhật đối tượng popup
         this.popupObject[this.fields.depreciation_value] =
           this.depreciation_value;
-        console.log("created in popup", this.popupObject);
         break;
       case Enum.Mode.Duplicate:
         this.theTitle = Resource.PopupTitle.duplicate;
+        // Bind dữ liệu của table row được chọn vào popup object
+        for (let prop in this.tableRowObj) {
+          this.popupObject[prop] = this.tableRowObj[prop];
+        }
+        // Cập nhật mã nhân viên
+        this.newCode();
+        // Cập nhật giá trị hao mòn năm
+        this.depreciation_value = Function.depreciationValue(
+          this.popupObject[this.fields.cost],
+          this.popupObject[this.fields.depreciation_rate]
+        );
+        // Cập nhật đối tượng popup
+        this.popupObject[this.fields.depreciation_value] =
+          this.depreciation_value;
         break;
+      // Thêm mới nhân viên
       default:
+        // Thiết lập title popup
+        this.theTitle = Resource.PopupTitle.add;
+        // Gọi API lấy mã mới tài sản
+        this.newCode();
         // Khởi tạo giá trị mặc định cho popup Object
         for (let prop in this.defaultValue) {
           this.popupObject[prop] = this.defaultValue[prop];
         }
-        this.theTitle = Resource.PopupTitle.add;
         break;
     }
   },
   emits: ["close-popup", "show-toast", "reload-content", "update-table-row"],
-  watch: {
-    depreciation_value: function () {
-      console.log("depreciation_value is changed");
-    },
-  },
+  watch: {},
   /**
    * Call API
    * @author Nguyen Van Thinh 05/11/2022
@@ -353,7 +369,8 @@ export default {
      */
     closePopup: function () {
       try {
-        this.$emit("close-popup");
+        // this.$emit("close-popup");
+        this.isShowDlgCancel = true;
       } catch (error) {
         console.log(error);
       }
@@ -378,14 +395,17 @@ export default {
         this.popupObject[field] = value;
         console.log("updateInput", value);
         // Cập nhật các giá trị tương ứng khi nguyên giá thay đổi
-        if (field == this.fields.cost) {
+        if (
+          field == this.fields.cost ||
+          field == this.fields.depreciation_rate
+        ) {
           // Hao mòn năm
-          this.depreciation_value =
-            (value * this.popupObject[this.fields.depreciation_rate]) / 100;
+          this.depreciation_value = Function.depreciationValue(
+            this.popupObject[this.fields.cost],
+            this.popupObject[this.fields.depreciation_rate]
+          );
           this.popupObject[this.fields.depreciation_value] =
             this.depreciation_value;
-          // Gửi giá trị hao mòn năm lên table row để cập nhật hao mòn lũy kế và giá trị còn lại
-          this.$emit("update-table-row", this.depreciation_value);
         }
         console.log(this.popupObject);
       } catch (error) {
@@ -424,8 +444,10 @@ export default {
         }
         // Validate nghiệp vụ (Thông tin hao mòn/Khấu hao)
         if (this.requiredData.length > 0) {
+          this.dlgType = Enum.DlgType.RequiredInfo;
           // Hiển thị dialog
           this.showDialogValidate = true;
+          console.log("!!!");
         } else {
           // Tỉ lệ hao mòn <> 1/Số năm sử dụng
           const depreciation_rate =
@@ -434,25 +456,43 @@ export default {
             this.popupObject[this.fields.depreciation_rate].toFixed(2) !=
             depreciation_rate.toFixed(2)
           ) {
-            this.dlgValidateCategory = "depreciation";
+            this.dlgType = Enum.DlgType.Describe;
             this.requiredData.push(Resource.WarningMessage.depreciation);
             this.showDialogValidate = true;
+            console.log("!!!!!");
           } else {
-            // if (false) console.log("abc");
-            // else {
-            switch (this.mode) {
-              case Enum.Mode.Add:
-                // Call API tạo mới tài sản
-                this.insertAsset();
-                break;
-              case Enum.Mode.Update:
-                // Call API cập nhật tài sản
-                this.updateAsset(this.fixedAssetID);
-                break;
-              default:
-                console.log("Default!!!!!!");
-                break;
-              // }
+            // Hao mòn năm > Nguyên giá
+            if (
+              this.popupObject[this.fields.depreciation_value] >
+              this.popupObject[this.fields.cost]
+            ) {
+              this.dlgType = Enum.DlgType.Describe;
+              this.requiredData.push(
+                Resource.WarningMessage.costAndDepreciationValue
+              );
+              this.showDialogValidate = true;
+              console.log("!!!!!!!");
+            } else {
+              switch (this.mode) {
+                case Enum.Mode.Add:
+                  // Call API tạo mới tài sản
+                  this.insertAsset();
+                  break;
+                case Enum.Mode.Update:
+                  // Gọi API cập nhật tài sản
+                  this.updateAsset(this.fixedAssetID);
+                  // Gửi giá trị hao mòn năm lên table row để cập nhật hao mòn lũy kế và giá trị còn lại
+                  this.$emit(
+                    "update-table-row",
+                    this.popupObject[this.fields.cost], // Nguyên giá mới
+                    this.depreciation_value
+                  );
+                  break;
+                default:
+                  console.log("Default!!!!!!");
+                  break;
+                // }
+              }
             }
           }
         }
@@ -462,7 +502,7 @@ export default {
     },
 
     /**
-     * Gọi API tạo mới tài sản
+     * API tạo mới tài sản
      * @author Nguyen Van Thinh 11/11/2022
      */
     insertAsset: async function () {
@@ -482,7 +522,7 @@ export default {
     },
 
     /**
-     * Gọi API cập nhật tài sản
+     * API cập nhật tài sản
      * @author Nguyen Van Thinh 12/11/2022
      */
     updateAsset: async function (fixedAssetID) {
@@ -496,6 +536,23 @@ export default {
         this.showToast();
         // Gửi thông báo load lại trang
         this.$emit("reload-content");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * API lấy mã mới tài sản
+     * @author Nguyen Van Thinh 12/11/2022
+     */
+    newCode: async function () {
+      try {
+        const res = await axios.get(
+          "http://localhost:11799/api/v1/FixedAssets/newAssetCode"
+        );
+        console.log("Result of Get new asset code", res);
+        // Cập nhật mã mới
+        this.popupObject[this.fields.fixed_asset_code] = res.data;
       } catch (error) {
         console.log(error);
       }
@@ -514,8 +571,9 @@ export default {
       theTitle: "",
       currentYear: Function.getCurrentYear(),
       showDialogValidate: false,
+      isShowDlgCancel: false,
       isShowToast: false,
-      dlgValidateCategory: "blank",
+      dlgType: "blank",
       isShowError: false,
       depreciation_value: 0,
       departments: [],

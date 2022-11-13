@@ -17,6 +17,7 @@
     :placeholder="
       type == Enum.DataType.Number || type == Enum.DataType.Money ? 0 : ''
     "
+    :on-focus="isFocus"
     @change="updateInput($event)"
   />
 
@@ -50,6 +51,10 @@ export default {
     isError: {
       type: Boolean,
       default: false,
+    },
+    isFocus: {
+      type: Boolean,
+      default: true,
     },
   },
   emits: ["update-input"],
