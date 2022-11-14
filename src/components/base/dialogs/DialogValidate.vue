@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import ButtonMainVue from "../buttons/ButtonMain.vue";
+import ButtonMainVue from "@/components/base/buttons/ButtonMain.vue";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 

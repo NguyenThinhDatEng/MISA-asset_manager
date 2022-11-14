@@ -53,9 +53,9 @@
 <script>
 import Enum from "@/js/enum/enum";
 import Resource from "@/js/resource/resource";
-import ButtonMainVue from "../buttons/ButtonMain.vue";
-import ButtonOutlineVue from "../buttons/ButtonOutline.vue";
-import SubButton from "../buttons/ButtonSub.vue";
+import ButtonMainVue from "@/components/base/buttons/ButtonMain.vue";
+import ButtonOutlineVue from "@/components/base/buttons/ButtonOutline.vue";
+import SubButton from "@/components/base/buttons/ButtonSub.vue";
 
 export default {
   name: "DialogCancel",

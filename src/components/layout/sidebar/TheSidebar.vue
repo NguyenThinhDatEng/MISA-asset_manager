@@ -8,7 +8,7 @@
         {{ Resource.Logo.qlts }}
       </p>
     </div>
-    <!-- Body sidebar  -->
+    <!-- Body sidebar -->
     <div class="sidebar__body">
       <Item
         v-for="item in items"
@@ -50,11 +50,16 @@ import Resource from "@/js/resource/resource";
 
 export default {
   name: "TheSidebar",
+  components: {
+    Item,
+  },
   created() {
     try {
       let isActive;
+      // Thêm thuộc tính isActive cho từng đối tượng item
       for (const key in this.itemContents) {
         isActive = false;
+        // Active: true tại mục tài sản
         if (key == "asset") isActive = true;
         this.items.push({
           id: key,
@@ -63,11 +68,8 @@ export default {
         });
       }
     } catch (error) {
-      console.log("hook: create an item", error);
+      console.log(error);
     }
-  },
-  components: {
-    Item,
   },
   methods: {
     // Trả về tên icon class
@@ -90,7 +92,7 @@ export default {
       }
     },
     /**
-     * sự kiện nhấn vào mục trong sidebar
+     * unActive của những item còn lại khi 1 item menu được nhấn
      * @param {string} id định danh của item được nhấn
      */
     handleOnClickItem(id) {
@@ -108,16 +110,15 @@ export default {
   },
   data() {
     return {
+      itemContents: Resource.ItemContents, // Nội dung danh mục
+      Title: Resource.Title, // Tiêu đề danh mục
+      hidden: false, // ẩn 1 phần item -> thu gọn sidebar
+      items: [], // mảng các thuộc tính của từng danh mục
       Resource,
-      itemContents: Resource.ItemContents,
-      Title: Resource.Title,
-      hidden: false,
-      isShowLoader: false,
-      items: [],
     };
   },
 };
 </script>
 <style scoped>
-@import url(@/css/base.css);
+@import url(@/css/layout/sidebar.css);
 </style>

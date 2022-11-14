@@ -54,8 +54,8 @@
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import Popup from "@/components/popups/PopupAsset.vue";
-import ToastVue from "@/components/toast/ToastVue.vue";
+import Popup from "../popups/PopupAsset.vue";
+import ToastVue from "../toast/ToastVue.vue";
 
 export default {
   name: "TableRow",
@@ -67,13 +67,13 @@ export default {
       this.tableRowObj.cost,
       this.tableRowObj.depreciation_rate
     );
-
     // Cập nhật giá trị hao mòn lũy kế
     this.accumulated_depreciation = Function.accumulatedDepreciation(
       depreciation_value,
       this.tableRowObj.production_date
     );
-
+    if (this.accumulated_depreciation > this.tableRowObj.cost)
+      this.accumulated_depreciation = this.tableRowObj.cost;
     // Cập nhật giá trị còn lại
     this.residual_value = this.tableRowObj.cost - this.accumulated_depreciation;
   },
@@ -88,10 +88,29 @@ export default {
     isCheckAll: function () {
       this.isActive = this.isCheckAll;
     },
+    // Thiết lập thời gian toast hiển thị
     isShowToast: function () {
       setTimeout(() => {
         this.isShowToast = false;
       }, 1500);
+    },
+    tableRowObj: function () {
+      console.log("Table object is changed");
+      // Cập nhật giá trị hao mòn năm
+      const depreciation_value = Function.depreciationValue(
+        this.tableRowObj.cost,
+        this.tableRowObj.depreciation_rate
+      );
+      // Cập nhật giá trị hao mòn lũy kế
+      this.accumulated_depreciation = Function.accumulatedDepreciation(
+        depreciation_value,
+        this.tableRowObj.production_date
+      );
+      if (this.accumulated_depreciation > this.tableRowObj.cost)
+        this.accumulated_depreciation = this.tableRowObj.cost;
+      // Cập nhật giá trị còn lại
+      this.residual_value =
+        this.tableRowObj.cost - this.accumulated_depreciation;
     },
   },
   methods: {
@@ -151,6 +170,8 @@ export default {
           depreciation_value,
           this.tableRowObj.production_date
         );
+        if (this.accumulated_depreciation > cost)
+          this.accumulated_depreciation = cost;
         // Cập nhật giá trị còn lại
         this.residual_value = cost - this.accumulated_depreciation;
       } catch (error) {

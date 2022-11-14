@@ -241,14 +241,14 @@
 </template>
 
 <script>
-import DialogCancelVue from "../dialogs/DialogCancel.vue";
-import Input from "@/components/inputs/Input.vue";
-import InputNumber from "../inputs/InputNumber.vue";
-import InputMoney from "../inputs/InputMoney.vue";
-import InputCalendar from "@/components/datepicker/InputCalendar.vue";
-import ComboboxDetail from "../comboboxes/ComboboxDetail.vue";
-import ButtonMain from "@/components/buttons/ButtonMain.vue";
-import DialogValidate from "@/components/dialogs/DialogValidate.vue";
+import DialogCancelVue from "@/components/base/dialogs/DialogCancel.vue";
+import Input from "@/components/base/inputs/Input.vue";
+import InputNumber from "@/components/base/inputs/InputNumber.vue";
+import InputMoney from "@/components/base/inputs/InputMoney.vue";
+import InputCalendar from "@/components/base/datepicker/InputCalendar.vue";
+import ComboboxDetail from "@/components/base/comboboxes/ComboboxDetail.vue";
+import ButtonMain from "../buttons/ButtonMain.vue";
+import DialogValidate from "../dialogs/DialogValidate.vue";
 import axios from "axios";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";

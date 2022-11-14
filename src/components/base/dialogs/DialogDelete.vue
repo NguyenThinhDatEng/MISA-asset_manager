@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import ButtonMainVue from "../buttons/ButtonMain.vue";
-import ButtonOutlineVue from "../buttons/ButtonOutline.vue";
+import ButtonMainVue from "@/components/base/buttons/ButtonMain.vue";
+import ButtonOutlineVue from "@/components/base/buttons/ButtonOutline.vue";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 

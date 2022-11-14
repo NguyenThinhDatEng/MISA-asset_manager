@@ -77,18 +77,18 @@
 </template>
 
 <script>
-import TheTable from "@/components/table/Table.vue";
-import Loader from "@/components/more/Loader.vue";
-import Input from "@/components/inputs/SearchInput.vue";
-import Dropdown from "@/components/dropdowns/DropdownCheckbox.vue";
-import Button from "@/components/buttons/ButtonIcon.vue";
-import ButtonFeature from "@/components/buttons/ButtonFeature.vue";
-import Popup from "@/components/popups/PopupAsset.vue";
-import DialogDeleteVue from "@/components/dialogs/DialogDelete.vue";
+import TheTable from "@/components/base/table/Table.vue";
+import Loader from "@/components/base/more/Loader.vue";
+import Input from "@/components/base/inputs/SearchInput.vue";
+import Dropdown from "@/components/base/dropdowns/DropdownCheckbox.vue";
+import Button from "@/components/base/buttons/ButtonIcon.vue";
+import ButtonFeature from "@/components/base/buttons/ButtonFeature.vue";
+import Popup from "@/components/base/popups/PopupAsset.vue";
+import DialogDeleteVue from "@/components/base/dialogs/DialogDelete.vue";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import ToastVue from "@/components/toast/ToastVue.vue";
+import ToastVue from "@/components/base/toast/ToastVue.vue";
 import axios from "axios";
 
 export default {
@@ -161,11 +161,15 @@ export default {
      * @author Nguyen Van Thinh 06/11/2022
      */
     updateRows: function (selectedRows) {
-      // Cập nhật trạng thái disabled của các nút tính năng
-      if (selectedRows.length == 0) this.isDisabledButton = true;
-      else this.isDisabledButton = false;
-      // Cập nhật mảng các dòng được chọn
-      this.selectedRows = selectedRows;
+      try {
+        // Cập nhật trạng thái disabled của các nút tính năng
+        if (selectedRows.length == 0) this.isDisabledButton = true;
+        else this.isDisabledButton = false;
+        // Cập nhật mảng các dòng được chọn
+        this.selectedRows = selectedRows;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Sự kiện click vào nút xóa
@@ -241,7 +245,7 @@ export default {
      */
     deleteMultipleAssets: async function (listID) {
       try {
-        const res = await axios.post(
+        await axios.post(
           "http://localhost:11799/api/v1/FixedAssets/DeleteBatch",
           listID
         );
@@ -253,13 +257,10 @@ export default {
   },
   data() {
     return {
-      Resource,
-      Function,
-      Enum,
-      isShowLoader: false,
       info: "",
       mode: 0,
       numberOfDeletedRecords: 1,
+      isShowLoader: false,
       isDisabledButton: true,
       showPopup: false,
       showLoader: false,
@@ -283,6 +284,9 @@ export default {
           field: "department",
         },
       ],
+      Resource,
+      Function,
+      Enum,
     };
   },
 };

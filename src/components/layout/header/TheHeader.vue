@@ -36,7 +36,7 @@
 
 <script>
 import Resource from "@/js/resource/resource";
-import Icon from "@/components/layout/header/IconHeader.vue";
+import Icon from "./IconHeader.vue";
 
 export default {
   name: "TheHeader",
