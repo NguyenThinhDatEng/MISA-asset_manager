@@ -72,3 +72,17 @@
 .sidebar--hidden .sidebar-extension {
     display: block;
 }
+
+@media only screen and (max-width: 1500px) {
+    .sidebar {
+        width: 66px;
+    }
+
+    .item__content {
+        display: none;
+    }
+
+    .sidebar__footer .icon {
+        display: none;
+    }
+}

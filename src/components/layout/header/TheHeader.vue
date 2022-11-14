@@ -4,13 +4,16 @@
     <p class="header--left">{{ Resource.PageTitle.assetList }}</p>
     <!-- Right header -->
     <div class="header--right">
+      <!-- Title -->
       <div class="icon icon--down" :title="Title.more"></div>
+      <!-- Icons -->
       <Icon
         v-for="(value, key) in Resource.HeaderTitle"
         :key="key"
         :iconName="setIconName(key)"
         :title="value"
       ></Icon>
+      <!-- Year input -->
       <div class="header_year">
         <p>{{ Title.year }}</p>
         <input type="text" class="input year" v-model.number="year" />
@@ -35,17 +38,17 @@
 </template>
 
 <script>
-import Resource from "@/js/resource/resource";
 import Icon from "./IconHeader.vue";
+import Resource from "@/js/resource/resource";
+import Function from "@/js/common/function";
 
 export default {
   name: "TheHeader",
   components: {
     Icon,
   },
-  props: {},
-  emits: [],
   methods: {
+    // Thiết lập tên icon
     setIconName(key) {
       try {
         return "icon--" + key;
@@ -53,23 +56,17 @@ export default {
         console.log(error);
       }
     },
-    /**
-     * Lấy năm hiện tại
-     * @author Nguyen Van Thinh 02/11/2022
-     */
-    getYear() {
-      return new Date().getFullYear();
-    },
   },
   data() {
     return {
-      Resource,
-      Title: Resource.Title,
-      year: this.getYear(),
+      Title: Resource.Title, // Tiêu đề
+      year: Function.getCurrentYear(), // năm hiện tại
+      Resource, // tài nguyên
     };
   },
 };
 </script>
 <style scoped>
-@import url(@/css/base.css);
+@import url(@/css/layout/header.css);
+@import url(@/css/components/input.css);
 </style>

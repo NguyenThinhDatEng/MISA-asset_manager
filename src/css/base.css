@@ -1,8 +1,6 @@
 @import url(font.css);
 @import url(icon.css);
-@import url(layout/header.css);
 @import url(layout/content.css);
-@import url(components/input.css);
 @import url(components/dropdown.css);
 @import url(components/button.css);
 @import url(components/table.css);
@@ -72,18 +70,4 @@ ul {
     display: flex;
     flex-direction: column;
     width: 100%;
-}
-
-@media only screen and (max-width: 1500px) {
-    .sidebar {
-        width: 66px;
-    }
-
-    .item__content {
-        display: none;
-    }
-
-    .icon-item_wrapper .icon_sidebar-collapse {
-        display: none;
-    }
 }

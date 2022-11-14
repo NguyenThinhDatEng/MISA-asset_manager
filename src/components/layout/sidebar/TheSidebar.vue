@@ -92,7 +92,7 @@ export default {
       }
     },
     /**
-     * unActive của những item còn lại khi 1 item menu được nhấn
+     * inActive của những item còn lại khi 1 item menu được nhấn
      * @param {string} id định danh của item được nhấn
      */
     handleOnClickItem(id) {
@@ -119,6 +119,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 @import url(@/css/layout/sidebar.css);
 </style>

@@ -97,4 +97,14 @@ export default {
   justify-content: space-between;
   flex: 1;
 }
+
+@media only screen and (max-width: 1500px) {
+  .item__content {
+    display: none;
+  }
+
+  .icon-item_wrapper .icon_sidebar-collapse {
+    display: none;
+  }
+}
 </style>
