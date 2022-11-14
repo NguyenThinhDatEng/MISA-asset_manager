@@ -8,19 +8,22 @@
 </template>
   
   <script>
+import Enum from "@/js/enum/enum";
+
 export default {
   name: "InputMoney",
   props: {
     labelContent: String,
     value: { type: Number, default: 0 },
     field: String,
+    mode: Number,
     isError: {
       type: Boolean,
       default: false,
     },
   },
   created() {
-    this.amount = this.value;
+    if (this.mode == Enum.Mode.Update) this.amount = this.value;
   },
   emits: ["update-input"],
   watch: {
@@ -33,7 +36,7 @@ export default {
   },
   data() {
     return {
-      amount: 0,
+      amount: "0",
       config: {
         spinner: false,
         min: 0,

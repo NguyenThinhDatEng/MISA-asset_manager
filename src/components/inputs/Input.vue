@@ -18,7 +18,7 @@
       type == Enum.DataType.Number || type == Enum.DataType.Money ? 0 : ''
     "
     :on-focus="isFocus"
-    @change="updateInput($event)"
+    @keyup="updateInput($event)"
   />
 
   <p
@@ -38,7 +38,7 @@ export default {
   props: {
     labelContent: String,
     maxlength: Number,
-    value: Number,
+    value: String,
     type: {
       type: Number,
       default: 0,

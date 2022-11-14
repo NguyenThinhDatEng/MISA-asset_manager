@@ -80,7 +80,7 @@ export default {
       this.checkedHeader = this.isCheckAll;
     },
     isReload: function () {
-      console.log("isReload is changed");
+      this.isCheckAll = false;
       this.getAllAssets();
     },
   },
@@ -153,7 +153,7 @@ export default {
     getAllAssets: async function () {
       try {
         const res = await axios.get(Resource.URLs.getAllAsset);
-        console.log("Call API get all assets");
+        console.log("Loading...");
         // Khởi tạo lại các giá trị trên footer table
         this.totalOfQuantities = 0;
         for (const key in this.footerData) this.footerData[key] = 0;

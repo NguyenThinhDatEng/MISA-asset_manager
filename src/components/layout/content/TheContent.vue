@@ -69,7 +69,11 @@
     @close-dialog="showDialogDelete = false"
     @delete-records="deleteRecords"
   ></DialogDeleteVue>
-  <ToastVue v-if="isShowToast" :mode="mode"></ToastVue>
+  <ToastVue
+    v-if="isShowToast"
+    :mode="mode"
+    :number-of-deleted-records="numberOfDeletedRecords"
+  ></ToastVue>
 </template>
 
 <script>
@@ -149,6 +153,7 @@ export default {
       console.log(error);
     }
   },
+
   methods: {
     /**
      * Lấy thông tin các tài sản được chọn
@@ -188,14 +193,29 @@ export default {
 
     // Xóa bản ghi
     deleteRecords: function () {
-      // Thực hiện
-      this.deleteAsset(this.selectedRows[0].fixed_asset_id);
-      // Đóng dialog
-      this.showDialogDelete = false;
-      // Hiển thị toast
-      this.isShowToast = true;
-      // Tải lại trang
-      this.reload = !this.reload;
+      try {
+        // Thực hiện
+        if (this.mode == Enum.Mode.Delete)
+          this.deleteAsset(this.selectedRows[0].fixed_asset_id);
+        else {
+          let listID = {};
+          let fixedAssetIDs = [];
+          for (const obj of this.selectedRows) {
+            fixedAssetIDs.push(obj.fixed_asset_id);
+          }
+          listID["fixedAssetIDs"] = fixedAssetIDs;
+          this.numberOfDeletedRecords = fixedAssetIDs.length;
+          this.deleteMultipleAssets(listID);
+        }
+        // Đóng dialog
+        this.showDialogDelete = false;
+        // Hiển thị toast
+        this.isShowToast = true;
+        // Tải lại trang
+        this.reload = !this.reload;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     /**
@@ -213,6 +233,23 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * API xóa nhiều bản ghi tài sản
+     * @param {Array} listID mảng các ID của tài sản muốn xóa
+     * @author 14/11/2022
+     */
+    deleteMultipleAssets: async function (listID) {
+      try {
+        const res = await axios.post(
+          "http://localhost:11799/api/v1/FixedAssets/DeleteBatch",
+          listID
+        );
+        console.log("Result of Delete multiple assets", res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
@@ -222,6 +259,7 @@ export default {
       isShowLoader: false,
       info: "",
       mode: 0,
+      numberOfDeletedRecords: 1,
       isDisabledButton: true,
       showPopup: false,
       showLoader: false,

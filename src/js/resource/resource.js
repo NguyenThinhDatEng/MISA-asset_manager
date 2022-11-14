@@ -29,6 +29,8 @@ export default {
     next: "Trang sau",
     close: "Đóng",
     save: "Lưu thông tin",
+    update: "Cập nhật thông tin",
+    noSave: "Không lưu thông tin thay đổi",
     cancel: "Hủy bỏ",
     delete: "Xóa tài sản",
   },
@@ -111,8 +113,10 @@ export default {
   ButtonContent: {
     save: "Lưu",
     cancel: "Hủy",
+    remove: "Hủy bỏ",
     delete: "Xóa",
     no: "Không",
+    noSave: "Không lưu",
     close: "Đóng",
   },
   Name: {

@@ -1,83 +1,97 @@
 <template>
   <label>{{ labelContent }} <span style="color: red">*</span></label>
+
   <div class="input--number">
-    <v-money-spinner
-      v-model="amount"
-      v-bind="config"
-      class="input"
-    ></v-money-spinner>
+    <input type="text" class="input" :maxlength="maxlength" v-model="amount" />
     <div class="icon--up_down">
       <div
         class="icon icon--up"
         :title="Resource.Title.increase"
-        @click="amount++"
+        @click="increase"
       ></div>
       <div
-        :title="Resource.Title.decrease"
         class="icon icon--down"
+        :title="Resource.Title.decrease"
         @click="amount > 0 ? amount-- : amount"
       ></div>
     </div>
   </div>
 </template>
-  
-  <script>
-import Enum from "@/js/enum/enum";
+
+<script>
 import Resource from "@/js/resource/resource";
+import Function from "@/js/common/function";
+import Enum from "@/js/enum/enum";
 
 export default {
   name: "InputNumber",
+  created() {
+    this.amount = Function.formatNumber(Number(this.value));
+  },
   props: {
     labelContent: String,
+    type: {
+      type: Number,
+      default: Enum.DataType.Number,
+    },
     field: String,
-    value: { type: Number, default: 0 },
-    type: { type: Number, default: Enum.DataType.Number },
-  },
-  created() {
-    this.amount = this.value;
-    if (this.type == Enum.DataType.Rate) {
-      this.config.max = 100;
-    }
+    value: {
+      type: String,
+      default: "0",
+    },
+    maxlength: {
+      type: Number,
+      default: 4,
+    },
   },
   emits: ["update-input"],
   watch: {
     amount: function () {
-      if (this.amount > 0) {
-        this.config.minCharacters = 2;
-        if (this.type == Enum.DataType.Rate) {
-          if (this.amount < 100) this.config.precision = 2;
-          else this.config.precision = 0;
-        }
-      } else {
-        this.config.precision = 0;
-        this.config.minCharacters = 0;
-      }
       this.$emit("update-input", Number(this.amount), this.field);
     },
     value: function () {
-      this.amount = this.value;
+      const val = Number(this.value);
+      console.log("val", val);
+      if (this.type == Enum.DataType.Rate && val > 100) this.amount = "100";
+      else this.amount = Function.formatNumber(val);
     },
   },
-  methods: {},
+  methods: {
+    /**
+     * Giảm giá trị trong ô input
+     * @author Nguyen Van Thinh 07/11/2022
+     */
+    decrease: function () {
+      if (this.val < 0)
+        if (this.mode == Enum.Mode.Update) this.val = this.value;
+        else this.val = 0;
+      else if (this.val > 0) this.val--;
+    },
+
+    // Cập nhật giá trị input khi nhập dữ liệu
+    updateInput: function (e) {
+      try {
+        this.val = Number(e.target.value);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Tăng giá trị trong ô input bằng icon
+     * @author Nguyen Van Thinh 07/11/2022
+     */
+    increase: function () {
+      if (this.type == Enum.DataType.Rate) {
+        if (Number(this.amount) < 100) this.amount++;
+      } else this.amount++;
+    },
+  },
   data() {
-    return {
-      amount: 1,
-      Resource,
-      config: {
-        spinner: false,
-        min: 0,
-        max: 10000,
-        precision: 0,
-        decimal: ".",
-        thousands: "",
-        masked: false,
-        disableNegative: false,
-        minCharacters: 1,
-      },
-    };
+    return { amount: 0, Resource, Function };
   },
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 </style>

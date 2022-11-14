@@ -37,7 +37,7 @@
 
 #dialog--no-header .dialog__body__text {
     width: 100%;
-    padding: 6px 0 24px 24px;
+    padding: 6px 0 0 24px;
 }
 
 #dialog--error.dialog__body__text {

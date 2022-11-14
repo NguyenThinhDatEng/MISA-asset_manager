@@ -7,8 +7,9 @@
     --border--focus: #D1EDF4;
     --delete-dialog--default: #31B9E2;
     --button-cancel--hover: #1AA4C8;
-    --sub-button: #1EA6C9;
     --outline-button--disabled: #F5F5F5;
+    --sub-button__background: var(--outline-button--disabled);
+    --sub-button--hover: var(--border--focus);
     --outline-button__border: #afafaf;
 }
 
@@ -32,15 +33,6 @@ button {
 
 .button:disabled {
     background-color: #8CD1E3;
-}
-
-.button--icon__wrapper {
-    position: absolute;
-    right: 0;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background-color: transparent;
 }
 
 .button--add {
@@ -109,33 +101,17 @@ button {
 
 .sub-button__wrapper {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 80px;
-    line-height: 36px;
-    text-align: center;
     border-radius: 4px;
-    background-color: #D1EDF4;
-    margin: 0 10px;
+    background-color: var(--sub-button--hover);
+    margin-left: 8px;
 }
 
-.sub-button {
-    min-width: 0;
-    width: 100%;
-    border: 1px solid var(--sub-button);
-    color: var(--sub-button);
-    background-color: #fff;
-}
-
-.sub-button:hover {
-    background-color: var(--hover);
-    color: var(--sub-button);
-}
-
-.sub-button:focus {
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    border: 1px solid var(--sub-button);
-    background-color: #fff;
-    color: var(--sub-button);
+.sub-button__wrapper .button {
+    min-width: 76px;
 }
 
 .button--disable {

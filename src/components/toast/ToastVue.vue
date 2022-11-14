@@ -14,11 +14,13 @@
 <script>
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
+import Function from "@/js/common/function";
 
 export default {
   name: "ToastVue",
   props: {
     mode: Number,
+    numberOfDeletedRecords: Number,
   },
   created() {
     switch (this.mode) {
@@ -30,6 +32,11 @@ export default {
         break;
       case Enum.Mode.Delete:
         this.theInfo = this.toastInfo.deleteSuccess;
+        break;
+      case Enum.Mode.DeleteMulti:
+        this.theInfo =
+          Function.formatNumber(this.numberOfDeletedRecords) +
+          " bản ghi đã được xóa thành công";
         break;
       default:
         console.log("Default!!!!!!!!!");
