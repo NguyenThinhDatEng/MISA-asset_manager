@@ -245,7 +245,7 @@ export default {
           "http://localhost:11799/api/v1/FixedAssets/DeleteBatch",
           listID
         );
-        console.log("Result of Delete multiple assets", res);
+        console.log("Call API Delete multiple assets");
       } catch (error) {
         console.log(error);
       }

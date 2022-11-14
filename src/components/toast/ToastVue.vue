@@ -38,6 +38,9 @@ export default {
           Function.formatNumber(this.numberOfDeletedRecords) +
           " bản ghi đã được xóa thành công";
         break;
+      case Enum.Mode.Duplicate:
+        this.theInfo = this.toastInfo.duplicateSuccess;
+        break;
       default:
         console.log("Default!!!!!!!!!");
         break;

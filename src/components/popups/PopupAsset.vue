@@ -279,13 +279,13 @@ export default {
   created() {
     try {
       switch (this.mode) {
-        // Chế dộ chỉnh sửa
+        // Chế dộ chỉnh sửa và nhân bản
+        case Enum.Mode.Duplicate:
         case Enum.Mode.Update:
           this.theTitle = Resource.PopupTitle.edit;
           // Bind dữ liệu của table row được chọn vào popup object
           for (let prop in this.tableRowObj) {
             this.popupObject[prop] = this.tableRowObj[prop];
-            console.log(prop, this.tableRowObj[prop]);
           }
           // Cập nhật giá trị hao mòn năm
           this.depreciation_value = Function.depreciationValue(
@@ -308,23 +308,12 @@ export default {
           this.initObj[this.fields.production_date] = new Date(
             this.initObj[this.fields.production_date]
           ).toISOString();
-          break;
-        case Enum.Mode.Duplicate:
-          this.theTitle = Resource.PopupTitle.duplicate;
-          // Bind dữ liệu của table row được chọn vào popup object
-          for (let prop in this.tableRowObj) {
-            this.popupObject[prop] = this.tableRowObj[prop];
+          if (this.mode == Enum.Mode.Duplicate) {
+            // Thiết lập title popup
+            this.theTitle = Resource.PopupTitle.duplicate;
+            // Gọi API lấy mã mới tài sản
+            this.getNewCode();
           }
-          // Cập nhật mã nhân viên
-          this.newCode();
-          // Cập nhật giá trị hao mòn năm
-          this.depreciation_value = Function.depreciationValue(
-            this.popupObject[this.fields.cost],
-            this.popupObject[this.fields.depreciation_rate]
-          );
-          // Cập nhật đối tượng popup
-          this.popupObject[this.fields.depreciation_value] =
-            this.depreciation_value;
           break;
         // Thêm mới nhân viên
         default:
@@ -519,6 +508,7 @@ export default {
             } else {
               switch (this.mode) {
                 case Enum.Mode.Add:
+                case Enum.Mode.Duplicate:
                   // Call API tạo mới tài sản
                   this.insertAsset();
                   break;

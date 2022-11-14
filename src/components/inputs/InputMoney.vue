@@ -23,7 +23,7 @@ export default {
     },
   },
   created() {
-    if (this.mode == Enum.Mode.Update) this.amount = this.value;
+    if (this.mode != Enum.Mode.Add) this.amount = this.value;
   },
   emits: ["update-input"],
   watch: {
