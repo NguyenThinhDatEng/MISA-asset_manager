@@ -4,9 +4,11 @@
     :class="{ item: true, 'item--active': active }"
     :title="title ? title : ''"
   >
+    <!-- left -->
     <div class="icon-item_wrapper">
       <div :class="['icon icon-item center', iconName]"></div>
     </div>
+    <!-- right -->
     <div class="item__content">
       <p>{{ itemContent }}</p>
       <div class="icon-item_wrapper" v-if="isShow(itemContent)">
@@ -22,10 +24,11 @@ import resource from "@/js/resource/resource";
 export default {
   name: "ItemSidebar",
   props: {
-    id: String,
-    iconName: String,
-    itemContent: String,
-    title: String,
+    id: String, // id danh mục
+    iconName: String, // tên icon
+    itemContent: String, // nội dung icon
+    title: String, // Tiêu đề danh mục
+    // highlight danh mục
     active: {
       type: Boolean,
       default: false,
@@ -33,7 +36,7 @@ export default {
   },
   methods: {
     /**
-     * Bỏ icon mũi tên đi xuống của những item không cần thiết
+     * Bỏ icon mũi tên đi xuống của những item không có
      * @param {String} itemContent tên mục
      * @return {Boolean}
      */
@@ -50,15 +53,48 @@ export default {
       }
     },
   },
+  // data
   data() {
     return {
-      content: resource.ItemContents,
-      hasArrowIcon: true,
+      hasArrowIcon: true, // true nếu danh mục có icon mũi tên
+      content: resource.ItemContents, // nội dung danh mục
     };
   },
 };
 </script>
 
 <style scoped>
-@import url(@/css/layout/sidebar.css);
+.item {
+  display: flex;
+  align-items: center;
+  opacity: 0.2;
+  border-radius: 6px;
+  width: 100%;
+  height: 40px;
+  overflow: hidden;
+  color: #fff;
+}
+
+.item:hover,
+.item:active {
+  background-color: var(--menu-item);
+  opacity: 1;
+  cursor: pointer;
+}
+
+.item--active {
+  background-color: var(--menu-item);
+  opacity: 1;
+}
+
+.item p {
+  flex: 1;
+}
+
+.item__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
 </style>
