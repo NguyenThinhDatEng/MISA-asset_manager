@@ -7,10 +7,7 @@
 <script>
 export default {
   name: "IconHeader",
-  components: {},
   props: { iconName: String, title: String },
-  emits: [],
-  methods: {},
   data() {
     return {};
   },
@@ -18,5 +15,5 @@ export default {
 </script>
 
 <style scoped>
-@import url(@/css/layout/header.css);
+@import url(@/css/icon.css);
 </style>
