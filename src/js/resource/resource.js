@@ -168,5 +168,6 @@ export default {
     updateSuccess: "Cập nhật dữ liệu thành công",
     deleteSuccess: "Xóa bản ghi thành công",
     duplicateSuccess: "Nhân bản dữ liệu thành công",
+    deleteMultiSuccess: "bản ghi đã được xóa thành công",
   },
 };

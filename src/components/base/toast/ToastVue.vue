@@ -36,7 +36,8 @@ export default {
       case Enum.Mode.DeleteMulti:
         this.theInfo =
           Function.formatNumber(this.numberOfDeletedRecords) +
-          " bản ghi đã được xóa thành công";
+          " " +
+          this.toastInfo.deleteMultiSuccess;
         break;
       case Enum.Mode.Duplicate:
         this.theInfo = this.toastInfo.duplicateSuccess;
@@ -45,9 +46,10 @@ export default {
         console.log("Default!!!!!!!!!");
         break;
     }
+    ``;
   },
   data() {
-    return { toastInfo: Resource.ToastInfo, Enum, theInfo: "" };
+    return { theInfo: "", toastInfo: Resource.ToastInfo, Enum };
   },
 };
 </script>

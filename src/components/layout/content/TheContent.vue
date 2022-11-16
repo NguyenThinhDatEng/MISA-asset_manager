@@ -7,7 +7,7 @@
       <div class="function_left">
         <!-- Search  -->
         <Input></Input>
-        <!-- Filter -->
+        <!-- Fixed asset categories filter -->
         <Dropdown
           :id="filters[0].id"
           :parentClass="filters[0].className"
@@ -16,6 +16,7 @@
           :data="this.categories"
           :title="Resource.Title['asset-category-filter']"
         ></Dropdown>
+        <!-- Department filter -->
         <Dropdown
           :id="filters[1].id"
           :parentClass="filters[1].className"
@@ -35,7 +36,7 @@
           :title="Resource.Title.add"
           @click="showPopup = true"
         ></Button>
-        <!-- Button: export excel and delete -->
+        <!-- Export button -->
         <ButtonFeature
           :buttonName="'button--' + Resource.Name.export"
           :iconName="'icon--' + Resource.Name.export"
@@ -55,6 +56,7 @@
     <!-- Table  -->
     <TheTable @update-rows="updateRows" :isReload="reload"></TheTable>
   </div>
+  <!-- Popup -->
   <Popup
     v-if="showPopup"
     :mode="Enum.Mode.Add"
@@ -62,6 +64,7 @@
     @show-toast="isShowToast = true"
     @reload-content="reload = !reload"
   ></Popup>
+  <!-- Dialog delete warning -->
   <DialogDeleteVue
     v-if="showDialogDelete"
     :info="info"
@@ -69,6 +72,7 @@
     @close-dialog="showDialogDelete = false"
     @delete-records="deleteRecords"
   ></DialogDeleteVue>
+  <!-- Toast -->
   <ToastVue
     v-if="isShowToast"
     :mode="mode"
@@ -105,18 +109,21 @@ export default {
     ToastVue,
   },
   watch: {
+    // Thiết lập thời gian hiển thị cho toast
     isShowToast: function () {
       setTimeout(() => {
         this.isShowToast = false;
       }, 1500);
     },
   },
+
   /**
-   * Call API
+   * Gọi API lấy tất cả bản ghi
    * @author Nguyen Van Thinh 04/11/2022
    */
   mounted() {
     try {
+      console.log(process.env.VUE_APP_BASE_URL);
       this.isShowLoader = true;
       // Lay tat ca bo phan su dung
       fetch(Resource.URLs.department, {
@@ -293,7 +300,6 @@ export default {
 </script>
 
 <style scoped>
-@import url(@/css/base.css);
 Button + ButtonFeature {
   margin-left: 11px;
 }
