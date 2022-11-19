@@ -30,7 +30,7 @@
       <!-- Table body  -->
       <tbody>
         <Row
-          v-for="(asset, index) in assets"
+          v-for="(asset, index) in fixedAssets"
           :key="index"
           :tableRowObj="asset"
           :index="index + 1"
@@ -43,7 +43,7 @@
       <!-- Table footer  -->
       <TableFoot
         :footerData="footerData"
-        :number-of-records="assets.length"
+        :number-of-records="fixedAssets.length"
         :totalOfQuantities="totalOfQuantities"
       ></TableFoot>
     </table>
@@ -54,15 +54,16 @@
 import Row from "./TableRow.vue";
 import TableFoot from "./TableFoot.vue";
 import Resource from "@/js/resource/resource";
-import axios from "axios";
 
 export default {
   name: "TheTable",
   components: { Row, TableFoot },
   props: {
-    isReload: {
-      type: Boolean,
-      default: false,
+    fixedAssets: {
+      type: Array,
+      default: () => {
+        return [];
+      },
     },
   },
   emits: ["update-rows", "reload-content"],
@@ -70,7 +71,7 @@ export default {
     isCheckAll: function () {
       if (this.isCheckAll == true) {
         this.selectedRows = [];
-        for (const asset in this.assets) {
+        for (const asset in this.fixedAssets) {
           this.selectedRows.push(asset);
         }
       } else {
@@ -79,14 +80,11 @@ export default {
       this.$emit("update-rows", this.selectedRows);
       this.checkedHeader = this.isCheckAll;
     },
-    isReload: function () {
-      this.isCheckAll = false;
-      this.getAllAssets();
+    fixedAssets: function () {
+      this.updateFooterData();
     },
   },
-  mounted() {
-    this.getAllAssets();
-  },
+
   methods: {
     /**
      * Thêm hoặc xóa tài sản khỏi mảng chứa các dòng được chọn
@@ -147,39 +145,33 @@ export default {
     },
 
     /**
-     * Gọi API lấy tất cả tài sản
+     * Cập nhật dữ liệu tại table footer
      * @author Nguyen Van Thinh 11/11/2022
      */
-    getAllAssets: async function () {
-      try {
-        const res = await axios.get(Resource.URLs.getAllAsset);
-        console.log("Loading...");
-        // Khởi tạo lại các giá trị trên footer table
-        this.totalOfQuantities = 0;
-        for (const key in this.footerData) this.footerData[key] = 0;
-        // Cập nhật các dữ liệu trên table footer
-        for (const obj of res.data) {
-          this.totalOfQuantities += obj.quantity;
-          this.footerData.totalOfCost += obj.cost;
-          this.footerData.totalDepreciationValue +=
-            obj.cost * obj.depreciation_rate;
-          this.footerData.totalResidualValue +=
-            obj.cost * (1 - obj.depreciation_rate / 100);
-        }
-        // Cập nhật mảng tài sản
-        this.assets = res.data;
-      } catch (error) {
-        console.log(error);
+    updateFooterData: function () {
+      // Hiển thị Loader
+      this.isShowLoader = true;
+      // Khởi tạo lại các giá trị trên footer table
+      this.totalOfQuantities = 0;
+      for (const key in this.footerData) this.footerData[key] = 0;
+      // Cập nhật các dữ liệu trên table footer
+      for (const obj of this.fixedAssets) {
+        this.totalOfQuantities += obj.quantity;
+        this.footerData.totalOfCost += obj.cost;
+        this.footerData.totalDepreciationValue +=
+          obj.cost * obj.depreciation_rate;
+        this.footerData.totalResidualValue +=
+          obj.cost * (1 - obj.depreciation_rate / 100);
       }
+      // Ẩn Loader
+      this.isShowLoader = false;
+      console.log("Call API get all fixed assets");
     },
   },
   data() {
     return {
-      Resource,
-      ths: Resource.Columns,
       isCheckAll: false,
       checkedHeader: false,
-      assets: [],
       selectedRows: [],
       totalOfQuantities: 0,
       footerData: {
@@ -249,11 +241,12 @@ export default {
           "text-align": "center",
         },
       ],
+      ths: Resource.Columns, // object chứa tên cột
+      Resource, // tài nguyên
     };
   },
 };
 </script>
 
 <style scoped>
-@import url(@/css/base.css);
 </style>

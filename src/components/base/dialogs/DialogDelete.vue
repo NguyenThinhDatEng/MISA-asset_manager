@@ -35,7 +35,7 @@
           :title="Resource.Title.delete"
           :type="Enum.Type.Main"
           :isDeleteDialog="true"
-          @click="this.$emit('delete-records')"
+          @click="$emit('delete-records')"
         ></ButtonMainVue>
         <ButtonOutlineVue
           :button-content="Resource.ButtonContent.no"

@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <!-- Loader  -->
     <Loader :isShow="isShowLoader"></Loader>
     <!-- Function bar  -->
     <div class="function">
@@ -54,7 +55,7 @@
       </div>
     </div>
     <!-- Table  -->
-    <TheTable @update-rows="updateRows" :isReload="reload"></TheTable>
+    <TheTable :fixed-assets="fixedAssets" @update-rows="updateRows"></TheTable>
   </div>
   <!-- Popup -->
   <Popup
@@ -82,17 +83,20 @@
 
 <script>
 import TheTable from "@/components/base/table/Table.vue";
-import Loader from "@/components/base/more/Loader.vue";
 import Input from "@/components/base/inputs/SearchInput.vue";
 import Dropdown from "@/components/base/dropdowns/DropdownCheckbox.vue";
 import Button from "@/components/base/buttons/ButtonIcon.vue";
 import ButtonFeature from "@/components/base/buttons/ButtonFeature.vue";
 import Popup from "@/components/base/popups/PopupAsset.vue";
 import DialogDeleteVue from "@/components/base/dialogs/DialogDelete.vue";
+import Loader from "@/components/base/more/Loader.vue";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
+import { getAllFixedAssets, deleteFixedAsset } from "@/apis/fixed_asset";
+import { getAllDepartments } from "@/apis/department";
+import { getAllFixedAssetCategories } from "@/apis/fixed_asset_category";
 import axios from "axios";
 
 export default {
@@ -100,14 +104,38 @@ export default {
   components: {
     Input,
     TheTable,
-    Loader,
     Dropdown,
     Button,
     ButtonFeature,
     Popup,
     DialogDeleteVue,
     ToastVue,
+    Loader,
   },
+
+  /**
+   * Gọi API lấy tất cả bản ghi cho bộ phận phòng ban và loại tài sản
+   * @author Nguyen Van Thinh 04/11/2022
+   */
+  created() {
+    // Gọi API lấy thông tin tất cả tài sản cố định
+    this.isShowLoader = true;
+    getAllFixedAssets().then((res) => {
+      this.fixedAssets = res.data;
+      this.isShowLoader = false;
+    });
+
+    // Gọi API lấy tất cả bộ phận sử dụng
+    getAllDepartments().then((res) => {
+      this.departments = res.data;
+    });
+
+    // Gọi API lấy tất cả bộ phận sử dụng
+    getAllFixedAssetCategories().then((res) => {
+      this.categories = res.data;
+    });
+  },
+
   watch: {
     // Thiết lập thời gian hiển thị cho toast
     isShowToast: function () {
@@ -115,50 +143,6 @@ export default {
         this.isShowToast = false;
       }, 1500);
     },
-  },
-
-  /**
-   * Gọi API lấy tất cả bản ghi
-   * @author Nguyen Van Thinh 04/11/2022
-   */
-  mounted() {
-    try {
-      console.log(process.env.VUE_APP_BASE_URL);
-      this.isShowLoader = true;
-      // Lay tat ca bo phan su dung
-      fetch(Resource.URLs.department, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          this.isShowLoader = false;
-          this.departments = data;
-        })
-        .catch((error) => {
-          console.log("Call get all departments API", error);
-        });
-
-      // Lay tat ca loai tai san
-      fetch(Resource.URLs["asset-type"], {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          // Gan data thu duoc vao du lieu cua component
-          this.categories = data;
-        })
-        .catch((error) => {
-          console.log("Call get all asset categories API", error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
   },
 
   methods: {
@@ -205,9 +189,11 @@ export default {
     // Xóa bản ghi
     deleteRecords: function () {
       try {
-        // Thực hiện
+        // Thực hiện xóa
         if (this.mode == Enum.Mode.Delete)
-          this.deleteAsset(this.selectedRows[0].fixed_asset_id);
+          deleteFixedAsset(this.selectedRows[0].fixed_asset_id).then((res) => {
+            console.log(res.data);
+          });
         else {
           let listID = {};
           let fixedAssetIDs = [];
@@ -222,8 +208,6 @@ export default {
         this.showDialogDelete = false;
         // Hiển thị toast
         this.isShowToast = true;
-        // Tải lại trang
-        this.reload = !this.reload;
       } catch (error) {
         console.log(error);
       }
@@ -267,14 +251,14 @@ export default {
       info: "",
       mode: 0,
       numberOfDeletedRecords: 1,
-      isShowLoader: false,
+      isShowLoader: false, // trạng thái ẩn hiện của loader
       isDisabledButton: true,
       showPopup: false,
-      showLoader: false,
       showDialogDelete: false,
       isShowToast: false,
       reload: false,
       selectedRows: [],
+      fixedAssets: [],
       departments: [],
       categories: [],
       filters: [
