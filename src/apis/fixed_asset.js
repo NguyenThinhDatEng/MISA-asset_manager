@@ -17,10 +17,30 @@ const getAllFixedAssets = () => {
   }
 };
 
-// you can pass arguments to use as request parameters/data
-const deleteFixedAsset = (fixed_asset_id) => {
+/**
+ * API xóa 1 tài sản
+ * @param {string} fixedAssetID id của bản ghi cần xóa
+ * @author Nguyen Van Thinh (12-11-2022)
+ */
+const deleteFixedAsset = (fixedAssetID) => {
   try {
-    const res = httpClient.delete(END_POINT, { fixed_asset_id });
+    console.log("Call API Delete a fixed asset");
+    const res = httpClient.delete(END_POINT, { fixedAssetID });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
+ * API xóa nhiều bản ghi tài sản
+ * @param {Array} listID mảng các ID của tài sản muốn xóa
+ * @author NVThinh 14-11-2022
+ */
+const deleteMultipleFixedAssets = (listID) => {
+  try {
+    console.log("Call API Delete multiple assets");
+    const res = httpClient.post(END_POINT + "/DeleteBatch", listID);
     return res;
   } catch (error) {
     console.log(error);
@@ -29,4 +49,4 @@ const deleteFixedAsset = (fixed_asset_id) => {
 // // maybe more than one..
 // const createUser = (username, password) =>
 //   httpClient.post(END_POINT, { username, password });
-export { getAllFixedAssets, deleteFixedAsset };
+export { getAllFixedAssets, deleteFixedAsset, deleteMultipleFixedAssets };
