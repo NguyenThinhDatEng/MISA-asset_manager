@@ -68,7 +68,8 @@
     :popup-obj="popupObj"
     @close-popup="isShowPopup = false"
     @show-toast="isShowToast = true"
-    @reload-content="reload = !reload"
+    @show-error-toast="showErrorToast"
+    @reload-content="reloadContent"
   ></Popup>
   <!-- Dialog delete warning -->
   <DialogDeleteVue
@@ -168,6 +169,31 @@ export default {
 
   methods: {
     /**
+     * Tải lại trang
+     * @author NVThinh (20/11/2022)
+     */
+    reloadContent: function () {
+      try {
+        // Gọi API lấy tất cả thông tin tài sản cố định
+        this.isShowLoader = true;
+        getAllFixedAssets()
+          .then((res) => {
+            this.fixedAssets = res.data;
+            this.isShowLoader = false;
+          })
+          .catch(() => {
+            this.showErrorToast();
+          });
+        // đóng popup
+        this.isShowPopup = false;
+        // hiển thị toast thông báo
+        this.isShowToast = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
      * Lấy thông tin các tài sản được chọn
      * @param {Array} selectedRows mảng các dòng được chọn
      * @author Nguyen Van Thinh 06/11/2022
@@ -208,20 +234,19 @@ export default {
     },
 
     // Xóa bản ghi
-    deleteRecords: function () {
+    deleteRecords: async function () {
       try {
-        // Thực hiện xóa
+        // Thực hiện xóa 1 bản ghi
         if (this.mode == Enum.Mode.Delete) {
-          deleteFixedAsset(this.selectedRows[0].fixed_asset_id)
+          await deleteFixedAsset(this.selectedRows[0].fixed_asset_id)
             .then(() => {
-              // Hien thi toast thong bao thanh cong
-              this.isShowToast = true;
+              this.reloadContent();
             })
             .catch(() => {
               this.showErrorToast();
             });
-          console.log("test");
         } else {
+          // Thực hiện xóa nhiều bản ghi
           let listID = {};
           let fixedAssetIDs = [];
           for (const obj of this.selectedRows) {
@@ -229,10 +254,10 @@ export default {
           }
           listID["fixedAssetIDs"] = fixedAssetIDs;
           this.numberOfDeletedRecords = fixedAssetIDs.length;
-          deleteMultipleFixedAssets(listID)
+          // Gọi API xóa nhiều bản ghi
+          await deleteMultipleFixedAssets(listID)
             .then(() => {
-              // Hien thi toast thong bao thanh cong
-              this.isShowToast = true;
+              this.reloadContent();
             })
             .catch(() => {
               this.showErrorToast();

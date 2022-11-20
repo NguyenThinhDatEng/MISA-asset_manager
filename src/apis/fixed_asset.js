@@ -32,10 +32,33 @@ const getFixedAssetByID = (fixedAssetID) => {
   }
 };
 
+/**
+ * API thêm mới tài sản cố định
+ * @param {Object} fixedAsset tài sản cố định
+ * @returns res is a promise
+ * @author NVThinh 20-11-2022
+ */
 const createFixedAsset = (fixedAsset) => {
   try {
     console.log("Create a new fixed asset");
     const res = httpClient.post(END_POINT, fixedAsset);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
+ * API cập nhật tài sản cố định
+ * @param {String} fixedAssetID ID tài sản cố định
+ * @param {Object} fixedAsset tài sản cố định
+ * @returns res is a promise
+ * @author NVThinh 20-11-2022
+ */
+const editFixedAsset = (fixedAssetID, fixedAsset) => {
+  try {
+    console.log("Edit a new fixed asset");
+    const res = httpClient.put(END_POINT + `/${fixedAssetID}`, fixedAsset);
     return res;
   } catch (error) {
     console.log(error);
@@ -78,6 +101,7 @@ export {
   getAllFixedAssets,
   getFixedAssetByID,
   createFixedAsset,
+  editFixedAsset,
   deleteFixedAsset,
   deleteMultipleFixedAssets,
 };

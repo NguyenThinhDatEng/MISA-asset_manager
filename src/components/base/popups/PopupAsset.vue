@@ -248,7 +248,7 @@ import axios from "axios";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import { createFixedAsset } from "@/apis/fixed_asset";
+import { createFixedAsset, editFixedAsset } from "@/apis/fixed_asset";
 
 export default {
   name: "PopupAsset",
@@ -330,7 +330,13 @@ export default {
       console.log(error);
     }
   },
-  emits: ["close-popup", "show-toast", "reload-content", "update-table-row"],
+  emits: [
+    "close-popup",
+    "show-toast",
+    "show-error-toast",
+    "reload-content",
+    "update-table-row",
+  ],
   watch: {},
   /**
    * Call API
@@ -408,8 +414,8 @@ export default {
      */
     showToast: function () {
       try {
-        this.$emit("show-toast");
         this.$emit("close-popup");
+        this.$emit("show-toast");
       } catch (error) {
         console.log(error);
       }
@@ -456,7 +462,7 @@ export default {
      * Validate dữ liệu khi nhấn vào nút lưu
      * @author Nguyen Van Thinh 09/11/2022
      */
-    validateData: function () {
+    validateData: async function () {
       try {
         // Thiết lập lại giá trị
         this.requiredData = [];
@@ -502,11 +508,26 @@ export default {
                 case Enum.Mode.Add:
                 case Enum.Mode.Duplicate:
                   // Call API tạo mới tài sản
-                  this.insertAsset();
+                  await createFixedAsset(this.popupObject)
+                    .then(() => {
+                      this.$emit("reload-content");
+                    })
+                    .catch(() => {
+                      this.$emit("show-error-toast");
+                    });
                   break;
                 case Enum.Mode.Update:
                   // Gọi API cập nhật tài sản
-                  this.updateAsset(this.fixedAssetID);
+                  await editFixedAsset(
+                    this.popupObject[this.fields.fixed_asset_id],
+                    this.popupObject
+                  )
+                    .then(() => {
+                      this.$emit("reload-content");
+                    })
+                    .catch(() => {
+                      this.$emit("show-error-toast");
+                    });
                   // Gửi giá trị hao mòn năm lên table row để cập nhật hao mòn lũy kế và giá trị còn lại
                   this.$emit(
                     "update-table-row",
@@ -517,35 +538,12 @@ export default {
                 default:
                   console.log("Default!!!!!!");
                   break;
-                // }
               }
+              // Đóng popup
+              this.$emit("close-popup");
             }
           }
         }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    /**
-     * API tạo mới tài sản
-     * @author Nguyen Van Thinh 11/11/2022
-     */
-    insertAsset: async function () {
-      try {
-        // const res = await axios.post(
-        //   "http://localhost:11799/api/v1/FixedAssets",
-        //   this.popupObject
-        // );
-        createFixedAsset(this.popupObject).then((response) => {
-          console.log(response.data);
-        });
-        // Hiển thị toast thông báo và đóng popup
-        this.showToast();
-        // Gửi thông báo load lại trang
-        this.$emit("reload-content");
-        // Đóng popup
-        this.$emit("close-popup");
       } catch (error) {
         console.log(error);
       }
