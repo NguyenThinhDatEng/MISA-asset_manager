@@ -18,6 +18,31 @@ const getAllFixedAssets = () => {
 };
 
 /**
+ * API lấy thông tin 01 tài sản cố định theo ID
+ * @returns res is a promise
+ * @author NVThinh (18-11-2022)
+ */
+const getFixedAssetByID = (fixedAssetID) => {
+  try {
+    console.log("Call API a fixed asset by ID");
+    const res = httpClient.get(END_POINT + `/${fixedAssetID}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const createFixedAsset = (fixedAsset) => {
+  try {
+    console.log("Create a new fixed asset");
+    const res = httpClient.post(END_POINT, fixedAsset);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
  * API xóa 1 tài sản
  * @param {string} fixedAssetID id của bản ghi cần xóa
  * @author Nguyen Van Thinh (12-11-2022)
@@ -25,7 +50,7 @@ const getAllFixedAssets = () => {
 const deleteFixedAsset = (fixedAssetID) => {
   try {
     console.log("Call API Delete a fixed asset");
-    const res = httpClient.delete(END_POINT, { fixedAssetID });
+    const res = httpClient.delete(END_POINT + `/${fixedAssetID}`);
     return res;
   } catch (error) {
     console.log(error);
@@ -49,4 +74,10 @@ const deleteMultipleFixedAssets = (listID) => {
 // // maybe more than one..
 // const createUser = (username, password) =>
 //   httpClient.post(END_POINT, { username, password });
-export { getAllFixedAssets, deleteFixedAsset, deleteMultipleFixedAssets };
+export {
+  getAllFixedAssets,
+  getFixedAssetByID,
+  createFixedAsset,
+  deleteFixedAsset,
+  deleteMultipleFixedAssets,
+};

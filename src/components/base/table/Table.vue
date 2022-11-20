@@ -37,7 +37,7 @@
           :is-check-all="isCheckAll"
           @update-row="updateRow"
           @update-checked-header="updateCheckedHeader"
-          @reload-content="getAllAssets"
+          @show-popup="showPopup"
         ></Row>
       </tbody>
       <!-- Table footer  -->
@@ -57,7 +57,6 @@ import Resource from "@/js/resource/resource";
 
 export default {
   name: "TheTable",
-  components: { Row, TableFoot },
   props: {
     fixedAssets: {
       type: Array,
@@ -66,7 +65,8 @@ export default {
       },
     },
   },
-  emits: ["update-rows", "reload-content"],
+  components: { Row, TableFoot },
+  emits: ["update-rows", "reload-content", "show-popup"],
   watch: {
     isCheckAll: function () {
       if (this.isCheckAll == true) {
@@ -86,6 +86,20 @@ export default {
   },
 
   methods: {
+    /**
+     * Hiển thị popup khi thực hiện chức năng
+     * @param {Number} mode chế độ popup
+     * @param {Object} popupObj đối tượng tài sản trong popup
+     * @author NVThinh 19/11/2022
+     */
+    showPopup: function (mode, popupObj) {
+      try {
+        this.$emit("show-popup", mode, popupObj);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     /**
      * Thêm hoặc xóa tài sản khỏi mảng chứa các dòng được chọn
      * @param {Boolean} isNewRow true - thêm dòng mới, false - xóa dòng cũ
@@ -179,8 +193,6 @@ export default {
         totalDepreciationValue: 0,
         totalResidualValue: 0,
       },
-      showPopup: false,
-      //   cols: resource.Columns,
       styleObject: [
         {
           col: "checkbox",

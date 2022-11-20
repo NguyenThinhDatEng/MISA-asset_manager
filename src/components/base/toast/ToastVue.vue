@@ -1,6 +1,6 @@
 <template>
   <div class="toast__wrapper">
-    <div class="toast">
+    <div :class="['toast', { 'toast--error': isError }]">
       <div class="toast__icon--background">
         <div class="toast__icon--wrapper center">
           <div class="icon icon--center icon--tick"></div>
@@ -21,32 +21,37 @@ export default {
   props: {
     mode: Number,
     numberOfDeletedRecords: Number,
+    isError: Boolean,
   },
+  // Cập nhật thông tin hiển thị của toast
   created() {
-    switch (this.mode) {
-      case Enum.Mode.Add:
-        this.theInfo = this.toastInfo.addSuccess;
-        break;
-      case Enum.Mode.Update:
-        this.theInfo = this.toastInfo.updateSuccess;
-        break;
-      case Enum.Mode.Delete:
-        this.theInfo = this.toastInfo.deleteSuccess;
-        break;
-      case Enum.Mode.DeleteMulti:
-        this.theInfo =
-          Function.formatNumber(this.numberOfDeletedRecords) +
-          " " +
-          this.toastInfo.deleteMultiSuccess;
-        break;
-      case Enum.Mode.Duplicate:
-        this.theInfo = this.toastInfo.duplicateSuccess;
-        break;
-      default:
-        console.log("Default!!!!!!!!!");
-        break;
-    }
-    ``;
+    if (this.isError == false)
+      // Nếu không có lỗi
+      switch (this.mode) {
+        case Enum.Mode.Add:
+          this.theInfo = this.toastInfo.addSuccess;
+          break;
+        case Enum.Mode.Update:
+          this.theInfo = this.toastInfo.updateSuccess;
+          break;
+        case Enum.Mode.Delete:
+          this.theInfo = this.toastInfo.deleteSuccess;
+          break;
+        case Enum.Mode.DeleteMulti:
+          this.theInfo =
+            Function.formatNumber(this.numberOfDeletedRecords) +
+            " " +
+            this.toastInfo.deleteMultiSuccess;
+          break;
+        case Enum.Mode.Duplicate:
+          this.theInfo = this.toastInfo.duplicateSuccess;
+          break;
+        default:
+          console.log("Default!!!!!!!!!");
+          break;
+      }
+    // Nếu có lỗi
+    else this.theInfo = this.toastInfo.error;
   },
   data() {
     return { theInfo: "", toastInfo: Resource.ToastInfo, Enum };

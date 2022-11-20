@@ -1,6 +1,8 @@
 :root {
     --toast__icon--background: #BAEED4;
     --toast__icon--wrapper: #1AC871;
+    --toast--error__icon--background: #F59999;
+    --toast--error__icon--wrapper: #EB3333;
 }
 
 .toast__wrapper {
@@ -39,6 +41,20 @@
     width: 20px;
     height: 20px;
     background-color: var(--toast__icon--wrapper);
+}
+
+.toast--error .toast__icon--background {
+    background-color: var(--toast--error__icon--background)
+}
+
+.toast--error .toast__icon--wrapper {
+    background-color: var(--toast--error__icon--wrapper);
+}
+
+.toast--error .icon--tick {
+    background: url(../../assets/icons/white-exclamation-mark-15.png);
+    width: 15px;
+    height: 15px;
 }
 
 .toast__info {

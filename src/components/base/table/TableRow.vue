@@ -1,8 +1,9 @@
 <template>
+  <!-- Table row  -->
   <tr
     :class="{ 'row--active': isActive }"
     @click="handleOnClickRow"
-    @dblclick="carryOutFeature('edit')"
+    @dblclick="carryOutFeature(Enum.Mode.Update)"
   >
     <td class="checkbox__wrapper col--checkbox">
       <input type="checkbox" class="checkbox" :checked="isActive" />
@@ -27,22 +28,23 @@
         <div
           class="icon icon--edit"
           :title="Title.edit"
-          @click="carryOutFeature('edit')"
+          @click="carryOutFeature(Enum.Mode.Update)"
         ></div>
         <div
           class="icon icon--duplicate"
           :title="Title.duplicate"
-          @click="carryOutFeature('duplicate')"
+          @click="carryOutFeature(Enum.Mode.Duplicate)"
         ></div>
       </div>
     </td>
   </tr>
+  <!-- Popup  -->
   <Popup
-    v-if="showPopup"
+    v-if="isShowPopup"
     :mode="popupMode"
-    :tableRowObj="popupObject"
+    :tableRowObj="popupObj"
     :fixedAssetID="tableRowObj.fixed_asset_id"
-    @close-popup="showPopup = false"
+    @close-popup="isShowPopup = false"
     @show-toast="isShowToast = true"
     @reload-content="this.$emit('reload-content')"
     @update-table-row="updateTableRow"
@@ -82,6 +84,7 @@ export default {
     "update-checked-header",
     "update-popup-object",
     "reload-content",
+    "show-popup",
   ],
   watch: {
     // Cập nhật trạng thái active của dòng
@@ -94,8 +97,8 @@ export default {
         this.isShowToast = false;
       }, 1500);
     },
+    // Cập nhật giá trị khi reload dữ liệu
     tableRowObj: function () {
-      console.log("Table object is changed");
       // Cập nhật giá trị hao mòn năm
       const depreciation_value = Function.depreciationValue(
         this.tableRowObj.cost,
@@ -118,19 +121,14 @@ export default {
      * Sự kiện nhấn vào tính năng chỉnh sửa hoặc nhân bản
      * @author Nguyen Van Thinh 05/11/2022
      */
-    carryOutFeature: function (action) {
+    carryOutFeature: function (mode) {
       try {
         // Bind dữ liệu vào đối tượng Popup
         for (const field in this.fields) {
-          this.popupObject[field] = this.tableRowObj[field];
+          this.popupObj[field] = this.tableRowObj[field];
         }
-        // Thiết lập kiểu popup hiển thị
-        if (action == "edit") this.popupMode = Enum.Mode.Update;
-        else {
-          this.popupMode = Enum.Mode.Duplicate;
-        }
-        // Hiển thị Popup
-        this.showPopup = true;
+        // Gửi dữ liệu lên table
+        this.$emit("show-popup", mode, this.popupObj);
       } catch (error) {
         console.log(error);
       }
@@ -153,7 +151,6 @@ export default {
             this.$emit("update-checked-header", false);
           this.$emit("update-row", !isNew, this.tableRowObj); // isNew == false
         }
-        // console.log("Table Row", this.tableRowObj);
       } catch (error) {
         console.log(error);
       }
@@ -181,18 +178,18 @@ export default {
   },
   data() {
     return {
-      Resource,
-      fields: Resource.PopupField,
-      Function,
-      Enum,
-      Title: Resource.Title,
-      showPopup: false,
-      isShowToast: false,
-      isActive: false,
-      popupMode: 0,
-      accumulated_depreciation: 0,
-      residual_value: 0,
-      popupObject: {},
+      isShowPopup: false, // trạng thái ẩn hiện popup
+      isShowToast: false, // trạng thái ẩn hiện toast
+      isActive: false, // trạng thái của table row
+      popupMode: 0, // chế độ popup
+      accumulated_depreciation: 0, // tỉ lệ khấu hao
+      residual_value: 0, // giá trị còn lại
+      popupObj: {}, // đối tượng popup
+      Resource, // tài nguyên
+      fields: Resource.PopupField, // các trường input trong popup
+      Title: Resource.Title, // tooltip
+      Function, // Hàm dùng chung
+      Enum, // enum
     };
   },
 };

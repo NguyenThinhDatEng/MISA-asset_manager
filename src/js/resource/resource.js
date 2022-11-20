@@ -132,6 +132,7 @@ export default {
     costAndDepreciationValue: "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá",
   },
   RequiredData: {
+    fixed_asset_id: false,
     fixed_asset_code: true,
     fixed_asset_name: true,
     department_code: true,
@@ -148,6 +149,7 @@ export default {
     production_date: false,
   },
   PopupField: {
+    fixed_asset_id: "fixed_asset_id",
     fixed_asset_code: "fixed_asset_code",
     fixed_asset_name: "fixed_asset_name",
     department_code: "department_code",
@@ -169,5 +171,6 @@ export default {
     deleteSuccess: "Xóa bản ghi thành công",
     duplicateSuccess: "Nhân bản dữ liệu thành công",
     deleteMultiSuccess: "bản ghi đã được xóa thành công",
+    error: "Có lỗi xảy ra!",
   },
 };

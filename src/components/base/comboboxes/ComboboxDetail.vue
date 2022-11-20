@@ -21,7 +21,7 @@
         </div>
       </div>
       <Data
-        v-for="(obj, index) in popupData"
+        v-for="(obj, index) in data"
         :key="index"
         :field="field"
         :obj="obj"
@@ -41,7 +41,7 @@ export default {
   props: {
     placeholder: String,
     maxlength: Number,
-    data: Array,
+    comboboxData: Array,
     field: String,
     value: {
       type: String,
@@ -57,13 +57,13 @@ export default {
   },
   emits: ["update-combobox"],
   watch: {
-    data: function () {
-      this.popupData = this.data;
+    comboboxData: function () {
+      this.data = this.comboboxData;
       // Thêm trường dữ liệu isActive
-      for (let obj of this.popupData) {
+      for (let obj of this.data) {
         obj["isActive"] = false;
       }
-      // console.log("@!@", this.popupData);
+      // console.log("@!@", this.data);
     },
   },
   methods: {
@@ -83,15 +83,16 @@ export default {
     handleOnClickData: function (id) {
       try {
         let data = []; // dữ liệu phát lên lớp cha
-        const ID = this.field + "_id"; // Ex: department_id
+        const IDField = this.field + "_id"; // Ex: department_id
         const codeField = this.field + "_code"; // Ex: department_code
         const nameField = this.field + "_name"; // Ex: department_name
         // Lọc ra obj được chọn
-        for (let obj of this.popupData) {
-          if (id == obj[ID]) {
+        for (let obj of this.data) {
+          if (id == obj[IDField]) {
             // Cập nhật giá trị
             this.val = obj[codeField];
             // Cập nhật dữ liệu trong data
+            data.push({ field: IDField, value: obj[IDField] });
             data.push({ field: codeField, value: this.val });
             data.push({ field: nameField, value: obj[nameField] });
             data.push({
@@ -116,7 +117,7 @@ export default {
     },
   },
   data() {
-    return { isShow: false, Resource, val: "", indexOfData: 0, popupData: [] };
+    return { isShow: false, Resource, val: "", indexOfData: 0, data: [] };
   },
 };
 </script>

@@ -35,7 +35,7 @@
           :buttonName="'asset-add'"
           :iconName="'icon--add'"
           :title="Resource.Title.add"
-          @click="showPopup = true"
+          @click="handleOnclickAddButton"
         ></Button>
         <!-- Export button -->
         <ButtonFeature
@@ -55,13 +55,18 @@
       </div>
     </div>
     <!-- Table  -->
-    <TheTable :fixed-assets="fixedAssets" @update-rows="updateRows"></TheTable>
+    <TheTable
+      :fixed-assets="fixedAssets"
+      @update-rows="updateRows"
+      @show-popup="showPopup"
+    ></TheTable>
   </div>
   <!-- Popup -->
   <Popup
-    v-if="showPopup"
-    :mode="Enum.Mode.Add"
-    @close-popup="showPopup = false"
+    v-if="isShowPopup"
+    :mode="mode"
+    :popup-obj="popupObj"
+    @close-popup="isShowPopup = false"
     @show-toast="isShowToast = true"
     @reload-content="reload = !reload"
   ></Popup>
@@ -77,6 +82,7 @@
   <ToastVue
     v-if="isShowToast"
     :mode="mode"
+    :is-error="isErrorToast"
     :number-of-deleted-records="numberOfDeletedRecords"
   ></ToastVue>
 </template>
@@ -94,10 +100,13 @@ import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
-import { getAllFixedAssets, deleteFixedAsset } from "@/apis/fixed_asset";
+import {
+  getAllFixedAssets,
+  deleteFixedAsset,
+  deleteMultipleFixedAssets,
+} from "@/apis/fixed_asset";
 import { getAllDepartments } from "@/apis/department";
-import { getAllFixedAssetCategories } from "@/apis/fixed_asset_category";
-import axios from "axios";
+import { getAllFixedAssetCategories } from "@/apis/fixedAssetCategory";
 
 export default {
   name: "TheContent",
@@ -120,20 +129,32 @@ export default {
   created() {
     // Gọi API lấy thông tin tất cả tài sản cố định
     this.isShowLoader = true;
-    getAllFixedAssets().then((res) => {
-      this.fixedAssets = res.data;
-      this.isShowLoader = false;
-    });
+    getAllFixedAssets()
+      .then((res) => {
+        this.fixedAssets = res.data;
+        this.isShowLoader = false;
+      })
+      .catch(() => {
+        this.showErrorToast();
+      });
 
     // Gọi API lấy tất cả bộ phận sử dụng
-    getAllDepartments().then((res) => {
-      this.departments = res.data;
-    });
+    getAllDepartments()
+      .then((res) => {
+        this.departments = res.data;
+      })
+      .catch(() => {
+        this.showErrorToast();
+      });
 
     // Gọi API lấy tất cả bộ phận sử dụng
-    getAllFixedAssetCategories().then((res) => {
-      this.categories = res.data;
-    });
+    getAllFixedAssetCategories()
+      .then((res) => {
+        this.categories = res.data;
+      })
+      .catch(() => {
+        this.showErrorToast();
+      });
   },
 
   watch: {
@@ -190,11 +211,17 @@ export default {
     deleteRecords: function () {
       try {
         // Thực hiện xóa
-        if (this.mode == Enum.Mode.Delete)
-          deleteFixedAsset(this.selectedRows[0].fixed_asset_id).then((res) => {
-            console.log(res.data);
-          });
-        else {
+        if (this.mode == Enum.Mode.Delete) {
+          deleteFixedAsset(this.selectedRows[0].fixed_asset_id)
+            .then(() => {
+              // Hien thi toast thong bao thanh cong
+              this.isShowToast = true;
+            })
+            .catch(() => {
+              this.showErrorToast();
+            });
+          console.log("test");
+        } else {
           let listID = {};
           let fixedAssetIDs = [];
           for (const obj of this.selectedRows) {
@@ -202,60 +229,76 @@ export default {
           }
           listID["fixedAssetIDs"] = fixedAssetIDs;
           this.numberOfDeletedRecords = fixedAssetIDs.length;
-          this.deleteMultipleAssets(listID);
+          deleteMultipleFixedAssets(listID)
+            .then(() => {
+              // Hien thi toast thong bao thanh cong
+              this.isShowToast = true;
+            })
+            .catch(() => {
+              this.showErrorToast();
+            });
         }
         // Đóng dialog
         this.showDialogDelete = false;
-        // Hiển thị toast
-        this.isShowToast = true;
       } catch (error) {
         console.log(error);
       }
     },
 
     /**
-     * API xóa 1 tài sản
-     * @param {string} fixedAssetID id của bản ghi cần xóa
-     * @author Nguyen Van Thinh 12/11/2022
+     * Hiển thị popup với chế độ và dữ liệu được truyền vào
+     * @param {Number} mode
+     * @param {Object} popupObj
+     * @author NVThinh 09/11/2022
      */
-    deleteAsset: async function (fixedAssetID) {
+    showPopup: function (mode, popupObj) {
       try {
-        const res = await axios.delete(
-          "http://localhost:11799/api/v1/FixedAssets/" + fixedAssetID
-        );
-        console.log("Result of Delete an asset", res);
+        // Cập nhật chế độ của popup
+        this.mode = mode;
+        // Cập nhật đối tượng được chọn
+        this.popupObj = popupObj;
+        // Hiển thị popup
+        this.isShowPopup = true;
       } catch (error) {
         console.log(error);
       }
     },
 
     /**
-     * API xóa nhiều bản ghi tài sản
-     * @param {Array} listID mảng các ID của tài sản muốn xóa
-     * @author 14/11/2022
+     * xử lý sự kiện nhấn vào nút thêm mới
+     * @author NVThinh 09/11/2022
      */
-    deleteMultipleAssets: async function (listID) {
+    handleOnclickAddButton: function () {
       try {
-        await axios.post(
-          "http://localhost:11799/api/v1/FixedAssets/DeleteBatch",
-          listID
-        );
-        console.log("Call API Delete multiple assets");
+        // Cập nhật chế độ popup
+        this.mode = Enum.Mode.Add;
+        // Hiển thị popup
+        this.isShowPopup = true;
       } catch (error) {
         console.log(error);
       }
+    },
+
+    // Hiển thị toast thông báo lỗi
+    showErrorToast: function () {
+      // Cập nhật trạng thái của toast
+      this.isErrorToast = true;
+      // Hiển thị toast
+      this.isShowToast = true;
     },
   },
   data() {
     return {
       info: "",
       mode: 0,
+      popupObj: {},
       numberOfDeletedRecords: 1,
       isShowLoader: false, // trạng thái ẩn hiện của loader
       isDisabledButton: true,
-      showPopup: false,
+      isShowPopup: false,
       showDialogDelete: false,
       isShowToast: false,
+      isErrorToast: false, // trạng thái toast lỗi
       reload: false,
       selectedRows: [],
       fixedAssets: [],

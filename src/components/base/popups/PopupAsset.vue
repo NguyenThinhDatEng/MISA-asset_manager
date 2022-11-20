@@ -30,7 +30,7 @@
             <Input
               :label-content="Label.fixed_asset_name"
               :maxlength="maxLength.asset_name"
-              :value="tableRowObj.fixed_asset_name"
+              :value="popupObj.fixed_asset_name"
               :field="fields.fixed_asset_name"
               @update-input="updateInput"
             ></Input>
@@ -46,9 +46,9 @@
             <!-- Combobox -->
             <ComboboxDetail
               :placeholder="placeholder.department_code"
-              :data="departments"
+              :combobox-data="departments"
               :field="'department'"
-              :value="tableRowObj.department_code"
+              :value="popupObj.department_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
             <p class="error-message" v-show="isShowError">
@@ -60,9 +60,7 @@
             <label>{{ Label.department_name }}</label>
             <input
               class="input input--disabled"
-              :value="
-                tableRowObj.department_name || popupObject.department_name
-              "
+              :value="popupObj.department_name || popupObject.department_name"
               disabled
             />
           </div>
@@ -77,9 +75,9 @@
             <!-- Combobox  -->
             <ComboboxDetail
               :placeholder="placeholder.asset_category_code"
-              :data="categories"
+              :combobox-data="categories"
               :field="'fixed_asset_category'"
-              :value="tableRowObj.fixed_asset_category_code"
+              :value="popupObj.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
             <p class="error-message" v-show="isShowError">
@@ -91,10 +89,7 @@
             <label>{{ Label.fixed_asset_category_name }}</label>
             <input
               class="input input--disabled"
-              :value="
-                tableRowObj.fixed_asset_category_name ||
-                popupObject.fixed_asset_category_name
-              "
+              :value="popupObject[fields.fixed_asset_category_name]"
               disabled
             />
           </div>
@@ -178,7 +173,7 @@
               <InputCalendar
                 :field="fields.purchase_date"
                 :mode="mode"
-                :value="tableRowObj[fields.purchase_date]"
+                :value="popupObject[fields.purchase_date]"
                 @update-input="updateInput"
               ></InputCalendar>
             </div>
@@ -195,7 +190,7 @@
                   <InputCalendar
                     :field="fields.production_date"
                     :mode="mode"
-                    :value="tableRowObj[fields.production_date]"
+                    :value="popupObject[fields.production_date]"
                     @update-input="updateInput"
                   ></InputCalendar>
                 </div>
@@ -223,14 +218,14 @@
       </div>
     </div>
   </div>
-
+  <!-- Dialog validate dữ liệu -->
   <DialogValidate
     v-if="showDialogValidate"
     :required-data="requiredData"
     :dlg-type="this.dlgType"
     @close-dialog="showDialogValidate = false"
   ></DialogValidate>
-
+  <!-- Dialog kiểm tra sự chắc chắn của việc đóng popup -->
   <DialogCancelVue
     v-if="isShowDlgCancel"
     :mode="mode"
@@ -253,6 +248,7 @@ import axios from "axios";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
+import { createFixedAsset } from "@/apis/fixed_asset";
 
 export default {
   name: "PopupAsset",
@@ -267,14 +263,13 @@ export default {
     DialogCancelVue,
   },
   props: {
-    tableRowObj: {
+    mode: Number,
+    popupObj: {
       type: Object,
       default: () => {
         return {};
       },
     },
-    mode: Number,
-    fixedAssetID: String,
   },
   created() {
     try {
@@ -284,8 +279,8 @@ export default {
         case Enum.Mode.Update:
           this.theTitle = Resource.PopupTitle.edit;
           // Bind dữ liệu của table row được chọn vào popup object
-          for (let prop in this.tableRowObj) {
-            this.popupObject[prop] = this.tableRowObj[prop];
+          for (let prop in this.popupObj) {
+            this.popupObject[prop] = this.popupObj[prop];
           }
           // Cập nhật giá trị hao mòn năm
           this.depreciation_value = Function.depreciationValue(
@@ -480,7 +475,6 @@ export default {
           this.dlgType = Enum.DlgType.RequiredInfo;
           // Hiển thị dialog
           this.showDialogValidate = true;
-          console.log("!!!");
         } else {
           // Tỉ lệ hao mòn <> 1/Số năm sử dụng
           const depreciation_rate =
@@ -492,7 +486,6 @@ export default {
             this.dlgType = Enum.DlgType.Describe;
             this.requiredData.push(Resource.WarningMessage.depreciation);
             this.showDialogValidate = true;
-            console.log("!!!!!");
           } else {
             // Hao mòn năm > Nguyên giá
             if (
@@ -504,7 +497,6 @@ export default {
                 Resource.WarningMessage.costAndDepreciationValue
               );
               this.showDialogValidate = true;
-              console.log("!!!!!!!");
             } else {
               switch (this.mode) {
                 case Enum.Mode.Add:
@@ -541,11 +533,13 @@ export default {
      */
     insertAsset: async function () {
       try {
-        const res = await axios.post(
-          "http://localhost:11799/api/v1/FixedAssets",
-          this.popupObject
-        );
-        console.log("result of get all assets", res);
+        // const res = await axios.post(
+        //   "http://localhost:11799/api/v1/FixedAssets",
+        //   this.popupObject
+        // );
+        createFixedAsset(this.popupObject).then((response) => {
+          console.log(response.data);
+        });
         // Hiển thị toast thông báo và đóng popup
         this.showToast();
         // Gửi thông báo load lại trang
