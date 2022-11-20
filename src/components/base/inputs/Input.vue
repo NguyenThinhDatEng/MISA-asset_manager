@@ -7,7 +7,7 @@
       { 'input--disabled': isDisabled },
       { 'input--error': isError },
     ]"
-    :maxlength="maxlength"
+    :maxlength="maxLength"
     :style="{
       'text-align': type == Enum.DataType.Text ? 'left' : 'right',
     }"
@@ -17,7 +17,7 @@
     :placeholder="
       type == Enum.DataType.Number || type == Enum.DataType.Money ? 0 : ''
     "
-    :on-focus="isFocus"
+    ref="input"
     @keyup="updateInput($event)"
   />
 
@@ -37,7 +37,7 @@ export default {
   name: "NormalInput",
   props: {
     labelContent: String,
-    maxlength: Number,
+    maxLength: Number,
     value: String,
     type: {
       type: Number,
@@ -52,13 +52,14 @@ export default {
       type: Boolean,
       default: false,
     },
-    isFocus: {
-      type: Boolean,
-      default: true,
-    },
   },
   emits: ["update-input"],
   methods: {
+    // Focus input
+    focusInput() {
+      this.$refs.input.focus();
+      console.log("@!@");
+    },
     // Gửi nội dung dữ liệu được thay đổi lên class cha
     updateInput: function (e) {
       try {

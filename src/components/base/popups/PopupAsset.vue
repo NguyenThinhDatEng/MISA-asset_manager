@@ -18,10 +18,10 @@
             <!-- input 01 -->
             <Input
               :label-content="Label.fixed_asset_code"
-              :maxlength="maxLength.fixed_asset_code"
+              :maxLength="maxLength.fixed_asset_code"
               :value="popupObject[fields.fixed_asset_code]"
               :field="fields.fixed_asset_code"
-              :isFocus="true"
+              ref="firstInput"
               @update-input="updateInput"
             ></Input>
           </div>
@@ -29,7 +29,7 @@
             <!-- input 02 -->
             <Input
               :label-content="Label.fixed_asset_name"
-              :maxlength="maxLength.asset_name"
+              :maxLength="maxLength.fixed_asset_name"
               :value="popupObj.fixed_asset_name"
               :field="fields.fixed_asset_name"
               @update-input="updateInput"
@@ -48,6 +48,7 @@
               :placeholder="placeholder.department_code"
               :combobox-data="departments"
               :field="'department'"
+              :max-length="maxLength.department_code"
               :value="popupObj.department_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
@@ -77,6 +78,7 @@
               :placeholder="placeholder.asset_category_code"
               :combobox-data="categories"
               :field="'fixed_asset_category'"
+              :max-length="maxLength.fixed_asset_category_code"
               :value="popupObj.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
@@ -134,7 +136,7 @@
               :label-content="Label.depreciation_rate"
               :field="fields.depreciation_rate"
               :type="Enum.DataType.Rate"
-              :maxlength="5"
+              :max-length="5"
               :value="popupObject[fields.depreciation_rate].toString()"
               @update-input="updateInput"
             ></InputNumber>
@@ -343,44 +345,14 @@ export default {
    * @author Nguyen Van Thinh 05/11/2022
    */
   mounted() {
-    try {
-      // Lay tat ca bo phan su dung
-      fetch(Resource.URLs.department, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          this.departments = data;
-          // console.log("@!@", this.departments);
-        })
-        .catch((error) => {
-          console.log("Call get all departments API", error);
-        });
-
-      // Lay tat ca loai tai san
-      fetch(Resource.URLs["asset-type"], {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          // Gan data thu duoc vao du lieu cua component
-          this.categories = data;
-        })
-        .catch((error) => {
-          console.log("Call get all asset categories API", error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
+    this.focusFirstInput();
   },
 
   methods: {
+    // focus vào ô input đầu tiên
+    focusFirstInput() {
+      this.$refs.firstInput.focusInput();
+    },
     /**
      * Emit: Đóng popup
      * @author Nguyen Van Thinh 11/11/2022

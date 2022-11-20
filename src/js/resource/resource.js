@@ -100,12 +100,10 @@ export default {
     production_date: "Ngày bắt đầu sử dụng",
   },
   InputLength: {
-    asset_code: 100,
-    asset_name: 255,
+    fixed_asset_code: 100,
+    fixed_asset_name: 255,
     department_code: 50,
-    department_name: 255,
-    asset_category_code: 50,
-    asset_category_name: 255,
+    fixed_asset_category_code: 50,
   },
   ComboboxInfo: {
     firstCol: "Mã",

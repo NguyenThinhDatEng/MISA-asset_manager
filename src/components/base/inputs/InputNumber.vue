@@ -2,7 +2,7 @@
   <label>{{ labelContent }} <span style="color: red">*</span></label>
 
   <div class="input--number">
-    <input type="text" class="input" :maxlength="maxlength" v-model="amount" />
+    <input type="text" class="input" :maxlength="maxLength" v-model="amount" />
     <div class="icon--up_down">
       <div
         class="icon icon--up"
@@ -39,7 +39,7 @@ export default {
       type: String,
       default: "0",
     },
-    maxlength: {
+    maxLength: {
       type: Number,
       default: 4,
     },

@@ -4,7 +4,7 @@
       type="text"
       class="input combobox__input"
       :placeholder="placeholder"
-      :maxlength="maxlength"
+      :maxlength="maxLength"
       :value="val ? val : value"
       @click="isShow = !isShow"
     />
@@ -40,7 +40,7 @@ export default {
   components: { Data },
   props: {
     placeholder: String,
-    maxlength: Number,
+    maxLength: Number,
     comboboxData: Array,
     field: String,
     value: {
