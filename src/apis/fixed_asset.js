@@ -24,8 +24,23 @@ const getAllFixedAssets = () => {
  */
 const getFixedAssetByID = (fixedAssetID) => {
   try {
-    console.log("Call API a fixed asset by ID");
+    console.log("Call API get a fixed asset by ID");
     const res = httpClient.get(END_POINT + `/${fixedAssetID}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
+ * API mã tài sản mới
+ * @returns res là 1 promise
+ * @author NVThinh (18-11-2022)
+ */
+const getNewCode = () => {
+  try {
+    console.log("Call API get new fixed asset code");
+    const res = httpClient.get(END_POINT + `/newAssetCode`);
     return res;
   } catch (error) {
     console.log(error);
@@ -100,6 +115,7 @@ const deleteMultipleFixedAssets = (listID) => {
 export {
   getAllFixedAssets,
   getFixedAssetByID,
+  getNewCode,
   createFixedAsset,
   editFixedAsset,
   deleteFixedAsset,

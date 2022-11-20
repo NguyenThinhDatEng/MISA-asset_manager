@@ -253,7 +253,11 @@ import axios from "axios";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import { createFixedAsset, editFixedAsset } from "@/apis/fixed_asset";
+import {
+  createFixedAsset,
+  editFixedAsset,
+  getNewCode,
+} from "@/apis/fixed_asset";
 
 export default {
   name: "PopupAsset",
@@ -543,38 +547,16 @@ export default {
     },
 
     /**
-     * API cập nhật tài sản
-     * @author Nguyen Van Thinh 12/11/2022
-     */
-    updateAsset: async function (fixedAssetID) {
-      try {
-        const res = await axios.put(
-          "http://localhost:11799/api/v1/FixedAssets/" + fixedAssetID,
-          this.popupObject
-        );
-        console.log("result of update an asset", res);
-        // Hiển thị toast thông báo và đóng popup
-        this.showToast();
-        // Gửi thông báo load lại trang
-        this.$emit("reload-content");
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    /**
      * API lấy mã mới tài sản
      * @author Nguyen Van Thinh 12/11/2022
      */
     getNewCode: async function () {
       try {
-        const res = await axios.get(
-          "http://localhost:11799/api/v1/FixedAssets/newAssetCode"
-        );
-        console.log("Result of Get new asset code", res);
-        // Gán vào đối tượng
-        this.popupObject[this.fields.fixed_asset_code] = res.data;
-        this.initObj[this.fields.fixed_asset_code] = res.data;
+        getNewCode().then((res) => {
+          // Gán vào đối tượng
+          this.popupObject[this.fields.fixed_asset_code] = res.data;
+          this.initObj[this.fields.fixed_asset_code] = res.data;
+        });
       } catch (error) {
         console.log(error);
       }
