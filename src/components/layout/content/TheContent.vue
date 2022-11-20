@@ -59,6 +59,7 @@
       :fixed-assets="fixedAssets"
       @update-rows="updateRows"
       @show-popup="showPopup"
+      ref="TheTable"
     ></TheTable>
   </div>
   <!-- Popup -->

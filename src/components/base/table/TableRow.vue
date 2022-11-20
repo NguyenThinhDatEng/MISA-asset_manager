@@ -38,31 +38,22 @@
       </div>
     </td>
   </tr>
-  <!-- Popup  -->
-  <Popup
-    v-if="isShowPopup"
-    :mode="popupMode"
-    :tableRowObj="popupObj"
-    :fixedAssetID="tableRowObj.fixed_asset_id"
-    @close-popup="isShowPopup = false"
-    @show-toast="isShowToast = true"
-    @reload-content="this.$emit('reload-content')"
-    @update-table-row="updateTableRow"
-  ></Popup>
-  <ToastVue v-if="isShowToast" :mode="Enum.Mode.Update"></ToastVue>
 </template>
 
 <script>
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import Popup from "../popups/PopupAsset.vue";
-import ToastVue from "../toast/ToastVue.vue";
 
 export default {
   name: "TableRow",
-  components: { Popup, ToastVue },
-  props: { tableRowObj: Object, index: Number, isCheckAll: Boolean },
+  props: {
+    tableRowObj: Object,
+    index: Number,
+    isCheckAll: Boolean,
+    isRefreshTable: Boolean,
+  },
+
   created() {
     // Cập nhật giá trị hao mòn năm
     const depreciation_value = Function.depreciationValue(
@@ -79,6 +70,7 @@ export default {
     // Cập nhật giá trị còn lại
     this.residual_value = this.tableRowObj.cost - this.accumulated_depreciation;
   },
+
   emits: [
     "update-row",
     "update-checked-header",
@@ -91,12 +83,7 @@ export default {
     isCheckAll: function () {
       this.isActive = this.isCheckAll;
     },
-    // Thiết lập thời gian toast hiển thị
-    isShowToast: function () {
-      setTimeout(() => {
-        this.isShowToast = false;
-      }, 1500);
-    },
+
     // Cập nhật giá trị khi reload dữ liệu
     tableRowObj: function () {
       // Cập nhật giá trị hao mòn năm
@@ -114,6 +101,11 @@ export default {
       // Cập nhật giá trị còn lại
       this.residual_value =
         this.tableRowObj.cost - this.accumulated_depreciation;
+    },
+
+    // Làm mới bảng dữ liệu
+    isRefreshTable: function () {
+      this.isActive = false;
     },
   },
   methods: {

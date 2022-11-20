@@ -35,9 +35,11 @@
           :tableRowObj="asset"
           :index="index + 1"
           :is-check-all="isCheckAll"
+          :is-refresh-table="isRefreshTable"
           @update-row="updateRow"
           @update-checked-header="updateCheckedHeader"
           @show-popup="showPopup"
+          ref="Row"
         ></Row>
       </tbody>
       <!-- Table footer  -->
@@ -68,20 +70,36 @@ export default {
   components: { Row, TableFoot },
   emits: ["update-rows", "reload-content", "show-popup"],
   watch: {
+    // Trạng thái chọn tất cả thay đổi
     isCheckAll: function () {
-      if (this.isCheckAll == true) {
-        this.selectedRows = [];
-        for (const asset in this.fixedAssets) {
-          this.selectedRows.push(asset);
+      try {
+        // Tick chọn tất cả
+        if (this.isCheckAll == true) {
+          // Thêm tất cả các dòng vào mảng
+          this.selectedRows = [];
+          for (const asset in this.fixedAssets) {
+            this.selectedRows.push(asset);
+          }
+        } else {
+          // Bỏ chọn tất cả
+          this.selectedRows = [];
         }
-      } else {
-        this.selectedRows = [];
+        // Gửi dữ liệu lên Content
+        this.$emit("update-rows", this.selectedRows);
+        // Trạng thái checkbox input ở table header
+        this.checkedHeader = this.isCheckAll;
+      } catch (error) {
+        console.log(error);
       }
-      this.$emit("update-rows", this.selectedRows);
-      this.checkedHeader = this.isCheckAll;
     },
+    // Mảng dữ liệu thay đổi
     fixedAssets: function () {
+      // Cập nhật tổng các cột ở table footer
       this.updateFooterData();
+      // Làm mới bảng dữ liệu
+      this.isRefreshTable = !this.isRefreshTable;
+      // Làm mới mảng các dòng được chọn
+      this.selectedRows = [];
     },
   },
 
@@ -185,6 +203,7 @@ export default {
   data() {
     return {
       isCheckAll: false,
+      isRefreshTable: false,
       checkedHeader: false,
       selectedRows: [],
       totalOfQuantities: 0,
