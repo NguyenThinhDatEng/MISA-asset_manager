@@ -14,7 +14,7 @@
           :parentClass="filters[0].className"
           :placeholder="Resource.Placeholder[filters[0].placeholder]"
           :field="filters[0].field"
-          :data="this.categories"
+          :data="this.fixedCategories"
           :title="Resource.Title['asset-category-filter']"
         ></Dropdown>
         <!-- Department filter -->
@@ -67,6 +67,8 @@
     v-if="isShowPopup"
     :mode="mode"
     :popup-obj="popupObj"
+    :departments="departments"
+    :fixed-categories="fixedCategories"
     @close-popup="isShowPopup = false"
     @show-toast="isShowToast = true"
     @show-error-toast="showErrorToast"
@@ -152,7 +154,7 @@ export default {
     // Gọi API lấy tất cả bộ phận sử dụng
     getAllFixedAssetCategories()
       .then((res) => {
-        this.categories = res.data;
+        this.fixedCategories = res.data;
       })
       .catch(() => {
         this.showErrorToast();
@@ -329,7 +331,7 @@ export default {
       selectedRows: [],
       fixedAssets: [],
       departments: [],
-      categories: [],
+      fixedCategories: [],
       filters: [
         {
           id: "dropdown--asset-type",

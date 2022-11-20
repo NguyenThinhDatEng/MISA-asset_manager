@@ -21,7 +21,7 @@
         </div>
       </div>
       <Data
-        v-for="(obj, index) in data"
+        v-for="(obj, index) in comboboxData"
         :key="index"
         :field="field"
         :obj="obj"
@@ -82,29 +82,32 @@ export default {
      */
     handleOnClickData: function (id) {
       try {
-        let data = []; // dữ liệu phát lên lớp cha
+        let comboData = []; // dữ liệu phát lên lớp cha
         const IDField = this.field + "_id"; // Ex: department_id
         const codeField = this.field + "_code"; // Ex: department_code
         const nameField = this.field + "_name"; // Ex: department_name
         // Lọc ra obj được chọn
-        for (let obj of this.data) {
+        for (let obj of this.comboboxData) {
           if (id == obj[IDField]) {
             // Cập nhật giá trị
             this.val = obj[codeField];
             // Cập nhật dữ liệu trong data
-            data.push({ field: IDField, value: obj[IDField] });
-            data.push({ field: codeField, value: this.val });
-            data.push({ field: nameField, value: obj[nameField] });
-            data.push({
+            comboData.push({ field: IDField, value: obj[IDField] }); // id
+            comboData.push({ field: codeField, value: this.val }); // code
+            comboData.push({ field: nameField, value: obj[nameField] }); // name
+            comboData.push({
+              // life time
               field: Resource.PopupField.life_time,
               value: obj.life_time,
             });
-            data.push({
+            comboData.push({
+              // depreciation rate
               field: Resource.PopupField.depreciation_rate,
               value: obj.depreciation_rate,
             });
+            console.log(comboData);
             // Phát dữ liệu đến lớp cha
-            this.$emit("update-combobox", data);
+            this.$emit("update-combobox", comboData);
             // Thay đổi trạng thái
             obj.isActive = true;
           } else obj.isActive = false;
@@ -117,7 +120,7 @@ export default {
     },
   },
   data() {
-    return { isShow: false, Resource, val: "", indexOfData: 0, data: [] };
+    return { isShow: false, val: "", data: [], Resource };
   },
 };
 </script>

@@ -17,6 +17,7 @@
     :placeholder="
       type == Enum.DataType.Number || type == Enum.DataType.Money ? 0 : ''
     "
+    :tabindex="tabindex"
     ref="input"
     @keyup="updateInput($event)"
   />
@@ -52,13 +53,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    tabindex: {
+      type: String,
+      default: "",
+    },
   },
   emits: ["update-input"],
   methods: {
     // Focus input
     focusInput() {
       this.$refs.input.focus();
-      console.log("@!@");
     },
     // Gửi nội dung dữ liệu được thay đổi lên class cha
     updateInput: function (e) {

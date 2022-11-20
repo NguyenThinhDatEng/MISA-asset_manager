@@ -15,6 +15,8 @@
         <!-- Row 01: Ma tai san & Ten tai san -->
         <div class="input-row">
           <div class="popup__body--left">
+            <!-- ignore input -->
+            <input ref="ignoreInput" class="ignoreInput" readonly />
             <!-- input 01 -->
             <Input
               :label-content="Label.fixed_asset_code"
@@ -76,7 +78,7 @@
             <!-- Combobox  -->
             <ComboboxDetail
               :placeholder="placeholder.asset_category_code"
-              :combobox-data="categories"
+              :combobox-data="fixedCategories"
               :field="'fixed_asset_category'"
               :max-length="maxLength.fixed_asset_category_code"
               :value="popupObj.fixed_asset_category_code"
@@ -216,6 +218,7 @@
           :button-content="Resource.ButtonContent.cancel"
           :type="Enum.Type.Secondary"
           @click="showDialogCancel"
+          @keydown="comeBack"
         ></ButtonMain>
       </div>
     </div>
@@ -254,6 +257,31 @@ import { createFixedAsset, editFixedAsset } from "@/apis/fixed_asset";
 
 export default {
   name: "PopupAsset",
+  props: {
+    // Chế độ của popup
+    mode: Number,
+    // Đối tượng popup
+    popupObj: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+    // Mảng bộ phận sử dụng
+    departments: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+    // Mảng loại tài sản cố định
+    fixedCategories: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+  },
   components: {
     Input,
     InputMoney,
@@ -264,15 +292,7 @@ export default {
     DialogValidate,
     DialogCancelVue,
   },
-  props: {
-    mode: Number,
-    popupObj: {
-      type: Object,
-      default: () => {
-        return {};
-      },
-    },
-  },
+
   created() {
     try {
       switch (this.mode) {
@@ -326,8 +346,6 @@ export default {
           this.initObj = Object.assign({}, this.popupObject);
           break;
       }
-      // console.log("popupObject in created", this.popupObject);
-      // console.log("initObj in created", this.initObj);
     } catch (error) {
       console.log(error);
     }
@@ -349,6 +367,9 @@ export default {
   },
 
   methods: {
+    comeBack: function (e) {
+      if (!e.shiftKey && e.which == 9) this.$refs.ignoreInput.focus();
+    },
     // focus vào ô input đầu tiên
     focusFirstInput() {
       this.$refs.firstInput.focusInput();
@@ -577,8 +598,6 @@ export default {
       dlgType: "blank",
       isShowError: false,
       depreciation_value: 0,
-      departments: [],
-      categories: [],
       popupObject: {
         created_by: "Nguyễn Văn Thịnh",
         modified_by: "Nguyễn Văn Thịnh",
@@ -600,4 +619,10 @@ export default {
 
 <style scoped>
 @import url(@/css/base.css);
+
+.ignoreInput {
+  width: 0;
+  height: 0;
+  border: none;
+}
 </style>
