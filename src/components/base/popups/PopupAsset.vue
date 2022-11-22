@@ -58,6 +58,11 @@
               :is-error="errorMessages[fields.department_code]"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
+            <p
+              v-show="errorMessages[fields.department_code]"
+              class="error-message"
+              v-html="Label.department_code + ' ' + Resource.ErrorMessage.blank"
+            ></p>
           </div>
           <div class="popup__body--right">
             <!-- Input -->
@@ -87,9 +92,15 @@
               :is-error="errorMessages[fields.fixed_asset_category_code]"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
-            <p class="error-message" v-show="false">
-              {{ Label.department_code + " " + Resource.ErrorMessage.blank }}
-            </p>
+            <p
+              v-show="errorMessages[fields.fixed_asset_category_code]"
+              class="error-message"
+              v-html="
+                Label.fixed_asset_category_code +
+                ' ' +
+                Resource.ErrorMessage.blank
+              "
+            ></p>
           </div>
           <!-- Input  -->
           <div class="popup__body--right">
@@ -479,8 +490,12 @@ export default {
       }
     },
 
-    updateCombobox: function (data) {
+    updateCombobox: function (data, field) {
       try {
+        this.errorMessages[field] = false;
+        if (field == this.fields.fixed_asset_category_code) {
+          this.errorMessages[this.fields.life_time] = false;
+        }
         for (let obj of data) {
           if (obj.value) {
             this.popupObject[obj.field] = obj.value;

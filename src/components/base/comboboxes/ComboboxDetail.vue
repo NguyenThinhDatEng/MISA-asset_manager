@@ -29,11 +29,6 @@
       ></Data>
     </div>
   </div>
-  <p
-    v-show="isError"
-    class="error-message"
-    v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
-  ></p>
 </template>
 
 <script>
@@ -59,21 +54,31 @@ export default {
     },
   },
   created() {
-    window.addEventListener("click", (e) => {
-      if (!this.$el.contains(e.target)) {
-        this.isShow = false;
+    try {
+      window.addEventListener("click", (e) => {
+        if (!this.$el.contains(e.target)) {
+          this.isShow = false;
+        }
+      });
+      // Cập nhật biến data khi bind mảng dữ liệu từ ngoài vào
+      this.data = this.comboboxData;
+      // Thêm trường dữ liệu isActive
+      for (let obj of this.data) {
+        obj["isActive"] = false;
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   },
   emits: ["update-combobox"],
   watch: {
+    // Cập nhật biến data khi bind mảng dữ liệu từ ngoài vào
     comboboxData: function () {
       this.data = this.comboboxData;
       // Thêm trường dữ liệu isActive
       for (let obj of this.data) {
         obj["isActive"] = false;
       }
-      // console.log("@!@", this.data);
     },
   },
   methods: {
@@ -117,7 +122,7 @@ export default {
             });
             console.log(comboData);
             // Phát dữ liệu đến lớp cha
-            this.$emit("update-combobox", comboData);
+            this.$emit("update-combobox", comboData, this.field + "_code");
             // Thay đổi trạng thái
             obj.isActive = true;
           } else obj.isActive = false;
@@ -130,7 +135,12 @@ export default {
     },
   },
   data() {
-    return { isShow: false, val: "", data: [], Resource };
+    return {
+      isShow: false, // Trạng thái ẩn hiện phần dữ liệu
+      val: "", // giá trị ô input
+      data: [], // mảng dữ liệu được cập nhật
+      Resource, // tài nguyen
+    };
   },
 };
 </script>
