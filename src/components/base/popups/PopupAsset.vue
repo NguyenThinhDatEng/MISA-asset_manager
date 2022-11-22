@@ -32,7 +32,7 @@
             <Input
               :label-content="Label.fixed_asset_name"
               :maxLength="maxLength.fixed_asset_name"
-              :value="popupObj.fixed_asset_name"
+              :value="popupObject.fixed_asset_name"
               :field="fields.fixed_asset_name"
               @update-input="updateInput"
             ></Input>
@@ -51,7 +51,7 @@
               :combobox-data="departments"
               :field="'department'"
               :max-length="maxLength.department_code"
-              :value="popupObj.department_code"
+              :value="popupObject.department_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
             <p class="error-message" v-show="isShowError">
@@ -63,7 +63,7 @@
             <label>{{ Label.department_name }}</label>
             <input
               class="input input--disabled"
-              :value="popupObj.department_name || popupObject.department_name"
+              :value="popupObject.department_name"
               disabled
             />
           </div>
@@ -81,7 +81,7 @@
               :combobox-data="fixedCategories"
               :field="'fixed_asset_category'"
               :max-length="maxLength.fixed_asset_category_code"
-              :value="popupObj.fixed_asset_category_code"
+              :value="popupObject.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
             <p class="error-message" v-show="isShowError">
@@ -104,7 +104,7 @@
             <InputNumber
               :label-content="Label.quantity"
               :field="fields.quantity"
-              :value="popupObject[fields.quantity].toString()"
+              :value="popupObject[fields.quantity].toString() || ''"
               @update-input="updateInput"
             ></InputNumber>
           </div>
@@ -159,7 +159,7 @@
                 <Input
                   :label-content="Label.tracked_year"
                   :type="Enum.DataType.Year"
-                  :value="popupObject[fields.tracked_year].toString()"
+                  :value="popupObject[fields.tracked_year].toString() || ''"
                   :isDisabled="true"
                 ></Input>
               </div>
@@ -249,7 +249,6 @@ import InputCalendar from "@/components/base/datepicker/InputCalendar.vue";
 import ComboboxDetail from "@/components/base/comboboxes/ComboboxDetail.vue";
 import ButtonMain from "../buttons/ButtonMain.vue";
 import DialogValidate from "../dialogs/DialogValidate.vue";
-import axios from "axios";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
@@ -257,7 +256,7 @@ import {
   createFixedAsset,
   editFixedAsset,
   getNewCode,
-} from "@/apis/fixed_asset";
+} from "@/apis/fixedAsset";
 
 export default {
   name: "PopupAsset",
@@ -299,6 +298,7 @@ export default {
 
   created() {
     try {
+      // Cập nhật đối tượng popup tương ứng với các chế độ tương ứng
       switch (this.mode) {
         // Chế dộ chỉnh sửa và nhân bản
         case Enum.Mode.Duplicate:
@@ -361,7 +361,11 @@ export default {
     "reload-content",
     "update-table-row",
   ],
-  watch: {},
+  watch: {
+    popupObject: function () {
+      console.log(this.popupObject);
+    },
+  },
   /**
    * Call API
    * @author Nguyen Van Thinh 05/11/2022
@@ -486,20 +490,16 @@ export default {
             this.popupObject[this.fields.depreciation_rate].toFixed(2) !=
             depreciation_rate.toFixed(2)
           ) {
-            this.dlgType = Enum.DlgType.Describe;
-            this.requiredData.push(Resource.WarningMessage.depreciation);
-            this.showDialogValidate = true;
+            this.showDlgValidate(Resource.WarningMessage.depreciation);
           } else {
             // Hao mòn năm > Nguyên giá
             if (
               this.popupObject[this.fields.depreciation_value] >
               this.popupObject[this.fields.cost]
             ) {
-              this.dlgType = Enum.DlgType.Describe;
-              this.requiredData.push(
+              this.showDlgValidate(
                 Resource.WarningMessage.costAndDepreciationValue
               );
-              this.showDialogValidate = true;
             } else {
               switch (this.mode) {
                 case Enum.Mode.Add:
@@ -509,8 +509,13 @@ export default {
                     .then(() => {
                       this.$emit("reload-content");
                     })
-                    .catch(() => {
-                      this.$emit("show-error-toast");
+                    .catch((res) => {
+                      if (
+                        res.response.data.errorCode ==
+                        Enum.ErrorCode.DuplicateKey
+                      ) {
+                        this.showDlgValidate(res.response.data.userMsg);
+                      } else this.$emit("show-error-toast");
                     });
                   break;
                 case Enum.Mode.Update:
@@ -522,8 +527,13 @@ export default {
                     .then(() => {
                       this.$emit("reload-content");
                     })
-                    .catch(() => {
-                      this.$emit("show-error-toast");
+                    .catch((res) => {
+                      if (
+                        res.response.data.errorCode ==
+                        Enum.ErrorCode.DuplicateKey
+                      ) {
+                        this.showDlgValidate(res.response.data.userMsg);
+                      } else this.$emit("show-error-toast");
                     });
                   // Gửi giá trị hao mòn năm lên table row để cập nhật hao mòn lũy kế và giá trị còn lại
                   this.$emit(
@@ -536,11 +546,24 @@ export default {
                   console.log("Default!!!!!!");
                   break;
               }
-              // Đóng popup
-              this.$emit("close-popup");
             }
           }
         }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Hiển thị Dialog cảnh báo
+     * @param content nội dung cảnh báo
+     * @author NVThinh 21-11-2022
+     */
+    showDlgValidate: function (content) {
+      try {
+        this.dlgType = Enum.DlgType.Describe;
+        this.requiredData.push(content);
+        this.showDialogValidate = true;
       } catch (error) {
         console.log(error);
       }
@@ -564,28 +587,30 @@ export default {
   },
   data() {
     return {
-      Resource,
-      Enum,
-      Function,
-      Title: Resource.Title,
-      Label: Resource.PopupLabel,
-      placeholder: Resource.Placeholder,
-      maxLength: Resource.InputLength,
-      fields: Resource.PopupField,
-      theTitle: "",
-      currentYear: Function.getCurrentYear(),
-      showDialogValidate: false,
-      isShowDlgCancel: false,
-      isShowToast: false,
-      dlgType: "blank",
-      isShowError: false,
-      depreciation_value: 0,
+      Resource, // Tài nguyên
+      Enum, // enum
+      Function, // Các hàm chung
+      Title: Resource.Title, // Tiêu đề
+      Label: Resource.PopupLabel, // Nhãn
+      placeholder: Resource.Placeholder, // Placholder
+      maxLength: Resource.InputLength, // Độ dài ô input
+      fields: Resource.PopupField, // Các trường trong popup
+      theTitle: "", // Tiêu đề
+      currentYear: Function.getCurrentYear(), // Năm hiện tại
+      showDialogValidate: false, /// Hiển thị validate dialog
+      isShowDlgCancel: false, // Trạng thái ẩn hiện Cancel dialog
+      isShowToast: false, // Trạng thái ẩn hiện của toast
+      dlgType: "blank", // Kiểu của dialog
+      isShowError: false, //
+      errorMessages: {},
+      depreciation_value: 0, // Giá trị hao mòn
+      // Đối tượng popup
       popupObject: {
         created_by: "Nguyễn Văn Thịnh",
         modified_by: "Nguyễn Văn Thịnh",
       },
-      initObj: {},
-      requiredData: [],
+      initObj: {}, // Đối tượng khởi tạo ban đầu -> Kiểm tra popup có được tương tác không
+      requiredData: [], // Mảng chứa những dữ liệu yêu cầu
       defaultValue: {
         quantity: 1,
         depreciation_rate: 0,

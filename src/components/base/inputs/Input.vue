@@ -23,9 +23,9 @@
   />
 
   <p
+    v-show="isError"
     class="error-message"
     v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
-    v-show="isError"
   ></p>
 </template>
 

@@ -1,8 +1,5 @@
 <template>
-  <div
-    :class="['data', { 'data--selected': obj.isActive }]"
-    @click="handleOnClick"
-  >
+  <div :class="['data', { 'data--selected': obj.isActive }]">
     <div class="text__wrapper">
       <p>{{ obj[field + "_code"] }}</p>
     </div>

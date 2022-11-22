@@ -197,7 +197,6 @@ export default {
       }
       // Ẩn Loader
       this.isShowLoader = false;
-      console.log("Call API get all fixed assets");
     },
   },
   data() {

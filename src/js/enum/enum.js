@@ -38,4 +38,7 @@ export default {
     Year: 3, // Kiểu năm (thời gian)
     Rate: 4, // Kiểu tỉ lệ
   },
+  ErrorCode: {
+    DuplicateKey: 4,
+  },
 };

@@ -9,22 +9,21 @@
         <!-- Search  -->
         <Input></Input>
         <!-- Fixed asset categories filter -->
-        <Dropdown
-          :id="filters[0].id"
+        <DropdownTick
           :parentClass="filters[0].className"
           :placeholder="Resource.Placeholder[filters[0].placeholder]"
           :field="filters[0].field"
-          :data="this.fixedCategories"
-          :title="Resource.Title['asset-category-filter']"
-        ></Dropdown>
+          :title="Resource.Title.fixed_asset_category_filter"
+          :dropdown-data="this.fixedAssetCategories"
+        ></DropdownTick>
         <!-- Department filter -->
         <Dropdown
           :id="filters[1].id"
           :parentClass="filters[1].className"
           :placeholder="Resource.Placeholder[filters[1].placeholder]"
           :field="filters[1].field"
+          :title="Resource.Title.department_filter"
           :data="this.departments"
-          :title="Resource.Title['department-filter']"
         ></Dropdown>
       </div>
       <!-- Right function bar  -->
@@ -68,7 +67,7 @@
     :mode="mode"
     :popup-obj="popupObj"
     :departments="departments"
-    :fixed-categories="fixedCategories"
+    :fixed-categories="fixedAssetCategories"
     @close-popup="isShowPopup = false"
     @show-toast="isShowToast = true"
     @show-error-toast="showErrorToast"
@@ -92,6 +91,7 @@
 </template>
 
 <script>
+import DropdownTick from "@/components/base/dropdowns/DropdownTick.vue";
 import TheTable from "@/components/base/table/Table.vue";
 import Input from "@/components/base/inputs/SearchInput.vue";
 import Dropdown from "@/components/base/dropdowns/DropdownCheckbox.vue";
@@ -108,7 +108,7 @@ import {
   getAllFixedAssets,
   deleteFixedAsset,
   deleteMultipleFixedAssets,
-} from "@/apis/fixed_asset";
+} from "@/apis/fixedAsset";
 import { getAllDepartments } from "@/apis/department";
 import { getAllFixedAssetCategories } from "@/apis/fixedAssetCategory";
 
@@ -124,6 +124,7 @@ export default {
     DialogDeleteVue,
     ToastVue,
     Loader,
+    DropdownTick,
   },
 
   /**
@@ -154,7 +155,7 @@ export default {
     // Gọi API lấy tất cả bộ phận sử dụng
     getAllFixedAssetCategories()
       .then((res) => {
-        this.fixedCategories = res.data;
+        this.fixedAssetCategories = res.data;
       })
       .catch(() => {
         this.showErrorToast();
@@ -166,7 +167,7 @@ export default {
     isShowToast: function () {
       setTimeout(() => {
         this.isShowToast = false;
-      }, 1500);
+      }, 2000);
     },
   },
 
@@ -309,6 +310,8 @@ export default {
 
     // Hiển thị toast thông báo lỗi
     showErrorToast: function () {
+      // Đóng popup
+      this.isShowPopup = false;
       // Cập nhật trạng thái của toast
       this.isErrorToast = true;
       // Hiển thị toast
@@ -331,7 +334,7 @@ export default {
       selectedRows: [],
       fixedAssets: [],
       departments: [],
-      fixedCategories: [],
+      fixedAssetCategories: [],
       filters: [
         {
           id: "dropdown--asset-type",
