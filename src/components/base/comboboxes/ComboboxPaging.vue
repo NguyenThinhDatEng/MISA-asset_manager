@@ -34,6 +34,8 @@ export default {
         if (obj.val == this.value) obj.isActive = true;
         else obj.isActive = false;
       }
+      // Thực hiện updateLimit tại cha để gửi giá trị vừa được cập nhật
+      this.$parent.updateLimit(this.value);
     },
   },
   created() {

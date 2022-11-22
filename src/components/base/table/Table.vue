@@ -198,6 +198,15 @@ export default {
       // Ẩn Loader
       this.isShowLoader = false;
     },
+
+    // Thực hiện updateFilter tại cha để tải lại danh sách
+    updateLimit(value) {
+      try {
+        this.$parent.updateFilter("limit", value);
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {

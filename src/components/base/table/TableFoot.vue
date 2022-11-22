@@ -62,6 +62,14 @@ export default {
     records() {
       return "Tổng số: " + "<b>" + this.numberOfRecords + "</b>" + " bản ghi";
     },
+    // Thực hiện updateLimit tại cha để gửi giá trị vừa được cập nhật
+    updateLimit(value) {
+      try {
+        this.$parent.updateLimit(value);
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
