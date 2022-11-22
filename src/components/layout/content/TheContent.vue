@@ -223,16 +223,7 @@ export default {
      */
     reloadContent: function () {
       try {
-        // Gọi API lấy tất cả thông tin tài sản cố định
-        this.isShowLoader = true;
-        getAllFixedAssets()
-          .then((res) => {
-            this.fixedAssets = res.data;
-            this.isShowLoader = false;
-          })
-          .catch(() => {
-            this.showErrorToast();
-          });
+        this.searchAndFilter();
         // đóng popup
         this.isShowPopup = false;
         // hiển thị toast thông báo

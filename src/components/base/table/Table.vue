@@ -101,6 +101,8 @@ export default {
       this.isRefreshTable = !this.isRefreshTable;
       // Làm mới mảng các dòng được chọn
       this.selectedRows = [];
+      // Đưa ô check ở Header về mặc định
+      this.isCheckAll = false;
     },
   },
 
@@ -221,7 +223,7 @@ export default {
     return {
       numberOfRecords: 0, // Tổng số bản ghi
       isCheckAll: false,
-      isRefreshTable: false,
+      isRefreshTable: false, // Trạng thái làm mới bảng khi tải lại trang
       checkedHeader: false,
       selectedRows: [],
       totalOfQuantities: 0,
