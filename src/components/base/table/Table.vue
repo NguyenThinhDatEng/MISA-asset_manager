@@ -222,16 +222,18 @@ export default {
   data() {
     return {
       numberOfRecords: 0, // Tổng số bản ghi
-      isCheckAll: false,
+      isCheckAll: false, // Trạng thái check tất cả
       isRefreshTable: false, // Trạng thái làm mới bảng khi tải lại trang
-      checkedHeader: false,
-      selectedRows: [],
-      totalOfQuantities: 0,
+      checkedHeader: false, // Trạng thái check ô checkbox tại header table
+      selectedRows: [], // Mảng chứa các dòng được chọn
+      totalOfQuantities: 0, // Tổng số lượng
+      // Các dữ liệu tổng tại chân bảng
       footerData: {
-        totalOfCost: 0,
-        totalDepreciationValue: 0,
-        totalResidualValue: 0,
+        totalOfCost: 0, // Tổng nguyên giá
+        totalDepreciationValue: 0, // Tổng giá trị hao mòn
+        totalResidualValue: 0, // Tổng giá trị còn lại
       },
+      // Style cho từng cột
       styleObject: [
         {
           col: "checkbox",

@@ -1,26 +1,34 @@
 <template>
   <label> {{ labelContent }} <span style="color: red">*</span></label>
+
   <v-money-spinner
     :class="['input', 'input--money', { 'input--error': isError }]"
     v-bind="config"
     v-model="amount"
   ></v-money-spinner>
+
+  <p
+    v-show="isError"
+    class="error-message"
+    v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
+  ></p>
 </template>
   
   <script>
 import Enum from "@/js/enum/enum";
+import Resource from "@/js/resource/resource";
 
 export default {
   name: "InputMoney",
   props: {
     labelContent: String,
-    value: { type: Number, default: 0 },
-    field: String,
-    mode: Number,
     isError: {
       type: Boolean,
       default: false,
     },
+    value: { type: Number, default: 0 },
+    field: String,
+    mode: Number,
   },
   created() {
     if (this.mode != Enum.Mode.Add) this.amount = this.value;
@@ -36,7 +44,8 @@ export default {
   },
   data() {
     return {
-      amount: "0",
+      amount: "0", // giá trị của input
+      // Cấu hình input
       config: {
         spinner: false,
         min: 0,
@@ -47,6 +56,7 @@ export default {
         masked: false,
         disableNegative: false,
       },
+      Resource, // Tài nguyển
     };
   },
 };

@@ -16,6 +16,12 @@
       ></div>
     </div>
   </div>
+
+  <p
+    v-show="isError"
+    class="error-message"
+    v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
+  ></p>
 </template>
 
 <script>
@@ -29,7 +35,6 @@ export default {
     this.amount = Function.formatNumber(Number(this.value));
   },
   props: {
-    labelContent: String,
     type: {
       type: Number,
       default: Enum.DataType.Number,
@@ -42,6 +47,11 @@ export default {
     maxLength: {
       type: Number,
       default: 4,
+    },
+    labelContent: String,
+    isError: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ["update-input"],

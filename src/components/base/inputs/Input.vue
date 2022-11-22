@@ -17,7 +17,6 @@
     :placeholder="
       type == Enum.DataType.Number || type == Enum.DataType.Money ? 0 : ''
     "
-    :tabindex="tabindex"
     ref="input"
     @keyup="updateInput($event)"
   />
@@ -37,7 +36,6 @@ import Enum from "@/js/enum/enum";
 export default {
   name: "NormalInput",
   props: {
-    labelContent: String,
     maxLength: Number,
     value: String,
     type: {
@@ -49,13 +47,10 @@ export default {
       default: false,
     },
     field: String,
+    labelContent: String,
     isError: {
       type: Boolean,
       default: false,
-    },
-    tabindex: {
-      type: String,
-      default: "",
     },
   },
   emits: ["update-input"],
@@ -81,14 +76,8 @@ export default {
       try {
         let val = "";
         if (this.value) {
-          switch (this.type) {
-            case Enum.DataType.Money:
-              val = Function.formatMoney(this.value);
-              break;
-            default:
-              val = this.value;
-              break;
-          }
+          if (this.type == Enum.DataType.Number) val = this.value;
+          else val = this.value.trim();
         } else {
           if (this.type == Enum.DataType.Year) {
             val = Function.getCurrentYear();

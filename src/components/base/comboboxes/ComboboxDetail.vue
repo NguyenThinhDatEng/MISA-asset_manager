@@ -29,6 +29,11 @@
       ></Data>
     </div>
   </div>
+  <p
+    v-show="isError"
+    class="error-message"
+    v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
+  ></p>
 </template>
 
 <script>
@@ -39,6 +44,7 @@ export default {
   name: "ComboboxDetail",
   components: { Data },
   props: {
+    labelContent: String,
     placeholder: String,
     maxLength: Number,
     comboboxData: Array,
@@ -46,6 +52,10 @@ export default {
     value: {
       type: String,
       default: "",
+    },
+    isError: {
+      type: Boolean,
+      default: false,
     },
   },
   created() {

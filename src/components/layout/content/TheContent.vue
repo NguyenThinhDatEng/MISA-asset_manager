@@ -110,7 +110,6 @@ import CONSTANT from "@/js/common/constants";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
 import {
   getFixedAssetByFilterAndPaging,
-  getAllFixedAssets,
   deleteFixedAsset,
   deleteMultipleFixedAssets,
 } from "@/apis/fixedAsset";

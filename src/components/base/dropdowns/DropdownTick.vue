@@ -46,16 +46,12 @@ export default {
   },
   components: { Data },
   created() {
-    try {
-      // Ẩn dropdown khi click ra ngoài
-      window.addEventListener("click", (e) => {
-        if (!this.$el.contains(e.target)) {
-          this.isHidden = true;
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    // Ẩn dropdown khi click ra ngoài
+    window.addEventListener("click", (e) => {
+      if (!this.$el.contains(e.target)) {
+        this.isShow = false;
+      }
+    });
   },
   emits: ["update-filter"],
   watch: {

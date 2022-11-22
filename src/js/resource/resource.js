@@ -140,7 +140,7 @@ export default {
     quantity: false,
     cost: true,
     life_time: true,
-    depreciation_rate: false,
+    depreciation_rate: true,
     depreciation_value: true,
     tracked_year: false,
     purchase_date: false,

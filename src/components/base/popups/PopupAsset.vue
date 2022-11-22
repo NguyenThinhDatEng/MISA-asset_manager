@@ -23,7 +23,8 @@
               :maxLength="maxLength.fixed_asset_code"
               :value="popupObject[fields.fixed_asset_code]"
               :field="fields.fixed_asset_code"
-              ref="firstInput"
+              :is-error="errorMessages[fields.fixed_asset_code]"
+              :ref="'firstInput'"
               @update-input="updateInput"
             ></Input>
           </div>
@@ -31,6 +32,7 @@
             <!-- input 02 -->
             <Input
               :label-content="Label.fixed_asset_name"
+              :is-error="errorMessages[fields.fixed_asset_name]"
               :maxLength="maxLength.fixed_asset_name"
               :value="popupObject.fixed_asset_name"
               :field="fields.fixed_asset_name"
@@ -47,16 +49,15 @@
             >
             <!-- Combobox -->
             <ComboboxDetail
+              :label-content="Label.department_code"
               :placeholder="placeholder.department_code"
               :combobox-data="departments"
               :field="'department'"
               :max-length="maxLength.department_code"
               :value="popupObject.department_code"
+              :is-error="errorMessages[fields.department_code]"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
-            <p class="error-message" v-show="isShowError">
-              {{ Label.department_code + " " + Resource.ErrorMessage.blank }}
-            </p>
           </div>
           <div class="popup__body--right">
             <!-- Input -->
@@ -77,14 +78,16 @@
             >
             <!-- Combobox  -->
             <ComboboxDetail
+              :label-content="Label.fixed_asset_category_code"
               :placeholder="placeholder.asset_category_code"
               :combobox-data="fixedCategories"
               :field="'fixed_asset_category'"
               :max-length="maxLength.fixed_asset_category_code"
               :value="popupObject.fixed_asset_category_code"
+              :is-error="errorMessages[fields.fixed_asset_category_code]"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
-            <p class="error-message" v-show="isShowError">
+            <p class="error-message" v-show="false">
               {{ Label.department_code + " " + Resource.ErrorMessage.blank }}
             </p>
           </div>
@@ -113,6 +116,7 @@
               <div class="popup__body--left">
                 <InputMoney
                   :labelContent="Label.cost"
+                  :is-error="errorMessages[fields.cost]"
                   :field="fields.cost"
                   :mode="mode"
                   :value="popupObject[fields.cost]"
@@ -122,6 +126,7 @@
               <div class="popup__body--right-child">
                 <Input
                   :label-content="Label.life_time"
+                  :is-error="errorMessages[fields.life_time]"
                   :type="Enum.DataType.Number"
                   :value="popupObject[fields.life_time]"
                   :field="fields.life_time"
@@ -136,6 +141,7 @@
           <div class="popup__body--left">
             <InputNumber
               :label-content="Label.depreciation_rate"
+              :is-error="errorMessages[fields.depreciation_rate]"
               :field="fields.depreciation_rate"
               :type="Enum.DataType.Rate"
               :max-length="5"
@@ -149,6 +155,7 @@
               <div class="popup__body--left">
                 <InputMoney
                   :labelContent="Label.depreciation_value"
+                  :is-error="errorMessages[fields.depreciation_value]"
                   :field="fields.depreciation_value"
                   :value="depreciation_value"
                   :mode="mode"
@@ -375,17 +382,34 @@ export default {
    * @author Nguyen Van Thinh 05/11/2022
    */
   mounted() {
-    this.focusFirstInput();
+    try {
+      // Focus vào ô input đầu tiên
+      this.focusFirstInput();
+      // Khởi tạo đối tượng errorMessage
+      for (const field in this.fields) {
+        if (Resource.RequiredData[field])
+          if (
+            this.popupObject[field] == undefined ||
+            this.popupObject[field] == ""
+          )
+            this.errorMessages[field] = false;
+      }
+      console.log(this.errorMessages);
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   methods: {
     comeBack: function (e) {
       if (!e.shiftKey && e.which == 9) this.$refs.ignoreInput.focus();
     },
+
     // focus vào ô input đầu tiên
     focusFirstInput() {
       this.$refs.firstInput.focusInput();
     },
+
     /**
      * Emit: Đóng popup
      * @author Nguyen Van Thinh 11/11/2022
@@ -429,7 +453,10 @@ export default {
     // Cập nhật dữ liệu nhận được từ component con (Input)
     updateInput: function (value, field) {
       try {
+        // Cập nhật đối tượng popup
         this.popupObject[field] = value;
+        // Bỏ hiển thị lỗi
+        this.errorMessages ? (this.errorMessages[field] = false) : "";
         // Cập nhật các giá trị tương ứng khi nguyên giá thay đổi
         switch (field) {
           case this.fields.cost:
@@ -478,8 +505,10 @@ export default {
             if (
               this.popupObject[field] == undefined ||
               this.popupObject[field] == ""
-            )
+            ) {
               this.requiredData.push(this.Label[field]);
+              this.errorMessages[field] = true;
+            }
         }
         // Validate nghiệp vụ (Thông tin hao mòn/Khấu hao)
         if (this.requiredData.length > 0) {
@@ -605,8 +634,7 @@ export default {
       isShowDlgCancel: false, // Trạng thái ẩn hiện Cancel dialog
       isShowToast: false, // Trạng thái ẩn hiện của toast
       dlgType: "blank", // Kiểu của dialog
-      isShowError: false, //
-      errorMessages: {},
+      errorMessages: {}, // Đối tượng chứa các trường bắt buộc nhập
       depreciation_value: 0, // Giá trị hao mòn
       // Đối tượng popup
       popupObject: {
