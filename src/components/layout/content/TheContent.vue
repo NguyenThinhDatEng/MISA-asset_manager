@@ -17,14 +17,13 @@
           :dropdown-data="this.fixedAssetCategories"
         ></DropdownTick>
         <!-- Department filter -->
-        <Dropdown
-          :id="filters[1].id"
+        <DropdownTick
           :parentClass="filters[1].className"
           :placeholder="Resource.Placeholder[filters[1].placeholder]"
           :field="filters[1].field"
           :title="Resource.Title.department_filter"
-          :data="this.departments"
-        ></Dropdown>
+          :dropdown-data="this.departments"
+        ></DropdownTick>
       </div>
       <!-- Right function bar  -->
       <div class="function__right">
@@ -94,7 +93,6 @@
 import DropdownTick from "@/components/base/dropdowns/DropdownTick.vue";
 import TheTable from "@/components/base/table/Table.vue";
 import Input from "@/components/base/inputs/SearchInput.vue";
-import Dropdown from "@/components/base/dropdowns/DropdownCheckbox.vue";
 import Button from "@/components/base/buttons/ButtonIcon.vue";
 import ButtonFeature from "@/components/base/buttons/ButtonFeature.vue";
 import Popup from "@/components/base/popups/PopupAsset.vue";
@@ -105,6 +103,7 @@ import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
 import {
+  getFixedAssetByFilterAndPaging,
   getAllFixedAssets,
   deleteFixedAsset,
   deleteMultipleFixedAssets,
@@ -117,7 +116,6 @@ export default {
   components: {
     Input,
     TheTable,
-    Dropdown,
     Button,
     ButtonFeature,
     Popup,
@@ -132,6 +130,18 @@ export default {
    * @author Nguyen Van Thinh 04/11/2022
    */
   created() {
+    // Gọi API lấy danh sách tài sản cố định theo lọc và phân trang
+    getFixedAssetByFilterAndPaging(
+      "Xe",
+      "142cb08f-7c31-21fa-8e90-67245e8b283e",
+      "3700cc49-55b5-69ea-4929-a2925c0f334d"
+    )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch(() => {
+        this.showErrorToast();
+      });
     // Gọi API lấy thông tin tất cả tài sản cố định
     this.isShowLoader = true;
     getAllFixedAssets()

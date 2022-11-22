@@ -63,7 +63,6 @@ export default {
         for (let item of this.dropdownData) {
           item["isActive"] = false;
         }
-        console.log("dropdownData", this.dropdownData);
       } catch (error) {
         console.log(error);
       }
