@@ -62,7 +62,7 @@
       :fixed-assets="fixedAssets"
       @update-rows="updateRows"
       @show-popup="showPopup"
-      ref="TheTable"
+      ref="theTable"
     ></TheTable>
   </div>
   <!-- Popup -->
@@ -136,17 +136,8 @@ export default {
    * @author Nguyen Van Thinh 04/11/2022
    */
   created() {
+    // Gọi API lấy danh sách tài sản cố định theo tìm kiếm, lọc và giới hạn bản ghi
     this.searchAndFilter();
-    // Gọi API lấy thông tin tất cả tài sản cố định
-    this.isShowLoader = true;
-    getAllFixedAssets()
-      .then((res) => {
-        this.fixedAssets = res.data;
-        this.isShowLoader = false;
-      })
-      .catch(() => {
-        this.showErrorToast();
-      });
 
     // Gọi API lấy tất cả bộ phận sử dụng
     getAllDepartments()
@@ -174,6 +165,10 @@ export default {
         this.isShowToast = false;
       }, 2000);
     },
+    // Cập nhật Tổng số bản ghi
+    totalOfRecords: function () {
+      this.$refs.theTable.updateLimit(this.totalOfRecords);
+    },
   },
 
   methods: {
@@ -187,6 +182,12 @@ export default {
       try {
         this.conditions[field] = value;
         this.searchAndFilter();
+        // Nếu giới hạn bản ghi thay đổi không cần cập nhật "Tổng số bản ghi" trên table footer
+        // if (field != Object.keys(this.conditions)[3])
+        // {
+        //       // Thực hiện updateLimit tại con để cập nhật tổng số bản ghi
+        //   this.$ref.updateLimit(this.is)
+        // }
       } catch (error) {
         console.log(error);
       }
@@ -198,6 +199,7 @@ export default {
      */
     searchAndFilter: async function () {
       // Gọi API lấy danh sách tài sản cố định theo lọc và phân trang
+      this.isShowLoader = true;
       await getFixedAssetByFilterAndPaging(
         this.conditions.keyword,
         this.conditions.department_id,
@@ -206,7 +208,9 @@ export default {
         this.conditions.offset
       )
         .then((res) => {
-          console.log(res);
+          this.fixedAssets = res.data.data;
+          this.totalOfRecords = res.data.totalOfRecords;
+          this.isShowLoader = false;
         })
         .catch(() => {
           this.showErrorToast();
@@ -361,6 +365,7 @@ export default {
   },
   data() {
     return {
+      totalOfRecords: 0, // Số lượng bản ghi lọc được
       info: "",
       mode: 0,
       popupObj: {},

@@ -45,8 +45,9 @@
       <!-- Table footer  -->
       <TableFoot
         :footerData="footerData"
-        :number-of-records="fixedAssets.length"
+        :number-of-records="numberOfRecords"
         :totalOfQuantities="totalOfQuantities"
+        ref="tableFoot"
       ></TableFoot>
     </table>
   </div>
@@ -200,9 +201,17 @@ export default {
     },
 
     // Thực hiện updateFilter tại cha để tải lại danh sách
-    updateLimit(value) {
+    updateFilter(value) {
       try {
         this.$parent.updateFilter("limit", value);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // Cập nhật Tổng số bản ghi
+    updateLimit(totalOfRecords) {
+      try {
+        this.numberOfRecords = totalOfRecords;
       } catch (error) {
         console.log(error);
       }
@@ -210,6 +219,7 @@ export default {
   },
   data() {
     return {
+      numberOfRecords: 0, // Tổng số bản ghi
       isCheckAll: false,
       isRefreshTable: false,
       checkedHeader: false,
