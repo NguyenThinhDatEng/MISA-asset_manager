@@ -159,7 +159,11 @@
                 <Input
                   :label-content="Label.tracked_year"
                   :type="Enum.DataType.Year"
-                  :value="popupObject[fields.tracked_year].toString() || ''"
+                  :value="
+                    popupObject[fields.tracked_year]
+                      ? popupObject[fields.tracked_year].toString()
+                      : '0'
+                  "
                   :isDisabled="true"
                 ></Input>
               </div>

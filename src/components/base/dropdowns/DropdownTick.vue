@@ -29,6 +29,7 @@
 
 <script>
 import Data from "./DataTick.vue";
+import constants from "@/js/common/constants";
 
 export default {
   name: "DropdownTick",
@@ -56,6 +57,7 @@ export default {
       console.log(error);
     }
   },
+  emits: ["update-filter"],
   watch: {
     dropdownData: function () {
       try {
@@ -82,8 +84,15 @@ export default {
           if (id == obj[IDField]) {
             // Thay đổi trạng thái Active
             obj.isActive = !obj.isActive;
-            // Cập nhật giá trị được chọn
-            this.selectedValue = obj.isActive ? obj[nameField] : "";
+            // Cập nhật giá trị được chọn và gửi giá trị cập nhật lên Content
+            if (obj.isActive) {
+              this.selectedValue = obj[nameField];
+              this.$emit("update-filter", IDField, obj[IDField]);
+            } else {
+              this.selectedValue = "";
+              this.$emit("update-filter", IDField, constants.GUID.EMPTY);
+            }
+            // Gửi giá trị cập nhật đến cha
           } else {
             obj.isActive = false;
           }

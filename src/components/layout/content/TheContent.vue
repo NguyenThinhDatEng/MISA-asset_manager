@@ -7,7 +7,10 @@
       <!-- Left function bar  -->
       <div class="function_left">
         <!-- Search  -->
-        <Input></Input>
+        <Input
+          :field="Object.keys(this.conditions)[0]"
+          @update-filter="updateFilter"
+        ></Input>
         <!-- Fixed asset categories filter -->
         <DropdownTick
           :parentClass="filters[0].className"
@@ -15,6 +18,7 @@
           :field="filters[0].field"
           :title="Resource.Title.fixed_asset_category_filter"
           :dropdown-data="this.fixedAssetCategories"
+          @update-filter="updateFilter"
         ></DropdownTick>
         <!-- Department filter -->
         <DropdownTick
@@ -23,6 +27,7 @@
           :field="filters[1].field"
           :title="Resource.Title.department_filter"
           :dropdown-data="this.departments"
+          @update-filter="updateFilter"
         ></DropdownTick>
       </div>
       <!-- Right function bar  -->
@@ -101,6 +106,7 @@ import Loader from "@/components/base/more/Loader.vue";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
+import CONSTANT from "@/js/common/constants";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
 import {
   getFixedAssetByFilterAndPaging,
@@ -130,18 +136,7 @@ export default {
    * @author Nguyen Van Thinh 04/11/2022
    */
   created() {
-    // Gọi API lấy danh sách tài sản cố định theo lọc và phân trang
-    getFixedAssetByFilterAndPaging(
-      "Xe",
-      "142cb08f-7c31-21fa-8e90-67245e8b283e",
-      "3700cc49-55b5-69ea-4929-a2925c0f334d"
-    )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch(() => {
-        this.showErrorToast();
-      });
+    this.searchAndFilter();
     // Gọi API lấy thông tin tất cả tài sản cố định
     this.isShowLoader = true;
     getAllFixedAssets()
@@ -182,6 +177,42 @@ export default {
   },
 
   methods: {
+    /**
+     * Cập nhật các điều kiện của filter
+     * @param {string} field trường của dữ liệu
+     * @param {string} value giá trị được cập nhật
+     * @author NVThinh 22/11/2022
+     */
+    updateFilter: async function (field, value) {
+      try {
+        this.conditions[field] = value;
+        this.searchAndFilter();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Gọi API filter
+     * @author NVThinh 22/11/2022
+     */
+    searchAndFilter: async function () {
+      // Gọi API lấy danh sách tài sản cố định theo lọc và phân trang
+      await getFixedAssetByFilterAndPaging(
+        this.conditions.keyword,
+        this.conditions.department_id,
+        this.conditions.fixed_asset_category_id,
+        this.conditions.limit,
+        this.conditions.offset
+      )
+        .then((res) => {
+          console.log(res);
+        })
+        .catch(() => {
+          this.showErrorToast();
+        });
+    },
+
     /**
      * Tải lại trang
      * @author NVThinh (20/11/2022)
@@ -341,10 +372,18 @@ export default {
       isShowToast: false,
       isErrorToast: false, // trạng thái toast lỗi
       reload: false,
-      selectedRows: [],
-      fixedAssets: [],
-      departments: [],
-      fixedAssetCategories: [],
+      selectedRows: [], // Mảng chứa các dòng trong bảng được chọn
+      fixedAssets: [], // Mảng chứa các tài sản cố định sau khi gọi API
+      departments: [], // Mảng chứa các bộ phận sử dụng sau khi gọi API
+      fixedAssetCategories: [], // Mảng chứa các loại tài sản sau khi gọi API
+      // Đối tượng chứa các điều kiện để gọi API
+      conditions: {
+        keyword: "",
+        department_id: CONSTANT.GUID.EMPTY,
+        fixed_asset_category_id: CONSTANT.GUID.EMPTY,
+        limit: 20,
+        offset: 0,
+      },
       filters: [
         {
           id: "dropdown--asset-type",
