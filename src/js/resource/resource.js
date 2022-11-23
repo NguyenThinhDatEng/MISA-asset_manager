@@ -1,4 +1,5 @@
 export default {
+  // Nội dung các item trong danh mục
   ItemContents: {
     general: "Tổng quan",
     asset: "Tài sản",
@@ -8,6 +9,7 @@ export default {
     search: "Tra cứu",
     report: "Báo cáo",
   },
+  // Tooltip
   Title: {
     home: "Trang chủ",
     extension: "Mở rộng sidebar",
@@ -34,18 +36,22 @@ export default {
     cancel: "Hủy bỏ",
     delete: "Xóa tài sản",
   },
+  // Tên logo sản phẩm
   Logo: {
     qlts: "MISA QLTS",
   },
+  // Tiêu đề trang
   PageTitle: {
     assetList: "Danh sách tài sản",
   },
+  // Tiêu đề header của trang
   HeaderTitle: {
     account: "Tài khoản",
     help: "Hỗ trợ",
     menu: "Danh mục",
     notification: "Thông báo",
   },
+  // placeholder các input
   Placeholder: {
     "asset-search": "Tìm kiếm tài sản",
     category: "Loại tài sản",
@@ -53,19 +59,17 @@ export default {
     department_code: "Chọn mã bộ phận sử dụng",
     asset_category_code: "Chọn mã loại tài sản",
   },
+  // Tên button
   ButtonName: {
     "asset-add": "Thêm tài sản",
   },
-  URLs: {
-    department: "http://localhost:11799/api/v1/Departments",
-    "asset-type": "http://localhost:11799/api/v1/FixedAssetCategories",
-    getAllAsset: "http://localhost:11799/api/v1/FixedAssets",
-  },
+  // Từ viết tắt
   Abbreviations: {
     path: "Tài sản Hệ thống - Đường bộ",
     depreciation: "Hao mòn/Khấu hao lũy kế",
     STT: "Số thứ tự",
   },
+  // Tiêu đề các cột trong bảng
   Columns: {
     stt: "STT",
     "asset-code": "Mã tài sản",
@@ -78,11 +82,13 @@ export default {
     residual_value: "Giá trị còn lại",
     feature: "Tính năng",
   },
+  // Tên popup qua từng chế độ chọn
   PopupTitle: {
     add: "Thêm mới tài sản",
     edit: "Sửa tài sản",
     duplicate: "Nhân bản tài sản",
   },
+  // Nhãn các ô input trong popup
   PopupLabel: {
     fixed_asset_code: "Mã tài sản",
     fixed_asset_name: "Tên tài sản",
@@ -99,15 +105,18 @@ export default {
     purchase_date: "Ngày mua",
     production_date: "Ngày bắt đầu sử dụng",
   },
+  // Độ dài ký tự có thể nhập trong ô input
   InputLength: {
-    fixed_asset_code: 100,
+    fixed_asset_code: 7, // TS99999
     fixed_asset_name: 255,
     department_code: 50,
     fixed_asset_category_code: 50,
   },
+  // Nội dung dòng đầu tiên trong combobox detail
   ComboboxInfo: {
     firstCol: "Mã",
   },
+  // Mô tả chức năng button
   ButtonContent: {
     save: "Lưu",
     cancel: "Hủy",
@@ -117,24 +126,30 @@ export default {
     noSave: "Không lưu",
     close: "Đóng",
   },
+  // ...
   Name: {
     export: "export",
     delete: "delete",
   },
+  // Tên lỗi
   ErrorMessage: {
     blank: "là thông tin bắt buộc",
   },
+  // Tin nhắn cảnh báo
   WarningMessage: {
     info: "Cần phải nhập thông tin",
     depreciation: "Tỉ lệ hao mòn phải bằng 1/Số năm sử dụng",
     costAndDepreciationValue: "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá",
   },
+  // Các trường dữ liệu yêu cầu trong popup
   RequiredData: {
     fixed_asset_id: false,
     fixed_asset_code: true,
     fixed_asset_name: true,
+    department_id: false,
     department_code: true,
     department_name: false,
+    fixed_asset_category_id: false,
     fixed_asset_category_code: true,
     fixed_asset_category_name: false,
     quantity: false,
@@ -146,12 +161,15 @@ export default {
     purchase_date: false,
     production_date: false,
   },
+  // Các trường dữ liệu cần lưu trữ trong popup
   PopupField: {
     fixed_asset_id: "fixed_asset_id",
     fixed_asset_code: "fixed_asset_code",
     fixed_asset_name: "fixed_asset_name",
+    department_id: "department_id",
     department_code: "department_code",
     department_name: "department_name",
+    fixed_asset_category_id: "fixed_asset_category_id",
     fixed_asset_category_code: "fixed_asset_category_code",
     fixed_asset_category_name: "fixed_asset_category_name",
     quantity: "quantity",
@@ -163,6 +181,7 @@ export default {
     purchase_date: "purchase_date",
     production_date: "production_date",
   },
+  // Nội dung hiển thị thông báo
   ToastInfo: {
     addSuccess: "Lưu dữ liệu thành công",
     updateSuccess: "Cập nhật dữ liệu thành công",

@@ -1,5 +1,8 @@
 <template>
-  <div :class="[buttonName, { 'button--disable': isDisable }]" :title="title">
+  <div
+    :class="['button--feature', buttonName, { 'button--disable': isDisable }]"
+    :title="title"
+  >
     <div :class="['icon icon--18px center', iconName]"></div>
   </div>
 </template>
@@ -21,4 +24,12 @@ export default {
 </script>
   
   <style scoped>
+@import url(@/css/components/button.css);
+.button--feature:hover {
+  background-color: var(--sub-button--hover);
+}
+
+.button--disable:hover {
+  background-color: #fff;
+}
 </style>
