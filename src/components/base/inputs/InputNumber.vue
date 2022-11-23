@@ -2,7 +2,12 @@
   <label>{{ labelContent }} <span style="color: red">*</span></label>
 
   <div class="input--number">
-    <input type="text" class="input" :maxlength="maxLength" v-model="amount" />
+    <input
+      type="text"
+      :class="['input', { 'input--error': isError }]"
+      :maxlength="maxLength"
+      v-model="amount"
+    />
     <div class="icon--up_down">
       <div
         class="icon icon--up"
@@ -57,18 +62,23 @@ export default {
   emits: ["update-input"],
   watch: {
     amount: function () {
+      // Gửi giá trị thay đổi đến cha
       this.$emit("update-input", Number(this.amount), this.field);
     },
     value: function () {
+      // Cập nhật giá trị input khi có giá trị từ ngoài truyền vào
       const val = Number(this.value);
-      console.log("val", val);
-      if (this.type == Enum.DataType.Rate && val > 100) this.amount = "100";
-      else this.amount = Function.formatNumber(val);
+      if (this.type == Enum.DataType.Rate && val > 100) {
+        // Giới hạn giá trị lớn nhất khi ô input có kiểu là tỉ lệ
+        this.amount = "100";
+      } else {
+        this.amount = Function.formatNumber(val);
+      }
     },
   },
   methods: {
     /**
-     * Giảm giá trị trong ô input
+     * Giảm giá trị trong ô input bằng icon
      * @author Nguyen Van Thinh 07/11/2022
      */
     decrease: function () {
@@ -98,7 +108,11 @@ export default {
     },
   },
   data() {
-    return { amount: 0, Resource, Function };
+    return {
+      amount: 0, // giá trị ô input
+      Resource, // Tài nguyên
+      Function, // Các hàm dùng chung
+    };
   },
 };
 </script>
