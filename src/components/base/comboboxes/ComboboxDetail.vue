@@ -1,5 +1,6 @@
 <template>
-  <div class="combobox combobox--detail">
+  <div :class="['combobox combobox--detail', { 'combobox--error': isError }]">
+    <!-- input -->
     <input
       type="text"
       class="input combobox__input"
@@ -20,6 +21,7 @@
           <p>{{ Resource.PopupLabel[field + "_name"] }}</p>
         </div>
       </div>
+      <!-- Dữ liệu hiển thị  -->
       <Data
         v-for="(obj, index) in comboboxData"
         :key="index"
@@ -40,6 +42,10 @@ export default {
   components: { Data },
   props: {
     labelContent: String,
+    isError: {
+      type: Boolean,
+      default: false,
+    },
     placeholder: String,
     maxLength: Number,
     comboboxData: Array,
@@ -47,10 +53,6 @@ export default {
     value: {
       type: String,
       default: "",
-    },
-    isError: {
-      type: Boolean,
-      default: false,
     },
   },
   created() {
@@ -146,4 +148,13 @@ export default {
 </script>
 
 <style scoped>
+@import url(@/css/components/combobox.css);
+
+:root {
+  --input--error: #ea3636;
+}
+
+.combobox--error {
+  border-color: var(--input--error);
+}
 </style>

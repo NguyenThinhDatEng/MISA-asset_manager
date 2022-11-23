@@ -128,10 +128,6 @@
     background-color: var(--combobox__data);
 }
 
-/* .combobox__data p {
-    padding-left: 16px;
-} */
-
 .footer__left .combobox {
     justify-content: space-between;
     width: 59px;

@@ -76,12 +76,9 @@ export default {
       try {
         let val = "";
         if (this.value) {
-          if (this.type == Enum.DataType.Number) val = this.value;
-          else val = this.value.trim();
-        } else {
           if (this.type == Enum.DataType.Year) {
             val = Function.getCurrentYear();
-          }
+          } else val = this.value;
         }
         return val;
       } catch (error) {
