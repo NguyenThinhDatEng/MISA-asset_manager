@@ -1,5 +1,8 @@
 .table {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     border: 1px solid #afafaf;
     border-radius: 3.5px;
     height: calc(100vh - 106px - 17px);
@@ -11,10 +14,17 @@
 table {
     border-collapse: collapse;
     width: 100%;
+    /*footer locate at bottom table*/
+    height: 100%;
+}
+
+tbody tr {
+    justify-content: space-between;
+    flex: 1;
 }
 
 thead {
-    top: 0px;
+    top: 0;
     font-family: MISA Bold;
     background-color: #f5f5f5;
     z-index: 1;
@@ -22,6 +32,7 @@ thead {
 
 thead,
 tfoot {
+    position: -webkit-sticky;
     position: sticky;
 }
 
@@ -124,15 +135,6 @@ tfoot {
     overflow: hidden;
 }
 
-#limit .combobox__data {
-    top: unset;
-    bottom: calc(100% + 1px);
-}
-
-#limit .combobox__data .data {
-    justify-content: center;
-}
-
 .total-of-records {
     position: absolute;
     top: 50%;
@@ -145,10 +147,12 @@ tfoot .value {
 }
 
 .col--checkbox {
+    min-width: 30px;
     text-align: center;
 }
 
 .col--stt {
+    min-width: 40px;
     text-align: left;
 }
 

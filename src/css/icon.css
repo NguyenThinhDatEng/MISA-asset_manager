@@ -229,9 +229,9 @@
 }
 
 .icon--warning {
-    background-image: url(../assets/icons/warning--32px.png);
-    width: 32px;
-    height: 32px;
+    background-image: url(../assets/icons/warning_icon--48px.png);
+    width: 54px;
+    height: 48px;
 }
 
 .icon--tick {

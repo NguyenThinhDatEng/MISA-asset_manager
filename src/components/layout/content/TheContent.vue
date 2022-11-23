@@ -168,6 +168,11 @@ export default {
     totalOfRecords: function () {
       this.$refs.theTable.updateLimit(this.totalOfRecords);
     },
+    // Cập nhật mảng các dòng được chọn
+    selectedRows: function () {
+      console.log("changed!");
+      console.log(this.selectedRows);
+    },
   },
 
   methods: {
@@ -364,9 +369,8 @@ export default {
       isDisabledButton: true,
       isShowPopup: false,
       showDialogDelete: false,
-      isShowToast: false,
-      isErrorToast: false, // trạng thái toast lỗi
-      reload: false,
+      isShowToast: false, // Trạng thái hiển thị toast báo thành công
+      isErrorToast: false, // Trạng thái hiển thị toast lỗi
       selectedRows: [], // Mảng chứa các dòng trong bảng được chọn
       fixedAssets: [], // Mảng chứa các tài sản cố định sau khi gọi API
       departments: [], // Mảng chứa các bộ phận sử dụng sau khi gọi API

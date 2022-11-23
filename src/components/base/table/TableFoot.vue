@@ -81,4 +81,8 @@ export default {
 </script>
 
 <style scoped>
+tfoot {
+  position: -webkit-sticky;
+  position: sticky;
+}
 </style>

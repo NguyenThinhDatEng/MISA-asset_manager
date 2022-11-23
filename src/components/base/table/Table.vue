@@ -78,7 +78,7 @@ export default {
         if (this.isCheckAll == true) {
           // Thêm tất cả các dòng vào mảng
           this.selectedRows = [];
-          for (const asset in this.fixedAssets) {
+          for (const asset of this.fixedAssets) {
             this.selectedRows.push(asset);
           }
         } else {

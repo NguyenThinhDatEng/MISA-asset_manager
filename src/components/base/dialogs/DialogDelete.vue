@@ -73,10 +73,7 @@ export default {
       Resource,
       Enum,
       text: {
-        delete:
-          "Bạn có muốn xóa tài sản <b>&lt;&lt;</b><span>" +
-          this.info +
-          "</span><b>&gt;&gt;</b> ?",
+        delete: "Bạn có muốn xóa tài sản <span>" + this.info + "</span> ?",
         deleteMulti:
           "<span>" +
           this.info +
