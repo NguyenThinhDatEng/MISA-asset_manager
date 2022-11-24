@@ -40,5 +40,6 @@ export default {
   },
   ErrorCode: {
     DuplicateKey: 4,
+    BadRequest: 3,
   },
 };

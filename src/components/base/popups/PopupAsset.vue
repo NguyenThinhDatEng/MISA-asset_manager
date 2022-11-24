@@ -559,10 +559,11 @@ export default {
                     })
                     .catch((res) => {
                       if (
-                        res.response.data.errorCode ==
-                        Enum.ErrorCode.DuplicateKey
+                        res.response.data.errorCode == Enum.ErrorCode.BadRequest
                       ) {
-                        this.showDlgValidate(res.response.data.userMsg);
+                        for (const error of res.response.data.moreInfo)
+                          this.requiredData.push(error);
+                        this.showDialogValidate = true;
                       } else this.$emit("show-error-toast");
                     });
                   break;
@@ -577,10 +578,11 @@ export default {
                     })
                     .catch((res) => {
                       if (
-                        res.response.data.errorCode ==
-                        Enum.ErrorCode.DuplicateKey
+                        res.response.data.errorCode == Enum.ErrorCode.BadRequest
                       ) {
-                        this.showDlgValidate(res.response.data.userMsg);
+                        for (const error of res.response.data.moreInfo)
+                          this.requiredData.push(error);
+                        this.showDialogValidate = true;
                       } else this.$emit("show-error-toast");
                     });
                   // Gửi giá trị hao mòn năm lên table row để cập nhật hao mòn lũy kế và giá trị còn lại

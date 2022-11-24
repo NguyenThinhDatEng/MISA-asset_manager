@@ -362,7 +362,7 @@ export default {
     return {
       totalOfRecords: 0, // Số lượng bản ghi lọc được
       info: "",
-      mode: 0,
+      mode: 0, // Chế độ popup
       popupObj: {},
       numberOfDeletedRecords: 1,
       isShowLoader: false, // trạng thái ẩn hiện của loader
