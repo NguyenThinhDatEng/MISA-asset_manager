@@ -84,12 +84,12 @@
             <!-- Combobox  -->
             <ComboboxDetail
               :label-content="Label.fixed_asset_category_code"
+              :is-error="errorMessages.fixed_asset_category_code"
               :placeholder="placeholder.asset_category_code"
               :combobox-data="fixedCategories"
               :field="'fixed_asset_category'"
               :max-length="maxLength.fixed_asset_category_code"
               :value="popupObject.fixed_asset_category_code"
-              :is-error="errorMessages[fields.fixed_asset_category_code]"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
             <p
@@ -240,7 +240,7 @@
           :button-content="Resource.ButtonContent.cancel"
           :type="Enum.Type.Secondary"
           @click="showDialogCancel"
-          @keydown="comeBack"
+          @keydown="reFocus"
         ></ButtonMain>
       </div>
     </div>
@@ -405,15 +405,20 @@ export default {
           )
             this.errorMessages[field] = false;
       }
-      console.log(this.errorMessages);
     } catch (error) {
       console.log(error);
     }
   },
 
   methods: {
-    comeBack: function (e) {
-      if (!e.shiftKey && e.which == 9) this.$refs.ignoreInput.focus();
+    // Focus vào ô input ảo
+    reFocus: function (e) {
+      try {
+        if (!e.shiftKey && e.which == Enum.KeyCode.TAB)
+          this.$refs.ignoreInput.focus();
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // focus vào ô input đầu tiên
@@ -484,7 +489,6 @@ export default {
             console.log(field, "is updated!");
             break;
         }
-        console.log("Popup Object", this.popupObject);
       } catch (error) {
         console.log(error);
       }

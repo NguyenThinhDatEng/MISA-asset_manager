@@ -4,6 +4,7 @@
       <div class="dropdown__icon">
         <div class="icon center icon--18px icon--filter"></div>
       </div>
+      <!-- input  -->
       <input
         type="text"
         class="input dropdown__input"
@@ -11,12 +12,13 @@
         v-model="selectedValue"
         @click="isShow = !isShow"
       />
+      <!-- button  -->
       <div class="combobox__button">
         <div class="icon center icon--down"></div>
       </div>
       <div class="dropdown__data" v-show="isShow">
         <Data
-          v-for="item in dropdownData"
+          v-for="item in data"
           :key="item[field + '_id']"
           :field="field"
           :obj="item"
@@ -29,7 +31,8 @@
 
 <script>
 import Data from "./DataTick.vue";
-import constants from "@/js/common/constants";
+import Constants from "@/js/common/constants";
+import Function from "@/js/common/function";
 
 export default {
   name: "DropdownTick",
@@ -55,12 +58,28 @@ export default {
   },
   emits: ["update-filter"],
   watch: {
+    // Nếu prop dropdownData được cập nhật
     dropdownData: function () {
       try {
+        // Cập nhật mảng dữ liệu
+        this.data = this.dropdownData;
         // Thêm thuộc tính active cho từng dòng dữ liệu trong dropdown
-        for (let item of this.dropdownData) {
+        for (let item of this.data) {
           item["isActive"] = false;
         }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    // Nếu giá trị input cập nhật
+    selectedValue: function () {
+      try {
+        this.data = Function.autoComplete(
+          this.selectedValue,
+          this.dropdownData,
+          this.field + "_name"
+        );
       } catch (error) {
         console.log(error);
       }
@@ -86,7 +105,7 @@ export default {
               this.$emit("update-filter", IDField, obj[IDField]);
             } else {
               this.selectedValue = "";
-              this.$emit("update-filter", IDField, constants.GUID.EMPTY);
+              this.$emit("update-filter", IDField, Constants.GUID.EMPTY);
             }
             // Gửi giá trị cập nhật đến cha
           } else {
@@ -103,8 +122,8 @@ export default {
   data() {
     return {
       isShow: false, // trạng thái ẩn hiện Dropdown data
-      data: [], // mảng dữ liệu
       selectedValue: "", // giá trị được chọn
+      data: [], // mảng dữ liệu
     };
   },
 };

@@ -65,4 +65,27 @@ export default {
 
     return true;
   },
+
+  /**
+   * Tìm kiếm những item thỏa mãn điều kiện lọc
+   * @param {Array} data mảng dữ liệu cần lọc
+   * @param {String} field01 trường thuộc tính cần xét thứ 1
+   * @param {String} field02 trường thuộc tính cần xét thứ 2
+   * @returns {Array} Mảng giá trị sau khi lọc
+   * @author NVThinh 25-11-2022
+   */
+  autoComplete: function (value, data, field01, field02 = field01) {
+    try {
+      let filter;
+      let resultArr = data.filter((obj) => {
+        filter =
+          obj[field01].toLowerCase()?.includes(value.toLowerCase()) ||
+          obj[field02].toLowerCase()?.includes(value.toLowerCase());
+        return filter;
+      });
+      return resultArr;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

@@ -6,8 +6,9 @@
       class="input combobox__input"
       :placeholder="placeholder"
       :maxlength="maxLength"
-      :value="val ? val : value"
+      v-model="val"
       @click="isShow = !isShow"
+      @keyup="keyUp"
     />
     <div class="combobox__button" @click="isShow = !isShow">
       <div class="icon center icon--down"></div>
@@ -23,7 +24,7 @@
       </div>
       <!-- Dữ liệu hiển thị  -->
       <Data
-        v-for="(obj, index) in comboboxData"
+        v-for="(obj, index) in data"
         :key="index"
         :field="field"
         :obj="obj"
@@ -34,8 +35,10 @@
 </template>
 
 <script>
-import Resource from "@/js/resource/resource";
 import Data from "./DataDetail.vue";
+import Resource from "@/js/resource/resource";
+import Enum from "@/js/enum/enum";
+import Function from "@/js/common/function";
 
 export default {
   name: "ComboboxDetail",
@@ -68,6 +71,8 @@ export default {
       for (let obj of this.data) {
         obj["isActive"] = false;
       }
+      // Bind dữ liệu vào input khi nhận dữ liệu từ ngoài vào
+      this.val = this.value;
     } catch (error) {
       console.log(error);
     }
@@ -82,16 +87,26 @@ export default {
         obj["isActive"] = false;
       }
     },
-  },
-  methods: {
-    // Gửi nội dung dữ liệu được thay đổi lên class cha
-    updateInput: function (e) {
+
+    val: function () {
       try {
-        this.$emit("update-input", e.target.value, this.field);
+        this.data = Function.autoComplete(
+          this.val,
+          this.comboboxData,
+          this.fields.name,
+          this.fields.code
+        );
+        console.log(this.data);
       } catch (error) {
         console.log(error);
       }
     },
+
+    isShow: function () {
+      console.log("isShow is changed", this.isShow);
+    },
+  },
+  methods: {
     /**
      * Sự kiện chọn thông tin trong combobox
      * @param {String} id id của mã bộ phận sử dụng được chọn
@@ -135,13 +150,30 @@ export default {
         console.log(error);
       }
     },
+
+    keyUp: function (e) {
+      try {
+        // console.log("keyup", e);
+        if (e.keyCode == Enum.KeyCode.TAB) {
+          this.isShow = false;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
-      isShow: false, // Trạng thái ẩn hiện phần dữ liệu
       val: "", // giá trị ô input
+      isShow: false, // Trạng thái ẩn hiện phần dữ liệu
+      fields: {
+        id: this.field + "_id",
+        code: this.field + "_code",
+        name: this.field + "_name",
+      },
       data: [], // mảng dữ liệu được cập nhật
       Resource, // tài nguyen
+      Function, // Hàm dùng chung
     };
   },
 };

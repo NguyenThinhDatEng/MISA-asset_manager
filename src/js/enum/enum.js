@@ -16,20 +16,14 @@ export default {
   },
   // Phím tắt
   KeyCode: {
-    // Phím Enter
-    ENTER: 13,
-    // Phím ESC
-    ESC: 27,
-    // Phím Ctrl
-    Ctrl: 17,
-    // Phím F3
-    F3: 114,
-    // Phím F8
-    F8: 119,
-    // Phím F9
-    F9: 120,
-    // Phím `
-    SelectTable: 115,
+    TAB: 9, // Phím Tab
+    ENTER: 13, // Phím Enter
+    ESC: 27, // Phím ESC
+    Ctrl: 17, // Phím Ctrl
+    F3: 114, // Phím F3
+    F8: 119, // Phím F8
+    F9: 120, // Phím F9
+    SelectTable: 115, // Phím `
   },
   DataType: {
     Text: 0, // Kiểu chuỗi

@@ -4,9 +4,6 @@
       <div class="dialog__header"></div>
       <div id="dialog--no-header" class="dialog__body">
         <ul>
-          <li v-show="dlgType == Enum.DlgType.RequiredInfo" class="list">
-            {{ Resource.WarningMessage.info }}:
-          </li>
           <li
             class="list"
             v-for="(val, index) in requiredData"
@@ -62,7 +59,9 @@ export default {
     // Thiết lập nội dung hiển thị
     setVueHtml: function (val) {
       if (this.dlgType == Enum.DlgType.RequiredInfo)
-        return "- " + " <span> " + val + " </span>";
+        return (
+          "- " + Resource.WarningMessage.info + " <span> " + val + " </span>"
+        );
       return "- " + val;
     },
   },
