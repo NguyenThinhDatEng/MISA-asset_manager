@@ -10,29 +10,29 @@
           <ComboboxPagingVue :title="Resource.Title.limit"></ComboboxPagingVue>
           <!-- Paging  -->
           <div class="paging">
-            <div class="paging__icon--wrapper">
+            <div class="paging__icon--wrapper" @click="backPreviousPage()">
               <div
                 :class="[
                   'icon center icon-footer icon--left-arrow',
                   { 'icon--disable': selectedNumber == 1 },
                 ]"
-                :title="Resource.Title.pre"
-                @click="backPreviousPage()"
+                :title="Resource.PageNumber.prePage"
               ></div>
             </div>
             <div class="page-numbers">
               <!-- Trang thứ nhất  -->
               <button
                 :class="['number', { 'number--selected': numberState[0] }]"
+                @click="handleOnClickPageNumber(1)"
               >
                 1
               </button>
               <!-- ... -->
-              <span class="number" v-show="selectedNumber > 2">...</span>
+              <span class="number" v-show="isShowFirstThreeDots()">...</span>
 
               <!-- Trang trước -->
               <button
-                title="Trang trước"
+                :title="Resource.PageNumber.prePage"
                 :class="[
                   'number',
                   {
@@ -40,28 +40,30 @@
                       numberState[prePageNumber() - 1] && selectedNumber <= 2,
                   },
                 ]"
-                v-show="selectedNumber < numberOfPages - 2"
+                v-show="isShowPrePage()"
+                @click="handleOnClickPageNumber(prePageNumber())"
               >
                 {{ prePageNumber() }}
               </button>
 
               <!-- Trang giữa -->
               <button
-                title="Trang giữa"
+                :title="Resource.PageNumber.currentPage"
                 :class="[
                   'number',
                   {
                     'number--selected': numberState[pageNumber() - 1],
                   },
                 ]"
-                v-show="selectedNumber > 2 && selectedNumber <= numberOfPages"
+                v-show="isShowCurrentPage()"
+                @click="handleOnClickPageNumber(pageNumber())"
               >
                 {{ pageNumber() }}
               </button>
 
               <!-- Trang sau -->
               <button
-                title="Trang sau"
+                :title="Resource.PageNumber.nextPage"
                 :class="[
                   'number',
                   {
@@ -70,15 +72,14 @@
                       selectedNumber >= numberOfPages - 1,
                   },
                 ]"
-                v-show="selectedNumber > 2"
+                v-show="isShowNextPage()"
+                @click="handleOnClickPageNumber(nextPageNumber())"
               >
                 {{ nextPageNumber() }}
               </button>
 
               <!-- ...  -->
-              <span class="number" v-show="selectedNumber < numberOfPages - 2"
-                >...</span
-              >
+              <span class="number" v-show="isShowSecondThreeDots()">...</span>
 
               <!-- Trang cuối cùng  -->
               <button
@@ -88,18 +89,19 @@
                     'number--selected': numberState[numberOfPages - 1],
                   },
                 ]"
+                v-show="numberOfPages > 1"
+                @click="handleOnClickPageNumber(numberOfPages)"
               >
                 {{ numberOfPages }}
               </button>
             </div>
-            <div class="paging__icon--wrapper">
+            <div class="paging__icon--wrapper" @click="goNextPage()">
               <div
                 :class="[
                   'icon center icon-footer icon--right-arrow',
                   { 'icon--disable': selectedNumber == numberOfPages },
                 ]"
-                :title="Resource.Title.next"
-                @click="goNextPage()"
+                :title="Resource.PageNumber.nextPage"
               ></div>
             </div>
           </div>
@@ -130,12 +132,19 @@ export default {
   watch: {
     // Cập nhật số trang khi tổng số bản ghi thay đổi
     numberOfRecords: function () {
+      this.numberState[this.selectedNumber - 1] = false;
       this.setNumberOfPages();
+      // Cập nhật giá trị và style trang được chọn
+      this.selectedNumber = 1;
+      this.numberState[0] = true;
     },
     // Gửi dữ liệu để call API filter khi trang được chọn thay đổi
     selectedNumber: function () {
       try {
-        this.$parent.updateFilter(Resource.Filter.offset, this.selectedNumber);
+        this.$parent.updateFilter(
+          Resource.Filter.offset,
+          (this.selectedNumber - 1) * this.pageSize
+        );
       } catch (error) {
         console.log();
       }
@@ -257,12 +266,109 @@ export default {
 
     // Cập nhật số trang
     setNumberOfPages: function () {
-      const roundedValue = Math.round(this.numberOfRecords / this.pageSize);
+      const roundedValue = Math.floor(this.numberOfRecords / this.pageSize);
       // Nếu chia dư -> số trang sẽ + 1
       if (this.numberOfRecords % this.pageSize > 0)
         this.numberOfPages = roundedValue + 1;
       else {
         this.numberOfPages = roundedValue;
+      }
+    },
+
+    /**
+     * Sự kiện click vào trang số 1
+     * @author NVThinh 25/11/2022
+     */
+    handleOnClickPageNumber: function (pageNumber) {
+      try {
+        // Bỏ trạng thái focus của ô hiện tại
+        this.numberState[this.selectedNumber - 1] = false;
+        // Cập nhật giá trị và trạng thái ô phân trang
+        this.selectedNumber = pageNumber;
+        this.numberState[pageNumber - 1] = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Kiểm tra trạng thái ẩn hiện dấu 3 chấm đằng trước
+     * @author NVThinh 25/11/2022
+     */
+    isShowSecondThreeDots: function () {
+      try {
+        if (
+          this.numberOfPages > 4 &&
+          this.selectedNumber < this.numberOfPages - 2
+        )
+          return true;
+        if (this.numberOfPages == 4 && this.selectedNumber < 3) return true;
+        return false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Kiểm tra trạng thái ẩn hiện số của trang trước
+     * @author NVThinh 25/11/2022
+     */
+    isShowPrePage: function () {
+      try {
+        if (
+          this.numberOfRecords > 4 &&
+          this.selectedNumber < this.numberOfPages - 2
+        )
+          return true;
+        if (this.numberOfPages == 4 && this.selectedNumber <= 2) return true;
+        if (this.numberOfPages == 3) return true;
+        return false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Kiểm tra trạng thái ẩn hiện số của trang giữa
+     * @author NVThinh 25/11/2022
+     */
+    isShowCurrentPage: function () {
+      try {
+        if (
+          this.numberOfPages > 4 &&
+          this.selectedNumber > 2 &&
+          this.selectedNumber <= this.numberOfPages
+        )
+          return true;
+        return false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Kiểm tra trạng thái ẩn hiện số của trang sau
+     * @author NVThinh 25/11/2022
+     */
+    isShowNextPage: function () {
+      try {
+        if (this.numberOfPages > 4 && this.selectedNumber > 2) return true;
+        return false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Kiểm tra trạng thái ẩn hiện dấu 3 chấm đằng sau
+     * @author NVThinh 25/11/2022
+     */
+    isShowFirstThreeDots: function () {
+      try {
+        if (this.numberOfPages > 3 && this.selectedNumber > 2) return true;
+        return false;
+      } catch (error) {
+        console.log(error);
       }
     },
   },

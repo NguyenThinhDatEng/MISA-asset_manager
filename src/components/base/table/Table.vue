@@ -33,7 +33,7 @@
           v-for="(asset, index) in fixedAssets"
           :key="index"
           :tableRowObj="asset"
-          :index="index + 1"
+          :index="index + startIndex + 1"
           :is-check-all="isCheckAll"
           :is-refresh-table="isRefreshTable"
           @update-row="updateRow"
@@ -41,6 +41,7 @@
           @show-popup="showPopup"
           ref="Row"
         ></Row>
+        <tr class="ignoreRow"></tr>
       </tbody>
       <!-- Table footer  -->
       <TableFoot
@@ -203,8 +204,11 @@ export default {
     },
 
     // Thực hiện updateFilter tại cha để tải lại danh sách
-    updateFilter(field, value) {
+    updateFilter: function (field, value) {
       try {
+        // Cập nhật startIndex
+        if (field == Resource.Filter.offset) this.startIndex = value;
+        // Thực hiện hàm updateFilter tại Vue cha
         this.$parent.updateFilter(field, value);
       } catch (error) {
         console.log(error);
@@ -229,6 +233,7 @@ export default {
   },
   data() {
     return {
+      startIndex: 0, // chỉ số bắt đầu của số thứ tự
       numberOfRecords: 0, // Tổng số bản ghi
       isCheckAll: false, // Trạng thái check tất cả
       isRefreshTable: false, // Trạng thái làm mới bảng khi tải lại trang
@@ -310,4 +315,7 @@ export default {
 </script>
 
 <style scoped>
+.ignoreRow {
+  height: 100%;
+}
 </style>

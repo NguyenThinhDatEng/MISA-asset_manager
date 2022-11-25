@@ -27,8 +27,6 @@ export default {
     edit: "Sửa",
     duplicate: "Nhân bản",
     limit: "Số lượng bản ghi hiển thị",
-    pre: "Trang trước",
-    next: "Trang sau",
     close: "Đóng",
     save: "Lưu thông tin",
     update: "Cập nhật thông tin",
@@ -190,11 +188,18 @@ export default {
     deleteMultiSuccess: "bản ghi đã được xóa thành công",
     error: "Có lỗi xảy ra!",
   },
+  // Các trường áp dụng vào tìm kiếm, lọc và phân trang dữ liệu
   Filter: {
     keyword: "keyword",
     department_id: "department_id",
     fixed_asset_category_id: "fixed_asset_category_id",
     limit: "limit",
     offset: "offset",
+  },
+  // Các kiểu trang ở table footer
+  PageNumber: {
+    prePage: "Trang trước",
+    currentPage: "Trang hiện tại",
+    nextPage: "Trang sau",
   },
 };
