@@ -12,7 +12,7 @@
     showNowButton
     nowButtonLabel="Ngày hiện tại"
     :previewFormat="format"
-    :dayNames="['H', 'B', 'B', 'N', 'S', 'B', 'CN']"
+    :dayNames="['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']"
     :clearable="false"
     :enableTimePicker="false"
     hideInputIcon

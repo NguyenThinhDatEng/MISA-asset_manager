@@ -24,6 +24,7 @@ export default {
     field: String,
   },
   emits: ["update-filter"],
+  watch: {},
   methods: {
     // Gửi giá trị cập nhật đến cha
     updateFilter: function () {

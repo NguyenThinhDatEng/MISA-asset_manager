@@ -203,9 +203,9 @@ export default {
     },
 
     // Thực hiện updateFilter tại cha để tải lại danh sách
-    updateFilter(value) {
+    updateFilter(field, value) {
       try {
-        this.$parent.updateFilter("limit", value);
+        this.$parent.updateFilter(field, value);
       } catch (error) {
         console.log(error);
       }
@@ -214,6 +214,14 @@ export default {
     updateLimit(totalOfRecords) {
       try {
         this.numberOfRecords = totalOfRecords;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // Cập nhật trang số được chọn
+    updatePageNumber: function () {
+      try {
+        this.$parent.updateFilter;
       } catch (error) {
         console.log(error);
       }

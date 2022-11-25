@@ -1,3 +1,7 @@
+:root {
+    --icon--width: 48px;
+}
+
 .dialog__wrapper {
     position: fixed;
     top: 0;
@@ -37,8 +41,8 @@
 }
 
 #dialog--no-header .dialog__body__text {
-    width: 100%;
     padding: 0 0 0 24px;
+    width: calc(100% - var(--icon--width));
 }
 
 #dialog--error.dialog__body__text {

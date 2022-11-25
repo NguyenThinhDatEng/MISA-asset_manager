@@ -190,4 +190,11 @@ export default {
     deleteMultiSuccess: "bản ghi đã được xóa thành công",
     error: "Có lỗi xảy ra!",
   },
+  Filter: {
+    keyword: "keyword",
+    department_id: "department_id",
+    fixed_asset_category_id: "fixed_asset_category_id",
+    limit: "limit",
+    offset: "offset",
+  },
 };

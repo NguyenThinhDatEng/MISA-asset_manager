@@ -85,4 +85,5 @@ export default {
 </script>
 
 <style scoped>
+@import url(@/css/components/dialog.css);
 </style>

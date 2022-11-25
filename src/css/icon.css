@@ -30,11 +30,6 @@
     height: 24px;
 }
 
-.icon-footer {
-    width: 8px;
-    height: 13px;
-}
-
 .icon-arrow {
     width: 12px;
     height: 7px;
@@ -205,7 +200,7 @@
 }
 
 .icon--right-arrow {
-    background-position: -72px -245px;
+    background-position: -72px -245.5px;
 }
 
 .icon--down-arrow {
@@ -230,7 +225,7 @@
 
 .icon--warning {
     background-image: url(../assets/icons/warning_icon--48px.png);
-    width: 54px;
+    width: 48px;
     height: 48px;
 }
 
