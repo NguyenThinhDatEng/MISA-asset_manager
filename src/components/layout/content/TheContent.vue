@@ -43,7 +43,7 @@
         <!-- Export button -->
         <export-excel
           class="btn btn-default"
-          :data="isDisabledButton ? {} : json_data"
+          :data="isDisabledButton ? [] : json_data"
           :fields="json_fields"
           worksheet="My Worksheet"
           name="filename.xls"
@@ -61,14 +61,14 @@
           :iconName="'icon--' + Resource.Name.delete"
           :title="Resource.Title.delete"
           :isDisable="isDisabledButton"
-          @click="HandleOnClickDeleteButton"
+          @click="isShowDialogDelete = true"
         ></ButtonFeature>
       </div>
     </div>
     <!-- Table  -->
     <TheTable
       :fixed-assets="fixedAssets"
-      @update-rows="updateRows"
+      @update-row="updateRow"
       @show-popup="showPopup"
       ref="theTable"
     ></TheTable>
@@ -246,24 +246,21 @@ export default {
      * @param {Array} selectedRows mảng các dòng được chọn
      * @author Nguyen Van Thinh 06/11/2022
      */
-    updateRows: function (selectedRows) {
+    updateRow: function (selectedRows) {
       try {
-        // Cập nhật trạng thái disabled của các nút tính năng
-        if (selectedRows.length == 0) this.isDisabledButton = true;
-        else this.isDisabledButton = false;
         // Cập nhật mảng các dòng được chọn
         this.selectedRows = selectedRows;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    // Sự kiện click vào nút xóa
-    HandleOnClickDeleteButton: function () {
-      try {
-        if (this.isDisabledButton == false) {
-          // Hiển thị delete dialog
-          this.isShowDialogDelete = true;
+        // Cập nhật trang thái disabled của các nút chức năng
+        if (selectedRows.length == 0) {
+          this.isDisabledButton = true;
+        } else {
+          this.isDisabledButton = false;
+          this.json_data = [];
+          // Cập nhật json_data
+          for (const obj of this.selectedRows) {
+            this.json_data.push(obj);
+          }
+          console.log(this.json_data);
         }
       } catch (error) {
         console.log(error);
@@ -395,15 +392,7 @@ export default {
       Function,
       Enum,
       json_fields: TableResource.TableHead.FixedAsset, // tên cột
-      json_data: [
-        {
-          numerical_order: "Tony Peña",
-          fixed_asset_code: "New York",
-          fixed_asset_name: "United States",
-          fixed_asset_category_name: "1978-03-15",
-          department_name: "Khoi san xuat",
-        },
-      ],
+      json_data: [], // Mảng chứa các json data dùng cho việc xuất dữ liệu
     };
   },
 };

@@ -75,6 +75,8 @@ export default {
 
   created() {
     try {
+      // Cập nhật mảng data
+      this.data = Object.assign(this.tableRowObj);
       this.updateRow();
       this.updateData();
     } catch (error) {
@@ -96,10 +98,10 @@ export default {
     },
 
     // Cập nhật giá trị khi reload dữ liệu
-    tableRowObj: function () {
-      this.updateRow();
-      this.updateData();
-    },
+    // tableRowObj: function () {
+    //   this.updateRow();
+    //   this.updateData();
+    // },
 
     // Làm mới bảng dữ liệu
     isRefreshTable: function () {
@@ -137,8 +139,9 @@ export default {
         if (this.isActive == isNew)
           this.$emit("update-row", isNew, this.tableRowObj);
         else {
-          if (this.isCheckAll == true)
+          if (this.isCheckAll == true) {
             this.$emit("update-checked-header", false);
+          }
           this.$emit("update-row", !isNew, this.tableRowObj); // isNew == false
         }
       } catch (error) {
@@ -186,11 +189,11 @@ export default {
   data() {
     return {
       data: {}, // Đối tượng table row chứa các dữ liệu hiển thị trong file excel
+      popupMode: 0, // chế độ popup
       popupObj: {}, // đối tượng popup
       isShowPopup: false, // trạng thái ẩn hiện popup
       isShowToast: false, // trạng thái ẩn hiện toast
       isActive: false, // trạng thái của table row
-      popupMode: 0, // chế độ popup
       accumulated_value: 0, // tỉ lệ khấu hao
       residual_value: 0, // giá trị còn lại
       Resource, // tài nguyên

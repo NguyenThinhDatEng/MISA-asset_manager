@@ -70,7 +70,7 @@ export default {
     },
   },
   components: { Row, TableFoot },
-  emits: ["update-rows", "reload-content", "show-popup"],
+  emits: ["update-row", "reload-content", "show-popup"],
   watch: {
     // Trạng thái chọn tất cả thay đổi
     isCheckAll: function () {
@@ -87,7 +87,7 @@ export default {
           this.selectedRows = [];
         }
         // Gửi dữ liệu lên Content
-        this.$emit("update-rows", this.selectedRows);
+        this.$emit("update-row", this.selectedRows);
         // Trạng thái checkbox input ở table header
         this.checkedHeader = this.isCheckAll;
       } catch (error) {
@@ -143,7 +143,7 @@ export default {
           }
         }
         // Bắn chiều dài mảng được chọn lên cha của nó (Table)
-        this.$emit("update-rows", this.selectedRows);
+        this.$emit("update-row", this.selectedRows);
         // console.log(this.selectedRows);
       } catch (error) {
         console.log(error);
