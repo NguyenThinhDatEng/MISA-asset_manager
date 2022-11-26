@@ -4,13 +4,15 @@ import App from "./App.vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import MoneySpinner from "v-money-spinner";
+import Excel from "vue-excel-export";
 // import TheContentVue from "./components/layout/content/TheContent.vue";
 
 const app = createApp(App);
 
+app.provide("axios", app.config.globalProperties.axios);
 app.use(VueAxios, axios);
 app.use(MoneySpinner);
-app.provide("axios", app.config.globalProperties.axios);
+app.use(Excel);
 app.mount("#app");
 
 // const routers = [

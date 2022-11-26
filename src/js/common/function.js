@@ -30,7 +30,7 @@ export default {
   },
 
   // Tính hao mòn lũy kế
-  accumulatedDepreciation: function (depreciation_value, production_date) {
+  accumulatedValue: function (depreciation_value, production_date) {
     try {
       if (!production_date) return 0;
       const production_year = Number(production_date.slice(0, 4));

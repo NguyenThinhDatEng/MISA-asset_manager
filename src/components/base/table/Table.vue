@@ -33,7 +33,7 @@
           v-for="(asset, index) in fixedAssets"
           :key="index"
           :tableRowObj="asset"
-          :index="index + startIndex + 1"
+          :numerical_order="index + startIndex + 1"
           :is-check-all="isCheckAll"
           :is-refresh-table="isRefreshTable"
           @update-row="updateRow"
@@ -214,14 +214,16 @@ export default {
         console.log(error);
       }
     },
+
     // Cập nhật Tổng số bản ghi
-    updateLimit(totalOfRecords) {
+    updateLimit: function (totalOfRecords) {
       try {
         this.numberOfRecords = totalOfRecords;
       } catch (error) {
         console.log(error);
       }
     },
+
     // Cập nhật trang số được chọn
     updatePageNumber: function () {
       try {

@@ -41,12 +41,20 @@
           @click="handleOnclickAddButton"
         ></Button>
         <!-- Export button -->
-        <ButtonFeature
-          :buttonName="'button--' + Resource.Name.export"
-          :iconName="'icon--' + Resource.Name.export"
-          :title="Resource.Title.export"
-          :isDisable="isDisabledButton"
-        ></ButtonFeature>
+        <export-excel
+          class="btn btn-default"
+          :data="isDisabledButton ? {} : json_data"
+          :fields="json_fields"
+          worksheet="My Worksheet"
+          name="filename.xls"
+        >
+          <ButtonFeature
+            :buttonName="'button--' + Resource.Name.export"
+            :iconName="'icon--' + Resource.Name.export"
+            :title="Resource.Title.export"
+            :isDisable="isDisabledButton"
+          ></ButtonFeature>
+        </export-excel>
         <!-- Delete button  -->
         <ButtonFeature
           :buttonName="'button--' + Resource.Name.delete"
@@ -64,6 +72,14 @@
       @show-popup="showPopup"
       ref="theTable"
     ></TheTable>
+    <!-- Dialog delete warning -->
+    <DialogDeleteVue
+      v-if="isShowDialogDelete"
+      :number-of-selected-rows="selectedRows.length"
+      :fixed-asset="selectedRows[0]"
+      @close-dialog="isShowDialogDelete = false"
+      @delete-records="deleteRecords"
+    ></DialogDeleteVue>
   </div>
   <!-- Popup -->
   <Popup
@@ -77,14 +93,6 @@
     @show-error-toast="showErrorToast"
     @reload-content="reloadContent"
   ></Popup>
-  <!-- Dialog delete warning -->
-  <DialogDeleteVue
-    v-if="showDialogDelete"
-    :info="info"
-    :mode="mode"
-    @close-dialog="showDialogDelete = false"
-    @delete-records="deleteRecords"
-  ></DialogDeleteVue>
   <!-- Toast -->
   <ToastVue
     v-if="isShowToast"
@@ -106,7 +114,8 @@ import Loader from "@/components/base/more/Loader.vue";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import CONSTANT from "@/js/common/constants";
+import Constants from "@/js/common/constants";
+import TableResource from "@/js/resource/tableResource";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
 import {
   getFixedAssetByFilterAndPaging,
@@ -167,11 +176,6 @@ export default {
     // Cập nhật Tổng số bản ghi
     totalOfRecords: function () {
       this.$refs.theTable.updateLimit(this.totalOfRecords);
-    },
-    // Cập nhật mảng các dòng được chọn
-    selectedRows: function () {
-      console.log("changed!");
-      console.log(this.selectedRows);
     },
   },
 
@@ -258,19 +262,8 @@ export default {
     HandleOnClickDeleteButton: function () {
       try {
         if (this.isDisabledButton == false) {
-          if (this.selectedRows.length == 1) {
-            this.mode = Enum.Mode.Delete;
-            // Cập nhật nội dung hiển thị của dialog
-            this.info =
-              this.selectedRows[0].fixed_asset_code +
-              " - " +
-              this.selectedRows[0].fixed_asset_name;
-          } else {
-            this.mode = Enum.Mode.DeleteMulti;
-            this.info = Function.formatNumber(this.selectedRows.length);
-          }
-
-          this.showDialogDelete = true;
+          // Hiển thị delete dialog
+          this.isShowDialogDelete = true;
         }
       } catch (error) {
         console.log(error);
@@ -308,7 +301,7 @@ export default {
             });
         }
         // Đóng dialog
-        this.showDialogDelete = false;
+        this.isShowDialogDelete = false;
       } catch (error) {
         console.log(error);
       }
@@ -358,17 +351,18 @@ export default {
       this.isShowToast = true;
     },
   },
+
   data() {
     return {
       totalOfRecords: 0, // Số lượng bản ghi lọc được
-      info: "",
+      dialogInfo: "", // nội dung hiển thị dialog xác nhận xóa
       mode: 0, // Chế độ popup
-      popupObj: {},
-      numberOfDeletedRecords: 1,
+      popupObj: {}, // Đối tượng popup
+      numberOfDeletedRecords: 1, // sổ lượng bản ghi được chọn khi xóa
       isShowLoader: false, // trạng thái ẩn hiện của loader
-      isDisabledButton: true,
-      isShowPopup: false,
-      showDialogDelete: false,
+      isDisabledButton: true, // Trạng thái disabled của các nút chức năng
+      isShowPopup: false, // trạng thái hiển thị / ẩn popup
+      isShowDialogDelete: false, // Trạng thái ẩn hiện dialog xác nhận xóa
       isShowToast: false, // Trạng thái hiển thị toast báo thành công
       isErrorToast: false, // Trạng thái hiển thị toast lỗi
       selectedRows: [], // Mảng chứa các dòng trong bảng được chọn
@@ -378,8 +372,8 @@ export default {
       // Đối tượng chứa các điều kiện để gọi API
       conditions: {
         keyword: "",
-        department_id: CONSTANT.GUID.EMPTY,
-        fixed_asset_category_id: CONSTANT.GUID.EMPTY,
+        department_id: Constants.GUID.EMPTY,
+        fixed_asset_category_id: Constants.GUID.EMPTY,
         limit: 20,
         offset: 0,
       },
@@ -400,13 +394,23 @@ export default {
       Resource,
       Function,
       Enum,
+      json_fields: TableResource.TableHead.FixedAsset, // tên cột
+      json_data: [
+        {
+          numerical_order: "Tony Peña",
+          fixed_asset_code: "New York",
+          fixed_asset_name: "United States",
+          fixed_asset_category_name: "1978-03-15",
+          department_name: "Khoi san xuat",
+        },
+      ],
     };
   },
 };
 </script>
 
 <style scoped>
-Button + ButtonFeature {
+.button--feature {
   margin-left: 11px;
 }
 </style>

@@ -5,7 +5,7 @@
       <div class="dialog__header"></div>
       <div id="dialog--no-header" class="dialog__body">
         <div class="dialog__body__icon icon icon--warning"></div>
-        <p class="dialog__body__text" v-html="text.delete"></p>
+        <p class="dialog__body__text" v-html="warningContent"></p>
       </div>
       <div class="dialog__footer">
         <ButtonMainVue
@@ -18,7 +18,7 @@
         <ButtonOutlineVue
           :button-content="Resource.ButtonContent.no"
           :title="Resource.Title.cancel"
-          @click="closeDialog"
+          @click="this.$emit('close-dialog')"
         ></ButtonOutlineVue>
       </div>
     </div>
@@ -27,7 +27,7 @@
       <div class="dialog__header"></div>
       <div id="dialog--no-header" class="dialog__body">
         <div class="dialog__body__icon icon icon--warning"></div>
-        <p class="dialog__body__text" v-html="text.deleteMulti"></p>
+        <p class="dialog__body__text" v-html="warningContent"></p>
       </div>
       <div class="dialog__footer">
         <ButtonMainVue
@@ -40,7 +40,7 @@
         <ButtonOutlineVue
           :button-content="Resource.ButtonContent.no"
           :title="Resource.Title.cancel"
-          @click="closeDialog"
+          @click="this.$emit('close-dialog')"
         ></ButtonOutlineVue>
       </div>
     </div>
@@ -52,17 +52,50 @@ import ButtonMainVue from "@/components/base/buttons/ButtonMain.vue";
 import ButtonOutlineVue from "@/components/base/buttons/ButtonOutline.vue";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
+import Function from "@/js/common/function";
 
 export default {
   name: "DialogDelete",
-  created() {},
+  props: {
+    numberOfSelectedRows: Number, // số lượng bản ghi được chọn
+    fixedAsset: Object, // Đối tượng tài sản cố định được chọn
+  },
   components: { ButtonMainVue, ButtonOutlineVue },
-  props: { info: String, mode: Number },
+  created() {
+    this.updateContent();
+  },
   emits: ["close-dialog", "delete-records"],
+  computed: {
+    warningContent: function () {
+      if (this.mode == Enum.Mode.Delete)
+        return "Bạn có muốn xóa tài sản <span>" + this.content + "</span>?";
+      // Nếu không
+      return (
+        "<span>" +
+        this.content +
+        "</span> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?"
+      );
+    },
+  },
   methods: {
-    closeDialog: function () {
+    /**
+     * Thiết lập chế độ và nội dung hiển thị của dialog
+     * @param {Number} numberOfSelectedRows số lượng bản ghi được chọn
+     * @param {Object} fixedAsset đối tượng tài sản cố định được chọn
+     * @author NVThinh 26/11/2022
+     */
+    updateContent: function () {
       try {
-        this.$emit("close-dialog");
+        if (this.numberOfSelectedRows == 1) {
+          this.mode = Enum.Mode.Delete;
+          this.content =
+            this.fixedAsset.fixed_asset_code +
+            " - " +
+            this.fixedAsset.fixed_asset_name;
+          return;
+        }
+        this.mode = Enum.Mode.DeleteMulti;
+        this.content = Function.formatNumber(this.numberOfSelectedRows);
       } catch (error) {
         console.log(error);
       }
@@ -70,15 +103,10 @@ export default {
   },
   data() {
     return {
-      Resource,
-      Enum,
-      text: {
-        delete: "Bạn có muốn xóa tài sản <span>" + this.info + "</span>?",
-        deleteMulti:
-          "<span>" +
-          this.info +
-          "</span> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?",
-      },
+      content: "", // nội dung dialog
+      mode: 0, // chế độ xóa (1 hay nhiều)
+      Enum, // enum
+      Resource, // Tài nguyên
     };
   },
 };

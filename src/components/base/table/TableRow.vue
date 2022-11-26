@@ -10,7 +10,7 @@
       <input type="checkbox" class="checkbox" :checked="isActive" />
     </td>
     <!-- Cột số thứ tự -->
-    <td class="col--stt">{{ index }}</td>
+    <td class="col--stt">{{ numerical_order }}</td>
     <!-- Cột mã tài sản -->
     <td class="col--asset-code">{{ tableRowObj.fixed_asset_code }}</td>
     <!-- Cột tên tài sản -->
@@ -34,7 +34,7 @@
     <td class="col--cost">{{ Function.formatMoney(tableRowObj.cost) }}</td>
     <!-- Cột hao mòn lũy kế -->
     <td class="col--depreciation">
-      {{ Function.formatMoney(accumulated_depreciation) }}
+      {{ Function.formatMoney(accumulated_value) }}
     </td>
     <!-- Cột giá trị còn lại -->
     <td class="col--residual_value">
@@ -62,31 +62,24 @@
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
+import TableResource from "@/js/resource/tableResource";
 
 export default {
   name: "TableRow",
   props: {
     tableRowObj: Object,
-    index: Number,
+    numerical_order: Number,
     isCheckAll: Boolean,
     isRefreshTable: Boolean,
   },
 
   created() {
-    // Cập nhật giá trị hao mòn năm
-    const depreciation_value = Function.depreciationValue(
-      this.tableRowObj.cost,
-      this.tableRowObj.depreciation_rate
-    );
-    // Cập nhật giá trị hao mòn lũy kế
-    this.accumulated_depreciation = Function.accumulatedDepreciation(
-      depreciation_value,
-      this.tableRowObj.production_date
-    );
-    if (this.accumulated_depreciation > this.tableRowObj.cost)
-      this.accumulated_depreciation = this.tableRowObj.cost;
-    // Cập nhật giá trị còn lại
-    this.residual_value = this.tableRowObj.cost - this.accumulated_depreciation;
+    try {
+      this.updateRow();
+      this.updateData();
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   emits: [
@@ -104,21 +97,8 @@ export default {
 
     // Cập nhật giá trị khi reload dữ liệu
     tableRowObj: function () {
-      // Cập nhật giá trị hao mòn năm
-      const depreciation_value = Function.depreciationValue(
-        this.tableRowObj.cost,
-        this.tableRowObj.depreciation_rate
-      );
-      // Cập nhật giá trị hao mòn lũy kế
-      this.accumulated_depreciation = Function.accumulatedDepreciation(
-        depreciation_value,
-        this.tableRowObj.production_date
-      );
-      if (this.accumulated_depreciation > this.tableRowObj.cost)
-        this.accumulated_depreciation = this.tableRowObj.cost;
-      // Cập nhật giá trị còn lại
-      this.residual_value =
-        this.tableRowObj.cost - this.accumulated_depreciation;
+      this.updateRow();
+      this.updateData();
     },
 
     // Làm mới bảng dữ liệu
@@ -166,21 +146,38 @@ export default {
       }
     },
 
-    /**
-     * Cập nhật hao mòn lũy kế và giá trị còn lại khi nguyên giá thay đổi
-     * @param {double} depreciation_value giá trị hao mòn năm
-     */
-    updateTableRow: function (cost, depreciation_value) {
+    // Khởi tạo giá trị hao mòn lũy kế và giá trị còn lại
+    updateRow: function () {
       try {
-        // Cập nhật hao mòn lũy kế
-        this.accumulated_depreciation = Function.accumulatedDepreciation(
+        // Cập nhật giá trị hao mòn năm
+        const depreciation_value = Function.depreciationValue(
+          this.tableRowObj.cost,
+          this.tableRowObj.depreciation_rate
+        );
+        // Cập nhật giá trị hao mòn lũy kế
+        this.accumulated_value = Function.accumulatedValue(
           depreciation_value,
           this.tableRowObj.production_date
         );
-        if (this.accumulated_depreciation > cost)
-          this.accumulated_depreciation = cost;
+        if (this.accumulated_value > this.tableRowObj.cost)
+          this.accumulated_value = this.tableRowObj.cost;
         // Cập nhật giá trị còn lại
-        this.residual_value = cost - this.accumulated_depreciation;
+        this.residual_value = this.tableRowObj.cost - this.accumulated_value;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    // Cập nhật đối tượng data
+    updateData: function () {
+      try {
+        for (const prop in this.props) {
+          if (this.tableRowObj[prop]) {
+            this.data[prop] = this.tableRowObj[prop];
+          } else {
+            this.data[prop] = this[prop];
+          }
+        }
       } catch (error) {
         console.log(error);
       }
@@ -188,18 +185,20 @@ export default {
   },
   data() {
     return {
+      data: {}, // Đối tượng table row chứa các dữ liệu hiển thị trong file excel
+      popupObj: {}, // đối tượng popup
       isShowPopup: false, // trạng thái ẩn hiện popup
       isShowToast: false, // trạng thái ẩn hiện toast
       isActive: false, // trạng thái của table row
       popupMode: 0, // chế độ popup
-      accumulated_depreciation: 0, // tỉ lệ khấu hao
+      accumulated_value: 0, // tỉ lệ khấu hao
       residual_value: 0, // giá trị còn lại
-      popupObj: {}, // đối tượng popup
       Resource, // tài nguyên
       fields: Resource.PopupField, // các trường input trong popup
       Title: Resource.Title, // tooltip
       Function, // Hàm dùng chung
       Enum, // enum
+      props: TableResource.TableRow.FixedAsset, // Các thuộc tính của dòng
     };
   },
 };
