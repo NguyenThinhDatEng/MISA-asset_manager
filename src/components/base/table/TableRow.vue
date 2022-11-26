@@ -98,10 +98,10 @@ export default {
     },
 
     // Cập nhật giá trị khi reload dữ liệu
-    // tableRowObj: function () {
-    //   this.updateRow();
-    //   this.updateData();
-    // },
+    tableRowObj: function () {
+      this.updateRow();
+      this.updateData();
+    },
 
     // Làm mới bảng dữ liệu
     isRefreshTable: function () {
@@ -136,13 +136,12 @@ export default {
         // Thay đổi trạng thái của dòng
         this.isActive = !this.isActive;
         // Nếu dòng được active, bắn đối tượng đến Table
-        if (this.isActive == isNew)
-          this.$emit("update-row", isNew, this.tableRowObj);
+        if (this.isActive == isNew) this.$emit("update-row", isNew, this.data);
         else {
           if (this.isCheckAll == true) {
             this.$emit("update-checked-header", false);
           }
-          this.$emit("update-row", !isNew, this.tableRowObj); // isNew == false
+          this.$emit("update-row", !isNew, this.data); // isNew == false
         }
       } catch (error) {
         console.log(error);
@@ -178,7 +177,8 @@ export default {
           if (this.tableRowObj[prop]) {
             this.data[prop] = this.tableRowObj[prop];
           } else {
-            this.data[prop] = this[prop];
+            if (prop != this.props.numerical_order)
+              this.data[prop] = this[prop];
           }
         }
       } catch (error) {

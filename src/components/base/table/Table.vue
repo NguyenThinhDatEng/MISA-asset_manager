@@ -58,6 +58,7 @@
 import Row from "./TableRow.vue";
 import TableFoot from "./TableFoot.vue";
 import Resource from "@/js/resource/resource";
+import TableResource from "@/js/resource/tableResource";
 
 export default {
   name: "TheTable",
@@ -131,8 +132,11 @@ export default {
     updateRow: function (isNewRow, obj) {
       try {
         // Thêm dòng mới vào mảng
-        if (isNewRow) this.selectedRows.push(obj);
-        else {
+        if (isNewRow) {
+          obj[TableResource.TableRow.FixedAsset.numerical_order] =
+            this.selectedRows.length + 1;
+          this.selectedRows.push(obj);
+        } else {
           // Xóa tài sản khỏi mảng
           const length = this.selectedRows.length;
           for (let i = 0; i < length; i++) {
