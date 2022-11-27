@@ -658,11 +658,7 @@ export default {
       dlgType: "blank", // Kiểu của dialog
       errorMessages: {}, // Đối tượng chứa các trường bắt buộc nhập
       depreciation_value: 0, // Giá trị hao mòn
-      // Đối tượng popup
-      popupObject: {
-        created_by: "Nguyễn Văn Thịnh",
-        modified_by: "Nguyễn Văn Thịnh",
-      },
+      popupObject: {}, // Đối tượng popup
       initObj: {}, // Đối tượng khởi tạo ban đầu -> Kiểm tra popup có được tương tác không
       requiredData: [], // Mảng chứa những dữ liệu yêu cầu
       defaultValue: {

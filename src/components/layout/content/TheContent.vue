@@ -45,7 +45,7 @@
           class="btn btn-default"
           :data="isDisabledButton ? [] : json_data"
           :fields="json_fields"
-          :footer="['a']"
+          :before-generate="beforeGenerate"
           worksheet="My Worksheet"
           name="filename.xls"
         >
@@ -193,10 +193,9 @@ export default {
         this.conditions[field] = value;
         this.searchAndFilter();
         // Nếu giới hạn bản ghi thay đổi không cần cập nhật "Tổng số bản ghi" trên table footer
-        // if (field != Object.keys(this.conditions)[3])
-        // {
-        //       // Thực hiện updateLimit tại con để cập nhật tổng số bản ghi
-        //   this.$ref.updateLimit(this.is)
+        // if (field != Object.keys(this.conditions)[3]) {
+        //   // Thực hiện updateLimit tại con để cập nhật tổng số bản ghi
+        //   this.$ref.updateLimit(this.is);
         // }
       } catch (error) {
         console.log(error);
@@ -348,6 +347,23 @@ export default {
       this.isErrorToast = true;
       // Hiển thị toast
       this.isShowToast = true;
+    },
+
+    /**
+     * Thực hiện trước khi tạo file excel
+     * @author NVThinh 27/11/2022
+     */
+    beforeGenerate: function () {
+      try {
+        this.selectedRows.map((item, index) => {
+          item.numerical_order = index + 1;
+          return {
+            item,
+          };
+        });
+      } catch (error) {
+        return console.log(error);
+      }
     },
   },
 
