@@ -1,3 +1,5 @@
+import KeyCode from "@/js/common/keycode";
+
 export default {
   // Định dạng cho dữ liệu kiểu tiền
   formatMoney: function (money) {
@@ -84,6 +86,28 @@ export default {
         return filter;
       });
       return resultArr;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  // Kiểm tra input đầu vào chỉ có ký tự số không
+  onlyNumbers: function (e) {
+    try {
+      // Mã key
+      const keyCode = e.keyCode;
+      // Lấy mảng các chức năng cơ bản
+      const excludedKeys = KeyCode.BasicFeature;
+      // Kiểm tra điều kiện
+      if (
+        !(
+          (keyCode >= 48 && keyCode <= 57) ||
+          (keyCode >= 96 && keyCode <= 105) ||
+          excludedKeys.includes(keyCode)
+        )
+      ) {
+        e.preventDefault();
+      }
     } catch (error) {
       console.log(error);
     }

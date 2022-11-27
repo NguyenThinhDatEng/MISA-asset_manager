@@ -16,10 +16,14 @@ export default {
   },
   // Phím tắt
   KeyCode: {
+    Backspace: 8, // phím Backspace
     TAB: 9, // Phím Tab
     ENTER: 13, // Phím Enter
-    ESC: 27, // Phím ESC
     Ctrl: 17, // Phím Ctrl
+    ESC: 27, // Phím ESC
+    ArrowLeft: 37, // Phím mũi tên trái
+    ArrowRight: 39, // Phím mũi tên phải
+    Delete: 46, // Phím Delete
     F3: 114, // Phím F3
     F8: 119, // Phím F8
     F9: 120, // Phím F9

@@ -7,6 +7,7 @@
       :class="['input', { 'input--error': isError }]"
       :maxlength="maxLength"
       v-model="amount"
+      @keydown="Function.onlyNumbers($event)"
     />
     <div class="icon--up_down">
       <div
@@ -64,6 +65,7 @@ export default {
     amount: function () {
       // Gửi giá trị thay đổi đến cha
       this.$emit("update-input", Number(this.amount), this.field);
+      console.log(this.amount);
     },
     value: function () {
       // Cập nhật giá trị input khi có giá trị từ ngoài truyền vào
