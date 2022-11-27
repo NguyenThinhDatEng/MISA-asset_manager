@@ -1,15 +1,15 @@
 <template>
   <label>{{ labelContent }} <span style="color: red">*</span></label>
 
-  <div class="input--number">
+  <div :class="[{ 'input--number': this.type != Enum.DataType.Year }]">
     <input
       type="text"
       :class="['input', { 'input--error': isError }]"
       :maxlength="maxLength"
       v-model="amount"
-      @keydown="Function.onlyNumbers($event)"
+      @keydown="Function.onlyNumbers($event, type)"
     />
-    <div class="icon--up_down">
+    <div class="icon--up_down" v-show="this.type != Enum.DataType.Year">
       <div
         class="icon icon--up"
         :title="Resource.Title.increase"
@@ -65,7 +65,6 @@ export default {
     amount: function () {
       // Gửi giá trị thay đổi đến cha
       this.$emit("update-input", Number(this.amount), this.field);
-      console.log(this.amount);
     },
     value: function () {
       // Cập nhật giá trị input khi có giá trị từ ngoài truyền vào
@@ -114,10 +113,31 @@ export default {
       amount: 0, // giá trị ô input
       Resource, // Tài nguyên
       Function, // Các hàm dùng chung
+      Enum, // enum
     };
   },
 };
 </script>
 
 <style scoped>
+.input--number {
+  position: relative;
+  height: 36px;
+}
+
+.input--number .input {
+  position: absolute;
+  padding-right: 36px !important;
+}
+
+.input--number .icon--up_down {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input {
+  text-align: right;
+}
 </style>

@@ -1,4 +1,5 @@
 import KeyCode from "@/js/common/keycode";
+import Enum from "@/js/enum/enum";
 
 export default {
   // Định dạng cho dữ liệu kiểu tiền
@@ -91,8 +92,8 @@ export default {
     }
   },
 
-  // Kiểm tra input đầu vào chỉ có ký tự số không
-  onlyNumbers: function (e) {
+  // Kiểm tra input đầu vào chỉ có ký tự số
+  onlyNumbers: function (e, numberType) {
     try {
       // Mã key
       const keyCode = e.keyCode;
@@ -106,7 +107,13 @@ export default {
           excludedKeys.includes(keyCode)
         )
       ) {
-        e.preventDefault();
+        if (numberType == Enum.DataType.Rate) {
+          if (!keyCode == Enum.KeyCode.Period) {
+            e.preventDefault();
+          }
+        } else {
+          e.preventDefault();
+        }
       }
     } catch (error) {
       console.log(error);

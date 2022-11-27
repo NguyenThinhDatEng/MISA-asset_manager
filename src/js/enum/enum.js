@@ -25,9 +25,10 @@ export default {
     ArrowRight: 39, // Phím mũi tên phải
     Delete: 46, // Phím Delete
     F3: 114, // Phím F3
+    SelectTable: 115, // Phím `
     F8: 119, // Phím F8
     F9: 120, // Phím F9
-    SelectTable: 115, // Phím `
+    Period: 190, // Dấu .
   },
   DataType: {
     Text: 0, // Kiểu chuỗi

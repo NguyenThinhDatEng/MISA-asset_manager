@@ -96,7 +96,6 @@ export default {
           this.fields.name,
           this.fields.code
         );
-        console.log(this.data);
       } catch (error) {
         console.log(error);
       }

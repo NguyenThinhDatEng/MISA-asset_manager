@@ -135,14 +135,18 @@
                 ></InputMoney>
               </div>
               <div class="popup__body--right-child">
-                <Input
+                <InputNumber
                   :label-content="Label.life_time"
-                  :is-error="errorMessages[fields.life_time]"
-                  :type="Enum.DataType.Number"
-                  :value="popupObject[fields.life_time]"
+                  :is-error="errorMessages.life_time"
                   :field="fields.life_time"
+                  :value="
+                    popupObject[fields.life_time]
+                      ? popupObject[fields.life_time].toString()
+                      : '0'
+                  "
+                  :type="Enum.DataType.Year"
                   @update-input="updateInput"
-                ></Input>
+                ></InputNumber>
               </div>
             </div>
           </div>

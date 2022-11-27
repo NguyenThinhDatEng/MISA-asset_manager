@@ -261,7 +261,6 @@ export default {
           for (const obj of this.selectedRows) {
             this.json_data.push(obj);
           }
-          console.log(this.json_data);
         }
       } catch (error) {
         console.log(error);
