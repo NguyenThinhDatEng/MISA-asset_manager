@@ -40,14 +40,16 @@
           :title="Resource.Title.add"
           @click="handleOnclickAddButton"
         ></Button>
-        <!-- Export button -->
+        <!-- Exporting excel library -->
         <export-excel
           class="btn btn-default"
           :data="isDisabledButton ? [] : json_data"
           :fields="json_fields"
+          :footer="['a']"
           worksheet="My Worksheet"
           name="filename.xls"
         >
+          <!-- Export button -->
           <ButtonFeature
             :buttonName="'button--' + Resource.Name.export"
             :iconName="'icon--' + Resource.Name.export"

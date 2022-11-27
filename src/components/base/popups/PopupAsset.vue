@@ -562,13 +562,7 @@ export default {
                       this.$emit("reload-content");
                     })
                     .catch((res) => {
-                      if (
-                        res.response.data.errorCode == Enum.ErrorCode.BadRequest
-                      ) {
-                        for (const error of res.response.data.moreInfo)
-                          this.requiredData.push(error);
-                        this.showDialogValidate = true;
-                      } else this.$emit("show-error-toast");
+                      this.handleErrorAPI(res);
                     });
                   break;
                 case Enum.Mode.Update:
@@ -581,13 +575,7 @@ export default {
                       this.$emit("reload-content");
                     })
                     .catch((res) => {
-                      if (
-                        res.response.data.errorCode == Enum.ErrorCode.BadRequest
-                      ) {
-                        for (const error of res.response.data.moreInfo)
-                          this.requiredData.push(error);
-                        this.showDialogValidate = true;
-                      } else this.$emit("show-error-toast");
+                      this.handleErrorAPI(res);
                     });
                   // Gửi giá trị hao mòn năm lên table row để cập nhật hao mòn lũy kế và giá trị còn lại
                   this.$emit(
@@ -638,12 +626,25 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * Xử lý khi có lỗi gửi về từ serve
+     * @param {Object} res là res là response trả về từ client
+     * @author NVThinh 27/11/2022
+     */
+    handleErrorAPI: function (res) {
+      if (res.response.data.errorCode == Enum.ErrorCode.BadRequest) {
+        for (const error of res.response.data.moreInfo) {
+          this.requiredData.push(error);
+        }
+        this.showDialogValidate = true;
+      } else {
+        this.$emit("show-error-toast");
+      }
+    },
   },
   data() {
     return {
-      Resource, // Tài nguyên
-      Enum, // enum
-      Function, // Các hàm chung
       Title: Resource.Title, // Tiêu đề
       Label: Resource.PopupLabel, // Nhãn
       placeholder: Resource.Placeholder, // Placholder
@@ -672,6 +673,9 @@ export default {
         purchase_date: Function.getCurrentDate(),
         production_date: Function.getCurrentDate(),
       },
+      Resource, // Tài nguyên
+      Enum, // enum
+      Function, // Các hàm chung
     };
   },
 };
