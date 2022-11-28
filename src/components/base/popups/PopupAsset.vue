@@ -459,19 +459,6 @@ export default {
       }
     },
 
-    /**
-     * Emit: Hiển thị toast thông báo
-     * @author Nguyen Van Thinh 11/11/2022
-     */
-    showToast: function () {
-      try {
-        this.$emit("close-popup");
-        this.$emit("show-toast");
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
     // Cập nhật dữ liệu nhận được từ component con (Input)
     updateInput: function (value, field) {
       try {
@@ -565,7 +552,7 @@ export default {
                   // Call API tạo mới tài sản
                   await createFixedAsset(this.popupObject)
                     .then(() => {
-                      this.$emit("reload-content");
+                      this.handleSuccessAPI();
                     })
                     .catch((res) => {
                       this.handleErrorAPI(res);
@@ -574,11 +561,11 @@ export default {
                 case Enum.Mode.Update:
                   // Gọi API cập nhật tài sản
                   await editFixedAsset(
-                    this.popupObject[this.fields.fixed_asset_id],
+                    this.popupObject.fixed_asset_id,
                     this.popupObject
                   )
                     .then(() => {
-                      this.$emit("reload-content");
+                      this.handleSuccessAPI();
                     })
                     .catch((res) => {
                       this.handleErrorAPI(res);
@@ -646,6 +633,31 @@ export default {
         this.showDialogValidate = true;
       } else {
         this.$emit("show-error-toast");
+      }
+    },
+
+    handleSuccessAPI: function () {
+      try {
+        // reload lại trang
+        this.$emit("reload-content");
+        // Thiết lập toast thông báo
+        let toastContent = "";
+        switch (this.mode) {
+          case Enum.Mode.Add:
+            toastContent = Resource.ToastContent.Add.Success;
+            break;
+          case Enum.Mode.Update:
+            toastContent = Resource.ToastContent.Update.Success;
+            break;
+          default:
+            // Mặc định là nhân bản thông tin
+            toastContent = Resource.ToastContent.Duplicate.Success;
+            break;
+        }
+        // Gọi đến hàm hiển thị toast tại parent component (Content)
+        this.$parent.showToast(Enum.ActionStatus.Success, toastContent);
+      } catch (error) {
+        console.log(error);
       }
     },
   },

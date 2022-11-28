@@ -99,7 +99,6 @@ export default {
 
     // Cập nhật giá trị khi reload dữ liệu
     tableRowObj: function () {
-      console.log("table row is here", this.tableRowObj);
       this.data = Object.assign(this.tableRowObj);
       this.updateRow();
       this.updateData();
@@ -172,17 +171,11 @@ export default {
       }
     },
 
-    // Cập nhật đối tượng data
+    // Cập nhật data
     updateData: function () {
       try {
-        for (const prop in this.props) {
-          if (this.tableRowObj[prop]) {
-            this.data[prop] = this.tableRowObj[prop];
-          } else {
-            if (prop != this.props.numerical_order)
-              this.data[prop] = this[prop];
-          }
-        }
+        this.data.accumulated_value = this.accumulated_value;
+        this.data.residual_value = this.residual_value;
       } catch (error) {
         console.log(error);
       }

@@ -46,8 +46,8 @@
           :data="isDisabledButton ? [] : json_data"
           :fields="json_fields"
           :before-generate="beforeGenerate"
-          worksheet="My Worksheet"
-          name="filename.xls"
+          worksheet="Danh sách tài sản cố định"
+          name="Danh sách tài sản cố định.xls"
         >
           <!-- Export button -->
           <ButtonFeature
@@ -98,13 +98,13 @@
   <!-- Toast -->
   <ToastVue
     v-if="isShowToast"
-    :mode="mode"
-    :is-error="isErrorToast"
-    :number-of-deleted-records="numberOfDeletedRecords"
+    :action-status="toastObj.actionStatus"
+    :content="toastObj.content"
   ></ToastVue>
 </template>
 
 <script>
+import Resource from "@/js/resource/resource";
 import DropdownTick from "@/components/base/dropdowns/DropdownTick.vue";
 import TheTable from "@/components/base/table/Table.vue";
 import Input from "@/components/base/inputs/SearchInput.vue";
@@ -113,7 +113,6 @@ import ButtonFeature from "@/components/base/buttons/ButtonFeature.vue";
 import Popup from "@/components/base/popups/PopupAsset.vue";
 import DialogDeleteVue from "@/components/base/dialogs/DialogDelete.vue";
 import Loader from "@/components/base/more/Loader.vue";
-import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import Constants from "@/js/common/constants";
@@ -155,7 +154,7 @@ export default {
         this.departments = res.data;
       })
       .catch(() => {
-        this.showErrorToast();
+        this.showToast(Enum.ActionStatus.Error, Resource.ToastContent.Error);
       });
 
     // Gọi API lấy tất cả bộ phận sử dụng
@@ -164,7 +163,7 @@ export default {
         this.fixedAssetCategories = res.data;
       })
       .catch(() => {
-        this.showErrorToast();
+        this.showToast(Enum.ActionStatus.Error, Resource.ToastContent.Error);
       });
   },
 
@@ -182,26 +181,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Cập nhật các điều kiện của filter
-     * @param {string} field trường của dữ liệu
-     * @param {string} value giá trị được cập nhật
-     * @author NVThinh 22/11/2022
-     */
-    updateFilter: async function (field, value) {
-      try {
-        this.conditions[field] = value;
-        this.searchAndFilter();
-        // Nếu giới hạn bản ghi thay đổi không cần cập nhật "Tổng số bản ghi" trên table footer
-        // if (field != Object.keys(this.conditions)[3]) {
-        //   // Thực hiện updateLimit tại con để cập nhật tổng số bản ghi
-        //   this.$ref.updateLimit(this.is);
-        // }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
     /**
      * Gọi API filter
      * @author NVThinh 22/11/2022
@@ -222,12 +201,12 @@ export default {
           this.isShowLoader = false;
         })
         .catch(() => {
-          this.showErrorToast();
+          this.showToast(Enum.ActionStatus.Error, Resource.ToastContent.Error);
         });
     },
 
     /**
-     * Tải lại trang
+     * Tải lại trang (đóng popup, hiển thị toast)
      * @author NVThinh (20/11/2022)
      */
     reloadContent: function () {
@@ -237,6 +216,81 @@ export default {
         this.isShowPopup = false;
         // hiển thị toast thông báo
         this.isShowToast = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    // Xóa bản ghi
+    deleteRecords: async function (mode) {
+      try {
+        // Cập nhật chế độ
+        this.mode = mode;
+        // Thực hiện xóa 1 bản ghi
+        if (mode == Enum.Mode.Delete) {
+          await deleteFixedAsset(this.selectedRows[0].fixed_asset_id)
+            .then(() => {
+              this.reloadContent();
+              this.showToast(
+                Enum.ActionStatus.Success,
+                Resource.ToastContent.Delete.Success
+              );
+              // Bỏ đối tượng vừa xóa khỏi mảng selected rows
+              this.$refs.theTable.updateRow(false, this.selectedRows[0]);
+            })
+            .catch(() => {
+              this.showToast(
+                Enum.ActionStatus.Error,
+                Resource.ToastContent.Delete.Fail
+              );
+            });
+        } else {
+          // Thực hiện xóa nhiều bản ghi
+          let listID = {};
+          let fixedAssetIDs = [];
+          for (const obj of this.selectedRows) {
+            fixedAssetIDs.push(obj.fixed_asset_id);
+          }
+          listID["fixedAssetIDs"] = fixedAssetIDs;
+          this.numberOfDeletedRecords = fixedAssetIDs.length;
+          // Gọi API xóa nhiều bản ghi
+          await deleteMultipleFixedAssets(listID)
+            .then(() => {
+              this.reloadContent();
+              this.showToast(
+                Enum.ActionStatus.Success,
+                fixedAssetIDs.length + Resource.ToastContent.deleteMultiSuccess
+              );
+            })
+            .catch(() => {
+              this.showToast(
+                Enum.ActionStatus.Error,
+                Resource.ToastContent.deleteMulti.Fail
+              );
+            });
+        }
+        // Đóng dialog cảnh báo xóa
+        this.isShowDialogDelete = false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Cập nhật các điều kiện của filter
+     * @param {string} field trường của dữ liệu
+     * @param {string} value giá trị được cập nhật
+     * @author NVThinh 22/11/2022
+     */
+    updateFilter: async function (field, value) {
+      try {
+        this.conditions[field] = value;
+        this.searchAndFilter();
+        // Nếu giới hạn bản ghi thay đổi không cần cập nhật "Tổng số bản ghi" trên table footer
+        // if (field != Object.keys(this.conditions)[3]) {
+        //   // Thực hiện updateLimit tại con để cập nhật tổng số bản ghi
+        //   this.$ref.updateLimit(this.is);
+        // }
       } catch (error) {
         console.log(error);
       }
@@ -263,47 +317,6 @@ export default {
             this.json_data.push(obj);
           }
         }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    // Xóa bản ghi
-    deleteRecords: async function (mode) {
-      try {
-        // Cập nhật chế độ
-        this.mode = mode;
-        // Thực hiện xóa 1 bản ghi
-        if (mode == Enum.Mode.Delete) {
-          await deleteFixedAsset(this.selectedRows[0].fixed_asset_id)
-            .then(() => {
-              this.reloadContent();
-              // Bỏ đối tượng vừa xóa khỏi mảng selected rows
-              this.$refs.theTable.updateRow(false, this.selectedRows[0]);
-            })
-            .catch(() => {
-              this.showErrorToast();
-            });
-        } else {
-          // Thực hiện xóa nhiều bản ghi
-          let listID = {};
-          let fixedAssetIDs = [];
-          for (const obj of this.selectedRows) {
-            fixedAssetIDs.push(obj.fixed_asset_id);
-          }
-          listID["fixedAssetIDs"] = fixedAssetIDs;
-          this.numberOfDeletedRecords = fixedAssetIDs.length;
-          // Gọi API xóa nhiều bản ghi
-          await deleteMultipleFixedAssets(listID)
-            .then(() => {
-              this.reloadContent();
-            })
-            .catch(() => {
-              this.showErrorToast();
-            });
-        }
-        // Đóng dialog
-        this.isShowDialogDelete = false;
       } catch (error) {
         console.log(error);
       }
@@ -343,16 +356,6 @@ export default {
       }
     },
 
-    // Hiển thị toast thông báo lỗi
-    showErrorToast: function () {
-      // Đóng popup
-      this.isShowPopup = false;
-      // Cập nhật trạng thái của toast
-      this.isErrorToast = true;
-      // Hiển thị toast
-      this.isShowToast = true;
-    },
-
     /**
      * Thực hiện trước khi tạo file excel
      * @author NVThinh 27/11/2022
@@ -369,10 +372,29 @@ export default {
         return console.log(error);
       }
     },
+
+    /**
+     * Hiển thị toast
+     * @param {Number} actionStatus trạng thái toast
+     * @param {String} content nội dung hiển thị
+     * @author NVThinh 28-11-2022
+     */
+    showToast: function (actionStatus, content) {
+      // Cập nhật đối tượng toast
+      this.toastObj.actionStatus = actionStatus;
+      this.toastObj.content = content;
+      // Hiển thị toast
+      this.isShowToast = true;
+    },
   },
 
   data() {
     return {
+      // Các thông tin yêu cầu từ toast component
+      toastObj: {
+        actionStatus: 0,
+        content: "",
+      },
       totalOfRecords: 0, // Số lượng bản ghi lọc được
       dialogInfo: "", // nội dung hiển thị dialog xác nhận xóa
       mode: 0, // Chế độ popup
@@ -383,7 +405,7 @@ export default {
       isShowPopup: false, // trạng thái hiển thị / ẩn popup
       isShowDialogDelete: false, // Trạng thái ẩn hiện dialog xác nhận xóa
       isShowToast: false, // Trạng thái hiển thị toast báo thành công
-      isErrorToast: false, // Trạng thái hiển thị toast lỗi
+      toastMode: 0, // chế độ toast
       selectedRows: [], // Mảng chứa các dòng trong bảng được chọn
       fixedAssets: [], // Mảng chứa các tài sản cố định sau khi gọi API
       departments: [], // Mảng chứa các bộ phận sử dụng sau khi gọi API
@@ -410,9 +432,9 @@ export default {
           field: "department",
         },
       ],
-      Resource,
-      Function,
-      Enum,
+      Resource, // resource
+      Function, // Hàm dùng chung
+      Enum, // enum
       json_fields: TableResource.TableHead.FixedAsset, // tên cột
       json_data: [], // Mảng chứa các json data dùng cho việc xuất dữ liệu
     };

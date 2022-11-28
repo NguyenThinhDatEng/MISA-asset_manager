@@ -7,7 +7,13 @@
     "paths": {
       "@/*": [
         "src/*"
-      ]
+      ],
+      "@e/*": [
+        "src/js/enum/*"
+      ],
+      "@r/*": [
+        "src/js/resource/*"
+      ],
     },
     "lib": [
       "esnext",

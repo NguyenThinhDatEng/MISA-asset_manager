@@ -41,4 +41,9 @@ export default {
     DuplicateKey: 4,
     BadRequest: 3,
   },
+  ActionStatus: {
+    Success: 0,
+    Error: 1,
+    Warning: 2,
+  },
 };

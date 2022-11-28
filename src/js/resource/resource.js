@@ -1,3 +1,4 @@
+import Status from "@/js/resource/statusResource";
 export default {
   // Nội dung các item trong danh mục
   ItemContents: {
@@ -180,14 +181,26 @@ export default {
     production_date: "production_date",
   },
   // Nội dung hiển thị thông báo
-  ToastInfo: {
-    addSuccess: "Lưu dữ liệu thành công",
-    updateSuccess: "Cập nhật dữ liệu thành công",
-    deleteSuccess: "Xóa bản ghi thành công",
-    duplicateSuccess: "Nhân bản dữ liệu thành công",
-    deleteMultiSuccess: "bản ghi đã được xóa thành công",
-    error: "Có lỗi xảy ra!",
-    deleteMultiFail: "Xóa nhiều bản ghi thất bại!",
+  ToastContent: {
+    Add: {
+      Success: Status.action.add + " " + Status.status.success,
+      Fail: Status.action.add + " " + Status.status.fail,
+    },
+    Update: {
+      Success: Status.action.update + " " + Status.status.success,
+      Fail: Status.action.update + " " + Status.status.fail,
+    },
+    Delete: {
+      Success: Status.action.delete + " " + Status.status.success,
+      Fail: Status.action.delete + " " + Status.status.fail,
+    },
+    Duplicate: {
+      Success: Status.action.duplicate + " " + Status.status.success,
+      Fail: Status.action.duplicate + " " + Status.status.fail,
+    },
+    DeleteMulti: { Fail: Status.action.deleteMulti + " " + Status.status.fail },
+    DeleteMultiSuccess: " bản ghi đã được xóa thành công", // 02 bản ghi đã được xóa thành công
+    Error: "Có lỗi xảy ra!",
   },
   // Các trường áp dụng vào tìm kiếm, lọc và phân trang dữ liệu
   Filter: {
