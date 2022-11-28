@@ -160,10 +160,9 @@ export default {
         // Cập nhật giá trị hao mòn lũy kế
         this.accumulated_value = Function.accumulatedValue(
           depreciation_value,
-          this.tableRowObj.production_date
+          this.tableRowObj.production_date,
+          this.tableRowObj.cost
         );
-        if (this.accumulated_value > this.tableRowObj.cost)
-          this.accumulated_value = this.tableRowObj.cost;
         // Cập nhật giá trị còn lại
         this.residual_value = this.tableRowObj.cost - this.accumulated_value;
       } catch (error) {

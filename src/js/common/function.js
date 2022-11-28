@@ -33,14 +33,17 @@ export default {
   },
 
   // Tính hao mòn lũy kế
-  accumulatedValue: function (depreciation_value, production_date) {
+  accumulatedValue: function (depreciation_value, production_date, cost) {
     try {
       if (!production_date) return 0;
       const production_year = Number(production_date.slice(0, 4));
       const numberOfUsedYear = Math.abs(
         this.getCurrentYear() - production_year
       );
-      return numberOfUsedYear * depreciation_value;
+      let result = numberOfUsedYear * depreciation_value;
+      // Nếu hao mòn lũy kế lớn hơn nguyên giá
+      if (result > cost) return cost;
+      return result;
     } catch (error) {
       console.log(error);
     }

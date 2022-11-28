@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import Function from "@/js/common/function";
 import Row from "./TableRow.vue";
 import TableFoot from "./TableFoot.vue";
 import Resource from "@/js/resource/resource";
@@ -195,11 +196,14 @@ export default {
       for (const obj of this.fixedAssets) {
         this.totalOfQuantities += obj.quantity;
         this.footerData.totalOfCost += obj.cost;
-        this.footerData.totalDepreciationValue +=
-          obj.cost * obj.depreciation_rate;
-        this.footerData.totalResidualValue +=
-          obj.cost * (1 - obj.depreciation_rate / 100);
+        this.footerData.totalDepreciationValue += Function.accumulatedValue(
+          (obj.depreciation_rate * obj.cost) / 100,
+          obj.production_date,
+          obj.cost
+        );
       }
+      this.footerData.totalResidualValue =
+        this.footerData.totalOfCost - this.footerData.totalDepreciationValue;
       // Ẩn Loader
       this.isShowLoader = false;
     },
