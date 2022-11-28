@@ -99,6 +99,8 @@ export default {
 
     // Cập nhật giá trị khi reload dữ liệu
     tableRowObj: function () {
+      console.log("table row is here", this.tableRowObj);
+      this.data = Object.assign(this.tableRowObj);
       this.updateRow();
       this.updateData();
     },

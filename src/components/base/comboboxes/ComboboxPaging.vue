@@ -50,10 +50,12 @@ export default {
     return {
       isShow: false,
       data: [
+        { val: 10, isActive: false },
         { val: 20, isActive: true },
-        { val: 25, isActive: false },
         { val: 50, isActive: false },
         { val: 100, isActive: false },
+        { val: 200, isActive: false },
+        { val: 500, isActive: false },
       ],
       value: 20,
     };

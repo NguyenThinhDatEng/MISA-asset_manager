@@ -51,7 +51,16 @@ export default {
           break;
       }
     // Nếu có lỗi
-    else this.theInfo = this.toastInfo.error;
+    else {
+      switch (this.mode) {
+        case Enum.Mode.DeleteMulti:
+          this.theInfo = this.toastInfo.deleteMultiFail;
+          break;
+        default:
+          this.theInfo = this.toastInfo.error;
+          break;
+      }
+    }
   },
   data() {
     return { theInfo: "", toastInfo: Resource.ToastInfo, Enum };

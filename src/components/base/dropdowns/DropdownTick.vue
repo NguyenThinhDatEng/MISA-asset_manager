@@ -13,7 +13,7 @@
         @click="isShow = !isShow"
       />
       <!-- button  -->
-      <div class="combobox__button">
+      <div class="combobox__button" @click="isShow = !isShow">
         <div class="icon center icon--down"></div>
       </div>
       <div class="dropdown__data" v-show="isShow">

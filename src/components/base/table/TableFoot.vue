@@ -352,7 +352,7 @@ export default {
      */
     isShowNextPage: function () {
       try {
-        if (this.numberOfPages > 4 && this.selectedNumber > 2) return true;
+        if (this.numberOfPages >= 4 && this.selectedNumber > 2) return true;
         return false;
       } catch (error) {
         console.log(error);

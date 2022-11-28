@@ -100,10 +100,10 @@ export default {
       this.updateFooterData();
       // Làm mới bảng dữ liệu
       this.isRefreshTable = !this.isRefreshTable;
-      // Làm mới mảng các dòng được chọn
-      this.selectedRows = [];
       // Đưa ô check ở Header về mặc định
       this.isCheckAll = false;
+      // Làm mới mảng được chọn
+      this.selectedRows = [];
     },
   },
 

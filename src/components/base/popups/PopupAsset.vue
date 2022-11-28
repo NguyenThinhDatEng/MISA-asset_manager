@@ -346,7 +346,8 @@ export default {
           this.initObj = Object.assign({}, this.popupObject);
           // Làm tròn Hao mòn năm
           this.initObj[this.fields.depreciation_value] = Math.round(
-            this.depreciation_value
+            this.depreciation_value,
+            2
           );
           // Chuyển đổi cùng kiểu dữ liệu ngày tháng năm
           this.initObj[this.fields.purchase_date] = new Date(
@@ -380,6 +381,7 @@ export default {
       console.log(error);
     }
   },
+
   emits: [
     "close-popup",
     "show-toast",

@@ -251,6 +251,7 @@ export default {
       try {
         // Cập nhật mảng các dòng được chọn
         this.selectedRows = selectedRows;
+        console.log("selected rows", this.selectedRows);
         // Cập nhật trang thái disabled của các nút chức năng
         if (selectedRows.length == 0) {
           this.isDisabledButton = true;
@@ -268,13 +269,17 @@ export default {
     },
 
     // Xóa bản ghi
-    deleteRecords: async function () {
+    deleteRecords: async function (mode) {
       try {
+        // Cập nhật chế độ
+        this.mode = mode;
         // Thực hiện xóa 1 bản ghi
-        if (this.mode == Enum.Mode.Delete) {
+        if (mode == Enum.Mode.Delete) {
           await deleteFixedAsset(this.selectedRows[0].fixed_asset_id)
             .then(() => {
               this.reloadContent();
+              // Bỏ đối tượng vừa xóa khỏi mảng selected rows
+              this.$refs.theTable.updateRow(false, this.selectedRows[0]);
             })
             .catch(() => {
               this.showErrorToast();

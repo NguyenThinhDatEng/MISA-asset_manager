@@ -187,6 +187,7 @@ export default {
     duplicateSuccess: "Nhân bản dữ liệu thành công",
     deleteMultiSuccess: "bản ghi đã được xóa thành công",
     error: "Có lỗi xảy ra!",
+    deleteMultiFail: "Xóa nhiều bản ghi thất bại!",
   },
   // Các trường áp dụng vào tìm kiếm, lọc và phân trang dữ liệu
   Filter: {
