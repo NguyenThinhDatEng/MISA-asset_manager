@@ -43,11 +43,11 @@
         <!-- Exporting excel library -->
         <export-excel
           class="btn btn-default"
+          :name="Resource.QLTS.file_name + '.xls'"
+          :worksheet="Resource.QLTS.file_name"
           :data="isDisabledButton ? [] : json_data"
           :fields="json_fields"
           :before-generate="beforeGenerate"
-          worksheet="Danh sách tài sản cố định"
-          name="Danh sách tài sản cố định.xls"
         >
           <!-- Export button -->
           <ButtonFeature

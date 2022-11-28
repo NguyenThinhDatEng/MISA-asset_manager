@@ -5,7 +5,7 @@
     <div class="sidebar__header">
       <div class="icon icon--home" :title="Title.home"></div>
       <p class="sidebar__header--text item__content">
-        {{ Resource.Logo.qlts }}
+        {{ Resource.QLTS.logo }}
       </p>
     </div>
     <!-- Body sidebar -->

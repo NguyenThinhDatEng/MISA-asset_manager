@@ -35,9 +35,10 @@ export default {
     cancel: "Hủy bỏ",
     delete: "Xóa tài sản",
   },
-  // Tên logo sản phẩm
-  Logo: {
-    qlts: "MISA QLTS",
+  // Liên quan sản phẩm
+  QLTS: {
+    logo: "MISA QLTS",
+    file_name: "Danh sách tài sản cố định",
   },
   // Tiêu đề trang
   PageTitle: {
