@@ -107,7 +107,7 @@
           </div>
         </div>
       </td>
-      <td class="value">{{ totalOfQuantities }}</td>
+      <td class="value">{{ Function.formatMoney(totalOfQuantities) }}</td>
       <td class="value" v-for="(val, key) of footerData" :key="key">
         {{ Function.formatMoney(val) }}
       </td>
@@ -132,11 +132,9 @@ export default {
   watch: {
     // Cập nhật số trang khi tổng số bản ghi thay đổi
     numberOfRecords: function () {
-      this.numberState[this.selectedNumber - 1] = false;
       this.setNumberOfPages();
       // Cập nhật giá trị và style trang được chọn
-      this.selectedNumber = 1;
-      this.numberState[0] = true;
+      this.updatePageNumberState();
     },
     // Gửi dữ liệu để call API filter khi trang được chọn thay đổi
     selectedNumber: function () {
@@ -167,7 +165,13 @@ export default {
      * @author Nguyen Van Thinh 02/11/2022
      */
     records() {
-      return "Tổng số: " + "<b>" + this.numberOfRecords + "</b>" + " bản ghi";
+      return (
+        "Tổng số: " +
+        "<b>" +
+        Function.formatMoney(this.numberOfRecords) +
+        "</b>" +
+        " bản ghi"
+      );
     },
 
     // Thực hiện updateLimit tại cha để gửi giá trị vừa được cập nhật
@@ -178,10 +182,23 @@ export default {
         // Cập nhật số trang
         this.setNumberOfPages();
         // Cập nhật giá trị và style trang được chọn
-        this.selectedNumber = 1;
-        this.numberState[0] = true;
+        this.updatePageNumberState();
         // Thực hiện hàm updateFilter tại lớp cha
         this.$parent.updateFilter(Resource.Filter.limit, value);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Bỏ focus vào ô page number hiện tại, focus vào page number đầu tiên
+     * @author NVThinh 19-11-2022
+     */
+    updatePageNumberState: function () {
+      try {
+        this.numberState[this.selectedNumber - 1] = false;
+        this.selectedNumber = 1;
+        this.numberState[0] = true;
       } catch (error) {
         console.log(error);
       }

@@ -41,7 +41,11 @@
           @show-popup="showPopup"
           ref="Row"
         ></Row>
-        <tr class="ignoreRow"></tr>
+        <tr class="ignoreRow">
+          <td v-show="fixedAssets.length == 0" colspan="100">
+            Không có dữ liệu trên grid
+          </td>
+        </tr>
       </tbody>
       <!-- Table footer  -->
       <TableFoot
@@ -322,7 +326,13 @@ export default {
 </script>
 
 <style scoped>
+@import url(@/css/font.css);
 .ignoreRow {
   height: 100%;
+  text-align: center;
+}
+
+.ignoreRow:hover {
+  background-color: #fff;
 }
 </style>

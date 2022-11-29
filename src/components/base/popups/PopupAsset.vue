@@ -139,12 +139,13 @@
                   :label-content="Label.life_time"
                   :is-error="errorMessages.life_time"
                   :field="fields.life_time"
+                  :type="Enum.DataType.Year"
+                  :max-length="4"
                   :value="
                     popupObject[fields.life_time]
                       ? popupObject[fields.life_time].toString()
                       : '0'
                   "
-                  :type="Enum.DataType.Year"
                   @update-input="updateInput"
                 ></InputNumber>
               </div>
@@ -156,11 +157,11 @@
           <div class="popup__body--left">
             <InputNumber
               :label-content="Label.depreciation_rate"
-              :is-error="errorMessages[fields.depreciation_rate]"
+              :is-error="errorMessages.depreciation_rate"
               :field="fields.depreciation_rate"
               :type="Enum.DataType.Rate"
               :max-length="5"
-              :value="popupObject[fields.depreciation_rate].toString()"
+              :value="popupObject.depreciation_rate.toString()"
               @update-input="updateInput"
             ></InputNumber>
             <p class="error-message"></p>

@@ -107,16 +107,11 @@ export default {
         !(
           (keyCode >= 48 && keyCode <= 57) ||
           (keyCode >= 96 && keyCode <= 105) ||
-          excludedKeys.includes(keyCode)
+          excludedKeys.includes(keyCode) ||
+          (numberType == Enum.DataType.Rate && keyCode == Enum.KeyCode.Comma)
         )
       ) {
-        if (numberType == Enum.DataType.Rate) {
-          if (!keyCode == Enum.KeyCode.Period) {
-            e.preventDefault();
-          }
-        } else {
-          e.preventDefault();
-        }
+        e.preventDefault();
       }
     } catch (error) {
       console.log(error);

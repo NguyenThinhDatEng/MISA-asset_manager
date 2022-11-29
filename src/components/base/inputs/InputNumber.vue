@@ -38,7 +38,15 @@ import Enum from "@/js/enum/enum";
 export default {
   name: "InputNumber",
   created() {
-    this.amount = Function.formatNumber(Number(this.value));
+    const val = Number(this.value);
+    if (val < 10) {
+      this.amount = Function.formatNumber(val);
+    } else {
+      this.amount = Function.formatMoney(val);
+    }
+    if (this.type == Enum.DataType.Rate) {
+      this.amount = this.amount.toString().replace(".", ",");
+    }
   },
   props: {
     type: {
@@ -52,7 +60,7 @@ export default {
     },
     maxLength: {
       type: Number,
-      default: 4,
+      default: 10,
     },
     labelContent: String,
     isError: {
@@ -64,7 +72,13 @@ export default {
   watch: {
     amount: function () {
       // Gửi giá trị thay đổi đến cha
+      if (this.type == Enum.DataType.Rate)
+        this.amount = this.amount.toString().replace(",", ".");
+      // Gửi dữ liệu đến cha qua emit
       this.$emit("update-input", Number(this.amount), this.field);
+      if (this.type == Enum.DataType.Rate) {
+        this.amount = this.amount.toString().replace(".", ",");
+      }
     },
     value: function () {
       // Cập nhật giá trị input khi có giá trị từ ngoài truyền vào
@@ -110,7 +124,7 @@ export default {
   },
   data() {
     return {
-      amount: 0, // giá trị ô input
+      amount: "", // giá trị ô input
       Resource, // Tài nguyên
       Function, // Các hàm dùng chung
       Enum, // enum

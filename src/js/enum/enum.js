@@ -28,6 +28,7 @@ export default {
     SelectTable: 115, // Phím `
     F8: 119, // Phím F8
     F9: 120, // Phím F9
+    Comma: 188, // Dấu ,
     Period: 190, // Dấu .
   },
   DataType: {

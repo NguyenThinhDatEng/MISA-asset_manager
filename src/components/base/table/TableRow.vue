@@ -29,7 +29,9 @@
       {{ tableRowObj.department_name }}
     </td>
     <!-- Cột số lượng -->
-    <td class="col--quantity">{{ tableRowObj.quantity }}</td>
+    <td class="col--quantity">
+      {{ Function.formatMoney(tableRowObj.quantity) }}
+    </td>
     <!-- Cột nguyên giá -->
     <td class="col--cost">{{ Function.formatMoney(tableRowObj.cost) }}</td>
     <!-- Cột hao mòn lũy kế -->
