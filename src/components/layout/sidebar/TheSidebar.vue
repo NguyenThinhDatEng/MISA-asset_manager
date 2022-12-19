@@ -14,7 +14,7 @@
         v-for="item in items"
         v-bind:key="item.id"
         :iconName="setIconName(item.id)"
-        :itemContent="item.content"
+        :item="item"
         :title="setTitle(item.id, item.content)"
         :active="item.active"
         @click="handleOnClickItem(item.id)"
@@ -55,6 +55,7 @@ export default {
   },
   created() {
     try {
+      console.log(this.itemContents);
       let isActive;
       // Thêm thuộc tính isActive cho từng đối tượng item
       for (const key in this.itemContents) {
@@ -64,7 +65,8 @@ export default {
         this.items.push({
           id: key,
           active: isActive,
-          content: this.itemContents[key],
+          content: this.itemContents[key].content,
+          router: this.itemContents[key].router,
         });
       }
     } catch (error) {

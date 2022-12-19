@@ -32,6 +32,10 @@
     padding: 0 11px;
 }
 
+.sidebar__body a {
+    text-decoration: none;
+}
+
 .sidebar__footer {
     position: absolute;
     bottom: 0;

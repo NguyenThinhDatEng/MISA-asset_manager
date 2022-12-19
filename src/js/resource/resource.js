@@ -2,13 +2,34 @@ import Status from "@/js/resource/statusResource";
 export default {
   // Nội dung các item trong danh mục
   ItemContents: {
-    general: "Tổng quan",
-    asset: "Tài sản",
-    path: "Tài sản HT-ĐB",
-    tool: "Công cụ dụng cụ",
-    category: "Danh mục",
-    search: "Tra cứu",
-    report: "Báo cáo",
+    general: {
+      content: "Tổng quan",
+      router: "tong-quan",
+    },
+    asset: {
+      content: "Tài sản",
+      router: "",
+    },
+    path: {
+      content: "Tài sản HT-ĐB",
+      router: "tai-san-he-thong-duong-bo",
+    },
+    tool: {
+      content: "Công cụ dụng cụ",
+      router: "cong-cu-dung-cu",
+    },
+    category: {
+      content: "Danh mục",
+      router: "danh-muc",
+    },
+    search: {
+      content: "Tra cứu",
+      router: "tra-cuu",
+    },
+    report: {
+      content: "Báo cáo",
+      router: "bao-cao",
+    },
   },
   // Tooltip
   Title: {

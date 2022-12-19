@@ -1,21 +1,23 @@
 <template>
-  <div
-    :id="id ? id : ''"
-    :class="{ item: true, 'item--active': active }"
-    :title="title ? title : ''"
-  >
-    <!-- left -->
-    <div class="icon-item_wrapper">
-      <div :class="['icon icon-item center', iconName]"></div>
-    </div>
-    <!-- right -->
-    <div class="item__content">
-      <p>{{ itemContent }}</p>
-      <div class="icon-item_wrapper" v-if="isShow(itemContent)">
-        <div class="icon icon-arrow center icon--down-arrow"></div>
+  <router-link :to="getRouter(item.router)">
+    <div
+      :id="id ? id : ''"
+      :class="{ item: true, 'item--active': active }"
+      :title="title ? title : ''"
+    >
+      <!-- left -->
+      <div class="icon-item_wrapper">
+        <div :class="['icon icon-item center', iconName]"></div>
+      </div>
+      <!-- right -->
+      <div class="item__content">
+        <p>{{ item.content }}</p>
+        <div class="icon-item_wrapper" v-if="isShow(item.content)">
+          <div class="icon icon-arrow center icon--down-arrow"></div>
+        </div>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
@@ -26,7 +28,16 @@ export default {
   props: {
     id: String, // id danh mục
     iconName: String, // tên icon
-    itemContent: String, // nội dung icon
+    // nội dung icon
+    item: {
+      type: Object,
+      default: function () {
+        return {
+          content: resource.ItemContents.asset.content,
+          router: resource.ItemContents.asset.router,
+        };
+      },
+    },
     title: String, // Tiêu đề danh mục
     // highlight danh mục
     active: {
@@ -34,11 +45,15 @@ export default {
       default: false,
     },
   },
+  created() {
+    console.log("item", this.item);
+  },
   methods: {
     /**
      * Bỏ icon mũi tên đi xuống của những item không có
      * @param {String} itemContent tên mục
      * @return {Boolean}
+     * @author Nguyen Van Thinh 19/12/2022
      */
     isShow(itemContent) {
       try {
@@ -52,6 +67,13 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * Lấy router của trang
+     * @return {String} đường dẫn
+     * @author Nguyen Van Thinh 19/12/2022
+     */
+    getRouter: (router) => "/" + router,
   },
   // data
   data() {

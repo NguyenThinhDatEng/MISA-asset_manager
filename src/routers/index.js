@@ -2,10 +2,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // import components
-import AssetList from "@/views/assetManagement/AssetList.vue";
+import AssetListVue from "@/views/assetManagement/AssetList.vue";
 
 // Define routers
-const routes = [{ path: "/", name: "AssetList", component: AssetList }];
+const routes = [{ path: "/", name: "AssetList", component: AssetListVue }];
 
 // Create a router instance
 const router = createRouter({
