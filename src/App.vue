@@ -1,9 +1,9 @@
 <template>
   <div class="layout">
-    <TheSidebar></TheSidebar>
+    <TheSidebar />
     <div class="header-content">
-      <TheHeader></TheHeader>
-      <TheContent></TheContent>
+      <TheHeader />
+      <TheContent />
     </div>
   </div>
 </template>

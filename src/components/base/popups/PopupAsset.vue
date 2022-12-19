@@ -345,11 +345,10 @@ export default {
             this.depreciation_value;
           // Khởi tạo đối tượng ban đầu
           this.initObj = Object.assign({}, this.popupObject);
-          // Làm tròn Hao mòn năm
-          this.initObj[this.fields.depreciation_value] = Math.round(
-            this.depreciation_value,
-            2
-          );
+          // Cập nhật nguyên giá và giá trị hao mòn năm
+          this.initObj.cost = Math.round(this.initObj.cost);
+          this.initObj.depreciation_value =
+            (this.initObj.cost * this.initObj.depreciation_rate) / 100;
           // Chuyển đổi cùng kiểu dữ liệu ngày tháng năm
           this.initObj[this.fields.purchase_date] = new Date(
             this.initObj[this.fields.purchase_date]
@@ -684,6 +683,7 @@ export default {
         quantity: 1,
         depreciation_rate: 0,
         depreciation_value: 0,
+        life_time: 0,
         tracked_year: Function.getCurrentYear(),
         purchase_date: Function.getCurrentDate(),
         production_date: Function.getCurrentDate(),
