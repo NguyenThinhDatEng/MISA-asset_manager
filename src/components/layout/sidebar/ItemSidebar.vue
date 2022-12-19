@@ -79,7 +79,6 @@ export default {
   data() {
     return {
       hasArrowIcon: true, // true nếu danh mục có icon mũi tên
-      content: resource.ItemContents, // nội dung danh mục
     };
   },
 };

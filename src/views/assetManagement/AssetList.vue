@@ -108,7 +108,7 @@ import TheTable from "@/components/base/table/Table.vue";
 import Input from "@/components/base/inputs/SearchInput.vue";
 import Button from "@/components/base/buttons/ButtonIcon.vue";
 import ButtonFeature from "@/components/base/buttons/ButtonFeature.vue";
-import Popup from "@/components/base/popups/PopupAsset.vue";
+import Popup from "@/views/assetManagement/AssetDetail.vue";
 import DialogDeleteVue from "@/components/base/dialogs/DialogDelete.vue";
 import Loader from "@/components/base/more/Loader.vue";
 import Enum from "@/js/enum/enum";
