@@ -1,5 +1,5 @@
 <template>
-  <div id="popup--add" class="popup-wrapper" v-on:keyup.esc="closePopup">
+  <div id="popup--add" class="popup-wrapper" @keydown.esc="closePopup">
     <div class="center popup">
       <!-- Popup Header -->
       <div class="popup__header">

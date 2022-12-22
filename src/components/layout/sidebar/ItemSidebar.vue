@@ -45,9 +45,7 @@ export default {
       default: false,
     },
   },
-  created() {
-    console.log("item", this.item);
-  },
+
   methods: {
     /**
      * Bỏ icon mũi tên đi xuống của những item không có
@@ -58,8 +56,8 @@ export default {
     isShow(itemContent) {
       try {
         if (
-          itemContent == this.content.general ||
-          itemContent == this.content.category
+          itemContent == this.Items.general.content ||
+          itemContent == this.Items.category.content
         )
           return false;
         return true;
@@ -79,6 +77,7 @@ export default {
   data() {
     return {
       hasArrowIcon: true, // true nếu danh mục có icon mũi tên
+      Items: resource.ItemContents,
     };
   },
 };

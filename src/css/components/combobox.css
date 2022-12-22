@@ -38,6 +38,7 @@
 .combobox__input:focus,
 .combobox__input:active {
     border: none;
+    cursor: context-menu;
 }
 
 .combobox__button {
@@ -48,6 +49,7 @@
     border: none;
     border-radius: 2.5px;
     background-color: transparent;
+    z-index: -1;
 }
 
 .combobox__data {
@@ -73,7 +75,7 @@
 }
 
 /* combobox detail  */
-.combobox__data .first-data {
+.combobox__data .title {
     position: sticky;
     top: 0;
     padding-top: 8px;

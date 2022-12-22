@@ -1,5 +1,10 @@
 <template>
-  <div :class="['combobox combobox--detail', { 'combobox--error': isError }]">
+  <div
+    :class="['combobox combobox--detail', { 'combobox--error': isError }]"
+    @keydown.down.prevent="highlightNext(data.length)"
+    @keydown.up.prevent="highlightPrevious()"
+    @keydown.enter="handleOnClickData(highlightIndex)"
+  >
     <!-- input -->
     <input
       type="text"
@@ -7,19 +12,19 @@
       :placeholder="placeholder"
       :maxlength="maxLength"
       v-model="val"
-      @click="isShow = !isShow"
-      @keyup="keyUp"
+      @focus="isShow = true"
+      @keydown.tab="isShow = false"
     />
     <div class="combobox__button" @click="isShow = !isShow">
       <div class="icon center icon--down"></div>
     </div>
     <div class="combobox__data" v-show="isShow">
-      <div class="first-data">
+      <div class="title">
         <div class="data">
           <div class="text__wrapper">
             <p>{{ Resource.ComboboxInfo.firstCol }}</p>
           </div>
-          <p>{{ Resource.PopupLabel[field + "_name"] }}</p>
+          <p>{{ Resource.PopupLabel[fields.name] }}</p>
         </div>
       </div>
       <!-- Dữ liệu hiển thị  -->
@@ -28,7 +33,10 @@
         :key="index"
         :field="field"
         :obj="obj"
-        @click="handleOnClickData(obj[field + '_id'])"
+        :class="{ 'data--selected': index === highlightIndex }"
+        @click="handleOnClickData(index)"
+        @mouseover="highlightIndex = index"
+        @keydown.tab="highlightIndex = index + 1"
       ></Data>
     </div>
   </div>
@@ -37,7 +45,7 @@
 <script>
 import Data from "./DataDetail.vue";
 import Resource from "@/js/resource/resource";
-import Enum from "@/js/enum/enum";
+// import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 
 export default {
@@ -100,10 +108,6 @@ export default {
         console.log(error);
       }
     },
-
-    isShow: function () {
-      console.log("isShow is changed", this.isShow);
-    },
   },
   methods: {
     /**
@@ -111,21 +115,29 @@ export default {
      * @param {String} id id của mã bộ phận sử dụng được chọn
      * @author Nguyen Van Thinh 07/11/2022
      */
-    handleOnClickData: function (id) {
+    handleOnClickData: function (index) {
       try {
-        let comboData = []; // dữ liệu phát lên lớp cha
-        const IDField = this.field + "_id"; // Ex: department_id
-        const codeField = this.field + "_code"; // Ex: department_code
-        const nameField = this.field + "_name"; // Ex: department_name
+        // get the ID of object
+        const id = this.data[index][this.fields.id];
+        // dữ liệu phát lên lớp cha
+        let comboData = [];
         // Lọc ra obj được chọn
         for (let obj of this.comboboxData) {
-          if (id == obj[IDField]) {
+          if (id == obj[this.fields.id]) {
             // Cập nhật giá trị
-            this.val = obj[codeField];
+            this.val = obj[this.fields.code];
             // Cập nhật dữ liệu trong data
-            comboData.push({ field: IDField, value: obj[IDField] }); // id
-            comboData.push({ field: codeField, value: this.val }); // code
-            comboData.push({ field: nameField, value: obj[nameField] }); // name
+            comboData.push({
+              field: this.fields.id,
+              value: obj[this.fields.id],
+            });
+            // id
+            comboData.push({ field: this.fields.code, value: this.val }); // code
+            // name
+            comboData.push({
+              field: this.fields.name,
+              value: obj[this.fields.name],
+            });
             comboData.push({
               // life time
               field: Resource.PopupField.life_time,
@@ -150,28 +162,40 @@ export default {
       }
     },
 
-    keyUp: function (e) {
-      try {
-        // console.log("keyup", e);
-        if (e.keyCode == Enum.KeyCode.TAB) {
-          this.isShow = false;
-        }
-      } catch (error) {
-        console.log(error);
+    /**
+     * highlight vào dòng khi có sự kiện nhấn phím mũi tên xuống từ bàn phím
+     * @author NVThinh (22/12/2022)
+     */
+    highlightNext: function (max) {
+      if (this.highlightIndex < max - 1) {
+        this.highlightIndex++;
+      }
+    },
+
+    /**
+     * highlight vào dòng khi có sự kiện nhấn phím mũi tên lên từ bàn phím
+     * @author NVThinh (22/12/2022)
+     */
+    highlightPrevious: function () {
+      if (this.highlightIndex > 0) {
+        this.highlightIndex--;
       }
     },
   },
   data() {
     return {
+      proxy: null, // chỉ định component này
       val: "", // giá trị ô input
       isShow: false, // Trạng thái ẩn hiện phần dữ liệu
+      highlightIndex: -1, // Đánh chỉ mục cho các option được chọn
+      // Các trường dữ liệu tương ứng trong Database
       fields: {
         id: this.field + "_id",
         code: this.field + "_code",
         name: this.field + "_name",
       },
       data: [], // mảng dữ liệu được cập nhật
-      Resource, // tài nguyen
+      Resource, // tài nguyên
       Function, // Hàm dùng chung
     };
   },

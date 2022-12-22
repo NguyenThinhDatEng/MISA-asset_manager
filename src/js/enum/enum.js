@@ -22,7 +22,9 @@ export default {
     Ctrl: 17, // Phím Ctrl
     ESC: 27, // Phím ESC
     ArrowLeft: 37, // Phím mũi tên trái
+    ArrowUp: 38, // Phím mũi tên lên
     ArrowRight: 39, // Phím mũi tên phải
+    ArrowDown: 40, // Phím mũi tên xuống
     Delete: 46, // Phím Delete
     F3: 114, // Phím F3
     SelectTable: 115, // Phím `
