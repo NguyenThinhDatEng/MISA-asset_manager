@@ -22,13 +22,13 @@ export default {
   name: "InputMoney",
   props: {
     labelContent: String,
+    field: String,
+    mode: Number,
     isError: {
       type: Boolean,
       default: false,
     },
     value: { type: Number, default: 0 },
-    field: String,
-    mode: Number,
   },
   created() {
     if (this.mode != Enum.Mode.Add) this.amount = this.value;
@@ -49,7 +49,7 @@ export default {
       config: {
         spinner: false,
         min: 0,
-        max: 10000000000, // 10^8
+        max: 1e19 - 1,
         precision: 0,
         // decimal: ".",
         thousands: ".",

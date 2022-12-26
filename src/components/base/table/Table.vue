@@ -326,7 +326,7 @@ export default {
 </script>
 
 <style scoped>
-@import url(@/css/font.css);
+@import url(@/css/components/table.css);
 .ignoreRow {
   height: 100%;
   text-align: center;

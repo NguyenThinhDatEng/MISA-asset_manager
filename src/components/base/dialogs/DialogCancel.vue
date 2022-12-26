@@ -33,6 +33,7 @@
           :title="Resource.Title.update"
           :type="Enum.Type.Main"
           @click="this.$emit('save-and-close')"
+          @keydown.enter="this.$emit('save-and-close')"
         ></ButtonMainVue>
 
         <SubButton
@@ -44,6 +45,7 @@
           :button-content="Resource.ButtonContent.remove"
           :title="Resource.Title.cancel"
           @click="this.$emit('close-dialog')"
+          @keydown.enter="this.$emit('close-dialog')"
         ></ButtonOutlineVue>
       </div>
     </div>

@@ -1,9 +1,9 @@
 <template>
   <div
     :class="['combobox combobox--detail', { 'combobox--error': isError }]"
-    @keydown.down.prevent="highlightNext(data.length)"
-    @keydown.up.prevent="highlightPrevious()"
+    @keydown.up.prevent="highlightPrevious"
     @keydown.enter="handleOnClickData(highlightIndex)"
+    @keydown.down.prevent="highlightNext"
   >
     <!-- input -->
     <input
@@ -13,12 +13,12 @@
       :maxlength="maxLength"
       v-model="val"
       @focus="isShow = true"
-      @keydown.tab="isShow = false"
+      @keydown.enter="isShow = !isShow"
     />
     <div class="combobox__button" @click="isShow = !isShow">
       <div class="icon center icon--down"></div>
     </div>
-    <div class="combobox__data" v-show="isShow">
+    <div class="combobox__data" v-show="isShow" ref="scrollContainer">
       <div class="title">
         <div class="data">
           <div class="text__wrapper">
@@ -34,8 +34,11 @@
         :field="field"
         :obj="obj"
         :class="{ 'data--selected': index === highlightIndex }"
+        tabindex="0"
+        ref="Data"
         @click="handleOnClickData(index)"
         @mouseover="highlightIndex = index"
+        @mouseout="highlightIndex = -1"
         @keydown.tab="highlightIndex = index + 1"
       ></Data>
     </div>
@@ -52,7 +55,6 @@ export default {
   name: "ComboboxDetail",
   components: { Data },
   props: {
-    labelContent: String,
     isError: {
       type: Boolean,
       default: false,
@@ -117,6 +119,7 @@ export default {
      */
     handleOnClickData: function (index) {
       try {
+        if (index === -1) return;
         // get the ID of object
         const id = this.data[index][this.fields.id];
         // dữ liệu phát lên lớp cha
@@ -148,9 +151,8 @@ export default {
               field: Resource.PopupField.depreciation_rate,
               value: obj.depreciation_rate,
             });
-            console.log(comboData);
             // Phát dữ liệu đến lớp cha
-            this.$emit("update-combobox", comboData, this.field + "_code");
+            this.$emit("update-combobox", comboData, this.fields.code);
             // Thay đổi trạng thái
             obj.isActive = true;
           } else obj.isActive = false;
@@ -166,8 +168,8 @@ export default {
      * highlight vào dòng khi có sự kiện nhấn phím mũi tên xuống từ bàn phím
      * @author NVThinh (22/12/2022)
      */
-    highlightNext: function (max) {
-      if (this.highlightIndex < max - 1) {
+    highlightNext: function () {
+      if (this.highlightIndex < this.data.length - 1) {
         this.highlightIndex++;
       }
     },

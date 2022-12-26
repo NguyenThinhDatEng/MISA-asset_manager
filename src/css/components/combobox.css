@@ -41,6 +41,10 @@
     cursor: context-menu;
 }
 
+.combobox__input.input::placeholder {
+    font-family: MISA Italic !important;
+}
+
 .combobox__button {
     position: absolute;
     right: 0;
@@ -124,10 +128,10 @@
     background-color: var(--combobox__data);
 }
 
-.combobox__data .data:focus-within,
 .combobox__data .data:active,
 .combobox__data .data:focus {
-    background-color: var(--combobox__data);
+    background-color: greenyellow;
+    /* background-color: var(--combobox__data); */
 }
 
 .footer__left .combobox {

@@ -67,6 +67,7 @@ export default {
 };
 </script>
 <style scoped>
+@import url(@/css/base.css);
 @import url(@/css/layout/header.css);
 @import url(@/css/components/input.css);
 </style>

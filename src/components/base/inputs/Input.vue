@@ -14,9 +14,7 @@
     :value="setValue()"
     :field="field"
     :disabled="isDisabled"
-    :placeholder="
-      type == Enum.DataType.Number || type == Enum.DataType.Money ? 0 : ''
-    "
+    :placeholder="getPlaceholder()"
     ref="input"
     @keyup="updateInput($event)"
   />
@@ -52,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    placeholder: {
+      type: String,
+      default: "",
+    },
   },
   emits: ["update-input"],
   methods: {
@@ -83,6 +85,20 @@ export default {
           }
         }
         return val;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // Lấy placeholder
+    getPlaceholder: function () {
+      try {
+        if (this.placeholder) return this.placeholder;
+        if (
+          this.type == Enum.DataType.Number ||
+          this.type == Enum.DataType.Money
+        )
+          return 0;
+        return "";
       } catch (error) {
         console.log(error);
       }

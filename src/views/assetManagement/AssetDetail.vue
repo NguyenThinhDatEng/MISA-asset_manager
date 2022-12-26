@@ -20,7 +20,7 @@
             <!-- input 01 -->
             <Input
               :label-content="Label.fixed_asset_code"
-              :maxLength="maxLength.fixed_asset_code"
+              :max-length="maxLength.fixed_asset_code"
               :value="popupObject[fields.fixed_asset_code]"
               :field="fields.fixed_asset_code"
               :is-error="errorMessages[fields.fixed_asset_code]"
@@ -33,9 +33,10 @@
             <Input
               :label-content="Label.fixed_asset_name"
               :is-error="errorMessages[fields.fixed_asset_name]"
-              :maxLength="maxLength.fixed_asset_name"
+              :max-length="maxLength.fixed_asset_name"
               :value="popupObject.fixed_asset_name"
               :field="fields.fixed_asset_name"
+              :placeholder="placeholder.fixed_asset_name"
               @update-input="updateInput"
             ></Input>
           </div>
@@ -53,7 +54,7 @@
               :placeholder="placeholder.department_code"
               :combobox-data="departments"
               :field="'department'"
-              :max-length="maxLength.department_code"
+              :max-length="maxLength.department"
               :value="popupObject.department_code"
               :is-error="errorMessages[fields.department_code]"
               @update-combobox="updateCombobox"
@@ -88,7 +89,7 @@
               :placeholder="placeholder.asset_category_code"
               :combobox-data="fixedCategories"
               :field="'fixed_asset_category'"
-              :max-length="maxLength.fixed_asset_category_code"
+              :max-length="maxLength.fixed_asset_category"
               :value="popupObject.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
@@ -140,7 +141,6 @@
                   :is-error="errorMessages.life_time"
                   :field="fields.life_time"
                   :type="Enum.DataType.Year"
-                  :max-length="4"
                   :value="
                     popupObject[fields.life_time]
                       ? popupObject[fields.life_time].toString()
@@ -160,7 +160,7 @@
               :is-error="errorMessages.depreciation_rate"
               :field="fields.depreciation_rate"
               :type="Enum.DataType.Rate"
-              :max-length="5"
+              :max-length="maxLength.depreciation_rate"
               :value="popupObject.depreciation_rate.toString()"
               @update-input="updateInput"
             ></InputNumber>
@@ -322,7 +322,6 @@ export default {
     DialogValidate,
     DialogCancelVue,
   },
-
   created() {
     try {
       // Cập nhật đối tượng popup tương ứng với các chế độ tương ứng
@@ -697,8 +696,7 @@ export default {
 </script>
   
   <style scoped>
-@import url(@/css/base.css);
-
+@import url(@/css/components/popup.css);
 .ignoreInput {
   width: 0;
   height: 0;

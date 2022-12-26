@@ -19,10 +19,10 @@
       <div class="dropdown__data" v-show="isShow">
         <Data
           v-for="item in data"
-          :key="item[field + '_id']"
+          :key="item[fields.id]"
           :field="field"
           :obj="item"
-          @click="handleOnClickData(item[field + '_id'])"
+          @click="handleOnClickData(item[fields.id])"
         ></Data>
       </div>
     </div>
@@ -35,6 +35,7 @@ import Constants from "@/js/common/constants";
 import Function from "@/js/common/function";
 
 export default {
+  // =========================== Declaration =========================
   name: "DropdownTick",
   props: {
     parentClass: String,
@@ -48,6 +49,8 @@ export default {
     },
   },
   components: { Data },
+  emits: ["update-filter"],
+  // ================================ Methods ==========================
   created() {
     // Ẩn dropdown khi click ra ngoài
     window.addEventListener("click", (e) => {
@@ -56,7 +59,6 @@ export default {
       }
     });
   },
-  emits: ["update-filter"],
   watch: {
     // Nếu prop dropdownData được cập nhật
     dropdownData: function () {
@@ -73,13 +75,17 @@ export default {
     },
 
     // Nếu giá trị input cập nhật
-    selectedValue: function () {
+    selectedValue: function (newVal, oldVal) {
       try {
         this.data = Function.autoComplete(
           this.selectedValue,
           this.dropdownData,
-          this.field + "_name"
+          this.fields.name
         );
+        // Nếu ô input không còn giá trị => reload lại trang
+        if (!newVal && oldVal && this.active) {
+          this.clear();
+        }
       } catch (error) {
         console.log(error);
       }
@@ -93,19 +99,20 @@ export default {
      */
     handleOnClickData: function (id) {
       try {
-        const IDField = this.field + "_id"; // Ex: department_id
-        const nameField = this.field + "_name"; // Ex: department_name
+        const idField = this.fields.id; // Ex: department_id
+        const nameField = this.fields.name; // Ex: department_name
         for (let obj of this.dropdownData) {
-          if (id == obj[IDField]) {
+          if (id == obj[idField]) {
             // Thay đổi trạng thái Active
             obj.isActive = !obj.isActive;
+            this.active = obj.isActive;
             // Cập nhật giá trị được chọn và gửi giá trị cập nhật lên Content
             if (obj.isActive) {
               this.selectedValue = obj[nameField];
-              this.$emit("update-filter", IDField, obj[IDField]);
+              this.$emit("update-filter", idField, obj[idField]);
             } else {
               this.selectedValue = "";
-              this.$emit("update-filter", IDField, Constants.GUID.EMPTY);
+              this.$emit("update-filter", idField, Constants.GUID.EMPTY);
             }
             // Gửi giá trị cập nhật đến cha
           } else {
@@ -118,20 +125,40 @@ export default {
         console.log(error);
       }
     },
+
+    clear: function () {
+      try {
+        // reload
+        this.$emit("update-filter", this.fields.id, Constants.GUID.EMPTY);
+        // remove focus options
+        for (let obj of this.dropdownData) {
+          obj.isActive = false;
+        }
+        // update "active" variable
+        this.active = false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
       isShow: false, // trạng thái ẩn hiện Dropdown data
       selectedValue: "", // giá trị được chọn
       data: [], // mảng dữ liệu
+      active: false, // true nếu có 1 option được chọn
+      // Các trường dữ liệu
+      fields: {
+        id: this.field + "_id",
+        name: this.field + "_name",
+      },
     };
   },
 };
 </script>
 
 <style scoped>
-@import url(@/css/components/combobox.css);
-@import url(@/css/icon.css);
+@import url(@/css/components/dropdown.css);
 
 .combobox {
   background-color: #fff;

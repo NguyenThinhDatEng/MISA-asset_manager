@@ -46,11 +46,6 @@
     margin-bottom: 20px;
 }
 
-.popup__body .input-row input::placeholder {
-    font-family: MISA Regular;
-    color: #000;
-}
-
 .popup__body .input-row input:focus::placeholder {
     color: transparent;
 }

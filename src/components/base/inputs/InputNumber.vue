@@ -58,10 +58,7 @@ export default {
       type: String,
       default: "0",
     },
-    maxLength: {
-      type: Number,
-      default: 10,
-    },
+    maxLength: Number,
     labelContent: String,
     isError: {
       type: Boolean,

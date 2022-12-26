@@ -11,4 +11,5 @@ export default {
 </script>
 
 <style scoped>
+@import url(@/css/layout/content.css);
 </style>

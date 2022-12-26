@@ -77,6 +77,7 @@ export default {
     "asset-search": "Tìm kiếm tài sản",
     category: "Loại tài sản",
     department: "Bộ phận sử dụng",
+    fixed_asset_name: "Nhập tên tài sản",
     department_code: "Chọn mã bộ phận sử dụng",
     asset_category_code: "Chọn mã loại tài sản",
   },
@@ -128,10 +129,11 @@ export default {
   },
   // Độ dài ký tự có thể nhập trong ô input
   InputLength: {
-    fixed_asset_code: 7, // TS99999
+    fixed_asset_code: 100,
     fixed_asset_name: 255,
-    department_code: 50,
-    fixed_asset_category_code: 50,
+    department: 255,
+    fixed_asset_category: 255,
+    depreciation_rate: 5,
   },
   // Nội dung dòng đầu tiên trong combobox detail
   ComboboxInfo: {

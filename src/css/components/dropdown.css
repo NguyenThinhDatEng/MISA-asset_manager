@@ -32,11 +32,6 @@
     border: none;
 }
 
-.dropdown__input.input::placeholder {
-    font-family: MISA Regular;
-    color: #000;
-}
-
 .dropdown__button {
     position: absolute;
     right: 0;
