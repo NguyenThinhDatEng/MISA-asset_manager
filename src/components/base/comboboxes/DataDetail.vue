@@ -1,5 +1,5 @@
 <template>
-  <div :class="['data', { 'data--selected': obj.isActive }]" v-focus>
+  <div :class="['data', { 'data--selected': obj.isActive }]">
     <div class="text__wrapper">
       <p>{{ obj[field + "_code"] }}</p>
     </div>
@@ -16,24 +16,11 @@ export default {
     highlightIndex: Number,
     index: Number,
   },
-  directives: {
-    focus: {
-      inserted: function (el) {
-        console.log(el);
-        el.focus();
-      },
-    },
-  },
-  data() {
-    return {};
-  },
 };
 </script>
 
 <style scoped>
 .data {
   outline: none;
-}
-.data__first {
 }
 </style>

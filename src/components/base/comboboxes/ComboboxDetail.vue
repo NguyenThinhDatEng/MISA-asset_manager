@@ -1,9 +1,7 @@
 <template>
   <div
     :class="['combobox combobox--detail', { 'combobox--error': isError }]"
-    @keydown.up.prevent="highlightPrevious"
     @keydown.enter="handleOnClickData(highlightIndex)"
-    @keydown.down.prevent="highlightNext"
   >
     <!-- input -->
     <input
@@ -12,13 +10,21 @@
       :placeholder="placeholder"
       :maxlength="maxLength"
       v-model="val"
-      @focus="isShow = true"
-      @keydown.enter="isShow = !isShow"
+      @click="toggle"
+      @keydown.tab="close"
+      @keydown.enter="toggle"
+      @keydown.down="
+        open();
+        focusFirstOption();
+      "
     />
-    <div class="combobox__button" @click="isShow = !isShow">
+    <!-- button  -->
+    <div class="combobox__button">
       <div class="icon center icon--down"></div>
     </div>
-    <div class="combobox__data" v-show="isShow" ref="scrollContainer">
+    <!-- data -->
+    <div class="combobox__data" v-show="isShow">
+      <!-- title -->
       <div class="title">
         <div class="data">
           <div class="text__wrapper">
@@ -27,19 +33,25 @@
           <p>{{ Resource.PopupLabel[fields.name] }}</p>
         </div>
       </div>
-      <!-- Dữ liệu hiển thị  -->
+      <!-- options  -->
       <Data
         v-for="(obj, index) in data"
         :key="index"
-        :field="field"
+        :id="'comboBox' + field + index"
         :obj="obj"
-        :class="{ 'data--selected': index === highlightIndex }"
-        tabindex="0"
+        :field="field"
+        :class="{
+          'data--selected': isSelected(index),
+          'data__first-option': index === 0,
+        }"
+        tabindex="1"
         ref="Data"
         @click="handleOnClickData(index)"
+        @keydown.down="highlightNext"
+        @keydown.up="highlightPrevious"
+        @keydown.tab="close"
         @mouseover="highlightIndex = index"
         @mouseout="highlightIndex = -1"
-        @keydown.tab="highlightIndex = index + 1"
       ></Data>
     </div>
   </div>
@@ -48,56 +60,52 @@
 <script>
 import Data from "./DataDetail.vue";
 import Resource from "@/js/resource/resource";
-// import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 
 export default {
   name: "ComboboxDetail",
   components: { Data },
   props: {
+    value: {
+      type: String,
+      default: "",
+    },
     isError: {
       type: Boolean,
       default: false,
     },
     placeholder: String,
     maxLength: Number,
-    comboboxData: Array,
-    field: String,
-    value: {
-      type: String,
-      default: "",
+    comboboxData: {
+      type: Array,
+      default: () => [],
     },
-  },
-  created() {
-    try {
-      window.addEventListener("click", (e) => {
-        if (!this.$el.contains(e.target)) {
-          this.isShow = false;
-        }
-      });
-      // Cập nhật biến data khi bind mảng dữ liệu từ ngoài vào
-      this.data = this.comboboxData;
-      // Thêm trường dữ liệu isActive
-      for (let obj of this.data) {
-        obj["isActive"] = false;
-      }
-      // Bind dữ liệu vào input khi nhận dữ liệu từ ngoài vào
-      this.val = this.value;
-    } catch (error) {
-      console.log(error);
-    }
+    field: String,
   },
   emits: ["update-combobox"],
-  watch: {
-    // Cập nhật biến data khi bind mảng dữ liệu từ ngoài vào
-    comboboxData: function () {
-      this.data = this.comboboxData;
-      // Thêm trường dữ liệu isActive
-      for (let obj of this.data) {
-        obj["isActive"] = false;
-      }
-    },
 
+  created() {
+    // close the options if click out the component
+    window.addEventListener("click", (e) => {
+      if (!this.$el.contains(e.target)) {
+        this.close();
+      }
+    });
+  },
+
+  mounted() {
+    // set data
+    this.comboboxData.forEach((obj) =>
+      this.data.push({
+        ...obj,
+        isActive: false,
+      })
+    );
+    // set value
+    this.val = this.value;
+  },
+
+  watch: {
     val: function () {
       try {
         this.data = Function.autoComplete(
@@ -119,7 +127,7 @@ export default {
      */
     handleOnClickData: function (index) {
       try {
-        if (index === -1) return;
+        if (index < 0) return;
         // get the ID of object
         const id = this.data[index][this.fields.id];
         // dữ liệu phát lên lớp cha
@@ -168,9 +176,11 @@ export default {
      * highlight vào dòng khi có sự kiện nhấn phím mũi tên xuống từ bàn phím
      * @author NVThinh (22/12/2022)
      */
-    highlightNext: function () {
-      if (this.highlightIndex < this.data.length - 1) {
+    highlightNext: function (e) {
+      if (e.target.nextElementSibling) {
         this.highlightIndex++;
+        console.log(e.target.nextElementSibling);
+        e.target.nextElementSibling.focus();
       }
     },
 
@@ -178,16 +188,65 @@ export default {
      * highlight vào dòng khi có sự kiện nhấn phím mũi tên lên từ bàn phím
      * @author NVThinh (22/12/2022)
      */
-    highlightPrevious: function () {
+    highlightPrevious: function (e) {
       if (this.highlightIndex > 0) {
         this.highlightIndex--;
+        e.target.previousElementSibling.focus();
+      }
+    },
+
+    /**
+     * @description display the options
+     * @author NVT 26/12/2022
+     */
+    open: function () {
+      this.isShow = true;
+    },
+
+    /**
+     * @description hide the options
+     * @author NVT 26/12/2022
+     */
+    close: function () {
+      this.isShow = false;
+    },
+
+    /**
+     * @description show/hide the options
+     * @author NVT 26/12/2022
+     */
+    toggle: function () {
+      this.isShow = !this.isShow;
+    },
+
+    /**
+     * @description the state of option
+     * @param {Number} index the index of option
+     * @returns {Boolean} true if the option is focused
+     * @author NVT 26/12/2022
+     */
+    isSelected: function (index) {
+      return this.highlightIndex === index;
+    },
+
+    /**
+     * @description Focus first option
+     * @author NVThinh (26/12/2022)
+     */
+    focusFirstOption: function () {
+      try {
+        document.getElementById(`comboBox${this.field}0`).focus();
+        this.highlightIndex++;
+      } catch (error) {
+        console.log(error);
       }
     },
   },
   data() {
     return {
-      proxy: null, // chỉ định component này
-      val: "", // giá trị ô input
+      data: [], // the options
+      val: "", // the value of input
+      proxy: this, // chỉ định component này
       isShow: false, // Trạng thái ẩn hiện phần dữ liệu
       highlightIndex: -1, // Đánh chỉ mục cho các option được chọn
       // Các trường dữ liệu tương ứng trong Database
@@ -196,7 +255,6 @@ export default {
         code: this.field + "_code",
         name: this.field + "_name",
       },
-      data: [], // mảng dữ liệu được cập nhật
       Resource, // tài nguyên
       Function, // Hàm dùng chung
     };
