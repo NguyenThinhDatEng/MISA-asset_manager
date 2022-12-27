@@ -1,24 +1,31 @@
 <template>
+  <!-- label -->
   <label>{{ labelContent }} <span style="color: red">*</span></label>
-
+  <!-- input wrapper -->
   <div :class="[{ 'input--number': this.type != Enum.DataType.Year }]">
+    <!-- input -->
     <input
       type="text"
       :class="['input', { 'input--error': isError }]"
       :maxlength="maxLength"
       v-model="amount"
       @keydown="Function.onlyNumbers($event, type)"
+      @keydown.down="decrease"
+      @keydown.up="increase"
     />
+    <!-- icon -->
     <div class="icon--up_down" v-show="this.type != Enum.DataType.Year">
+      <!-- icon up -->
       <div
         class="icon icon--up"
         :title="Resource.Title.increase"
         @click="increase"
       ></div>
+      <!-- icon down -->
       <div
         class="icon icon--down"
         :title="Resource.Title.decrease"
-        @click="amount > 0 ? amount-- : amount"
+        @click="decrease"
       ></div>
     </div>
   </div>
@@ -68,12 +75,15 @@ export default {
   emits: ["update-input"],
   watch: {
     amount: function () {
-      // Gửi giá trị thay đổi đến cha
+      const amountStr = this.amount.toString();
+      // Thay thế ',' bằng '.'
       if (this.type == Enum.DataType.Rate)
-        this.amount = this.amount.toString().replace(",", ".");
+        this.amount = amountStr.replace(",", ".");
       // Gửi dữ liệu đến cha qua emit
       this.$emit("update-input", Number(this.amount), this.field);
+      // Format cho giá trị hiển thị
       if (this.type == Enum.DataType.Rate) {
+        if (amountStr.length > 5) this.amount = Number(this.amount).toFixed(2);
         this.amount = this.amount.toString().replace(".", ",");
       }
     },
@@ -89,17 +99,6 @@ export default {
     },
   },
   methods: {
-    /**
-     * Giảm giá trị trong ô input bằng icon
-     * @author Nguyen Van Thinh 07/11/2022
-     */
-    decrease: function () {
-      if (this.val < 0)
-        if (this.mode == Enum.Mode.Update) this.val = this.value;
-        else this.val = 0;
-      else if (this.val > 0) this.val--;
-    },
-
     // Cập nhật giá trị input khi nhập dữ liệu
     updateInput: function (e) {
       try {
@@ -114,9 +113,33 @@ export default {
      * @author Nguyen Van Thinh 07/11/2022
      */
     increase: function () {
+      this.amount = this.toNumber(this.amount);
       if (this.type == Enum.DataType.Rate) {
-        if (Number(this.amount) < 100) this.amount++;
+        if (this.amount < 100) this.amount++;
       } else this.amount++;
+    },
+
+    /**
+     * @description Decrease the value by down icon
+     * @author NVThinh 27/12/2022
+     */
+    decrease: function () {
+      this.amount = this.toNumber(this.amount);
+      this.amount > 1 ? this.amount-- : this.amount;
+    },
+
+    /**
+     * @description convert pattern string to number
+     * @param {String || Number} amount Example: 8,4
+     * @author NVThinh 27/12/2022
+     */
+    toNumber: function (amount) {
+      try {
+        amount = amount.toString().replace(",", ".");
+        return Number(amount);
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   data() {

@@ -55,8 +55,15 @@
 }
 
 .popup__body--left {
+    position: relative;
     flex: 1;
     margin-right: 16px;
+}
+
+.popup__body--left .input__wrapper {
+    position: absolute;
+    top: 0;
+    width: 100%;
 }
 
 .popup__body--right {

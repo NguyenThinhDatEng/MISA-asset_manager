@@ -1,29 +1,32 @@
 <template>
-  <label> {{ labelContent }} <span style="color: red">*</span></label>
-
-  <input
-    :class="[
-      'input',
-      { 'input--disabled': isDisabled },
-      { 'input--error': isError },
-    ]"
-    :maxlength="maxLength"
-    :style="{
-      'text-align': type == Enum.DataType.Text ? 'left' : 'right',
-    }"
-    :value="setValue()"
-    :field="field"
-    :disabled="isDisabled"
-    :placeholder="getPlaceholder()"
-    ref="input"
-    @keyup="updateInput($event)"
-  />
-
-  <p
-    v-show="isError"
-    class="error-message"
-    v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
-  ></p>
+  <div class="input__wrapper">
+    <!-- label of input-->
+    <label> {{ labelContent }} <span style="color: red">*</span></label>
+    <!-- input -->
+    <input
+      :class="[
+        'input',
+        { 'input--disabled': isDisabled },
+        { 'input--error': isError },
+      ]"
+      :maxlength="maxLength"
+      :style="{
+        'text-align': type == Enum.DataType.Text ? 'left' : 'right',
+      }"
+      :value="setValue()"
+      :field="field"
+      :disabled="isDisabled"
+      :placeholder="getPlaceholder()"
+      ref="input"
+      @keyup="updateInput($event)"
+    />
+    <!-- error message -->
+    <p
+      v-show="isError"
+      class="error-message"
+      v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
+    ></p>
+  </div>
 </template>
 
 <script>

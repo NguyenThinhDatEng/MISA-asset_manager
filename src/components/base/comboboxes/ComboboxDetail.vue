@@ -47,9 +47,9 @@
         tabindex="1"
         ref="Data"
         @click="handleOnClickData(index)"
+        @keydown.tab="handleOnClickData(index)"
         @keydown.down="highlightNext"
         @keydown.up="highlightPrevious"
-        @keydown.tab="close"
         @mouseover="highlightIndex = index"
         @mouseout="highlightIndex = -1"
       ></Data>

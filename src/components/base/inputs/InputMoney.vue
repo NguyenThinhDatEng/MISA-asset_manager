@@ -1,17 +1,20 @@
 <template>
-  <label> {{ labelContent }} <span style="color: red">*</span></label>
-
-  <v-money-spinner
-    :class="['input', 'input--money', { 'input--error': isError }]"
-    v-bind="config"
-    v-model="amount"
-  ></v-money-spinner>
-
-  <p
-    v-show="isError"
-    class="error-message"
-    v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
-  ></p>
+  <div class="input__wrapper">
+    <!-- label -->
+    <label> {{ labelContent }} <span style="color: red">*</span></label>
+    <!-- input -->
+    <v-money-spinner
+      :class="['input', 'input--money', { 'input--error': isError }]"
+      v-bind="config"
+      v-model="amount"
+    ></v-money-spinner>
+    <!-- error message  -->
+    <p
+      v-show="isError"
+      class="error-message"
+      v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
+    ></p>
+  </div>
 </template>
   
   <script>

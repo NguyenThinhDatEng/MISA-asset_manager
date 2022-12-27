@@ -16,7 +16,7 @@
         <div class="input-row">
           <div class="popup__body--left">
             <!-- ignore input -->
-            <input ref="ignoreInput" class="ignoreInput" readonly />
+            <input ref="firstInput" class="ignoreInput" readonly />
             <!-- input 01 -->
             <Input
               :label-content="Label.fixed_asset_code"
@@ -24,8 +24,9 @@
               :value="popupObject[fields.fixed_asset_code]"
               :field="fields.fixed_asset_code"
               :is-error="errorMessages[fields.fixed_asset_code]"
-              :ref="'firstInput'"
+              ref="secondInput"
               @update-input="updateInput"
+              @keydown.tab="onShiftTab"
             ></Input>
           </div>
           <div class="popup__body--right">
@@ -238,15 +239,19 @@
           :title="Title.save"
           :button-content="Resource.ButtonContent.save"
           :type="Enum.Type.Main"
+          ref="saveButton"
           @click="validateData"
+          @keydown.enter="validateData"
         ></ButtonMain>
         <ButtonMain
           :title="Title.cancel"
           :button-content="Resource.ButtonContent.cancel"
           :type="Enum.Type.Secondary"
           @click="showDialogCancel"
-          @keydown="reFocus"
+          @keydown.enter="showDialogCancel"
+          @keydown.tab="onTab"
         ></ButtonMain>
+        <input ref="lastInput" class="ignoreInput" readonly />
       </div>
     </div>
   </div>
@@ -416,19 +421,24 @@ export default {
   },
 
   methods: {
-    // Focus vào ô input ảo
-    reFocus: function (e) {
-      try {
-        if (!e.shiftKey && e.which == Enum.KeyCode.TAB)
-          this.$refs.ignoreInput.focus();
-      } catch (error) {
-        console.log(error);
-      }
+    /**
+     * @description press shift + tab when placed at the first input => focus the last button
+     * @author NVT 26/12/2022
+     */
+    onShiftTab: function (e) {
+      if (e.shiftKey) this.$refs.lastInput.focus();
+    },
+    /**
+     * @description press tab when placed at the last button => focus the first input
+     * @author NVT 26/12/2022
+     */
+    onTab: function (e) {
+      if (!e.shiftKey) this.$refs.firstInput.focus();
     },
 
     // focus vào ô input đầu tiên
     focusFirstInput() {
-      this.$refs.firstInput.focusInput();
+      this.$refs.secondInput.focusInput();
     },
 
     /**
