@@ -60,6 +60,7 @@ export default {
   QLTS: {
     logo: "MISA QLTS",
     file_name: "Danh sách tài sản cố định",
+    login: "Đăng nhập để làm việc với ",
   },
   // Tiêu đề trang
   PageTitle: {

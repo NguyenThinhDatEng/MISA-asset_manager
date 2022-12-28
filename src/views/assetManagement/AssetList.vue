@@ -62,7 +62,7 @@
         :iconName="'icon--' + Resource.Name.delete"
         :title="Resource.Title.delete"
         :isDisable="isDisabledButton"
-        @click="isShowDialogDelete = true"
+        @click="handleOnClickDeleteButton"
       ></ButtonFeature>
     </div>
   </div>
@@ -180,6 +180,18 @@ export default {
   },
 
   methods: {
+    /**
+     * @description xử lý sự kiện khi nhấn vào nút xóa
+     * @author NVThinh 28/12/2022
+     */
+    handleOnClickDeleteButton: function () {
+      try {
+        this.isShowDialogDelete = this.selectedRows.length > 0 ? true : false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     /**
      * Gọi API filter
      * @author NVThinh 22/11/2022

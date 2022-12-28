@@ -1,22 +1,16 @@
 <template>
-  <div
-    :class="['combobox combobox--detail', { 'combobox--error': isError }]"
-    @keydown.enter="handleOnClickData(highlightIndex)"
-  >
+  <div :class="['combobox combobox--detail', { 'combobox--error': isError }]">
     <!-- input -->
     <input
       type="text"
       class="input combobox__input"
+      v-model="val"
       :placeholder="placeholder"
       :maxlength="maxLength"
-      v-model="val"
       @click="toggle"
       @keydown.tab="close"
       @keydown.enter="toggle"
-      @keydown.down="
-        open();
-        focusFirstOption();
-      "
+      @keydown.down="onDown"
     />
     <!-- button  -->
     <div class="combobox__button">
@@ -25,7 +19,7 @@
     <!-- data -->
     <div class="combobox__data" v-show="isShow">
       <!-- title -->
-      <div class="title">
+      <div id="combobox__data__title" class="title" tabindex="1">
         <div class="data">
           <div class="text__wrapper">
             <p>{{ Resource.ComboboxInfo.firstCol }}</p>
@@ -42,14 +36,15 @@
         :field="field"
         :class="{
           'data--selected': isSelected(index),
-          'data__first-option': index === 0,
         }"
         tabindex="1"
         ref="Data"
-        @click="handleOnClickData(index)"
-        @keydown.tab="handleOnClickData(index)"
+        @click="handleSelectData(index)"
         @keydown.down="highlightNext"
         @keydown.up="highlightPrevious"
+        @keydown.enter="handleSelectData(index)"
+        @keydown.tab="handleSelectData(index)"
+        @keydown.esc="close"
         @mouseover="highlightIndex = index"
         @mouseout="highlightIndex = -1"
       ></Data>
@@ -120,14 +115,24 @@ export default {
     },
   },
   methods: {
+    onDown: function () {
+      try {
+        this.open();
+        this.$nextTick(function () {
+          this.focusFirstOption();
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     /**
      * Sự kiện chọn thông tin trong combobox
      * @param {String} id id của mã bộ phận sử dụng được chọn
      * @author Nguyen Van Thinh 07/11/2022
      */
-    handleOnClickData: function (index) {
+    handleSelectData: function (index) {
       try {
-        if (index < 0) return;
         // get the ID of object
         const id = this.data[index][this.fields.id];
         // dữ liệu phát lên lớp cha
@@ -167,6 +172,8 @@ export default {
         }
         // Ẩn Data Combobox
         this.isShow = false;
+        // refresh highlight index
+        this.highlightIndex = -1;
       } catch (error) {
         console.log(error);
       }
@@ -179,7 +186,6 @@ export default {
     highlightNext: function (e) {
       if (e.target.nextElementSibling) {
         this.highlightIndex++;
-        console.log(e.target.nextElementSibling);
         e.target.nextElementSibling.focus();
       }
     },
@@ -236,7 +242,7 @@ export default {
     focusFirstOption: function () {
       try {
         document.getElementById(`comboBox${this.field}0`).focus();
-        if(this.isShow) this.highlightIndex++;
+        if (this.isShow) this.highlightIndex++;
       } catch (error) {
         console.log(error);
       }
@@ -267,6 +273,11 @@ export default {
 
 :root {
   --input--error: #ea3636;
+}
+
+.combobox__data .data:active,
+.combobox__data .data:focus {
+  background-color: var(--combobox__data);
 }
 
 .combobox--error {

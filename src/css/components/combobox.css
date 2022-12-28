@@ -128,11 +128,6 @@
     background-color: var(--combobox__data);
 }
 
-.combobox__data .data:active,
-.combobox__data .data:focus {
-    background-color: var(--combobox__data);
-}
-
 .footer__left .combobox {
     justify-content: space-between;
     width: 59px;

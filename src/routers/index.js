@@ -2,10 +2,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // import components
-import AssetListVue from "@/views/assetManagement/AssetList.vue";
+import MainView from "@/views/main/MainView.vue";
+import AssetList from "@/views/assetManagement/AssetList.vue";
+import LoginScreen from "@/views/login/LoginView.vue";
 
 // Define routers
-const routes = [{ path: "/", name: "AssetList", component: AssetListVue }];
+const routes = [
+  {
+    path: "/",
+    component: MainView,
+    children: [{ path: "", name: "AssetList", component: AssetList }],
+  },
+  { path: "/login", name: "Login", component: LoginScreen },
+];
 
 // Create a router instance
 const router = createRouter({

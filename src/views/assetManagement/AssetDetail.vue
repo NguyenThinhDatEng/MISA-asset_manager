@@ -522,7 +522,6 @@ export default {
         this.requiredData = [];
         // Kiểm tra thông tin yêu cầu
         for (const field in this.fields) {
-          // console.log("@!@", this.data[field], this.Label[field]);
           if (Resource.RequiredData[field])
             if (this.data[field] == undefined || this.data[field] == "") {
               this.requiredData.push(this.Label[field]);
