@@ -356,7 +356,7 @@ export default {
       if (this.mode !== Enum.Mode.Update) this.getNewCode();
       if (this.mode != Enum.Mode.Add) {
         // Bind dữ liệu của table row được chọn vào popup object
-        this.data = Object.assign(this.popupObj)
+        this.data = Object.assign(this.popupObj);
         // Khởi tạo giá trị hao mòn năm
         this.depreciation_value = Function.depreciationValue(
           this.data[this.fields.cost],
@@ -370,11 +370,6 @@ export default {
     }
   },
 
-  watch: {
-    data: function () {
-      console.log(this.data);
-    },
-  },
   /**
    * Call API
    * @author Nguyen Van Thinh 05/11/2022
@@ -389,9 +384,8 @@ export default {
           if (this.data[field] == undefined || this.data[field] == "")
             this.errorMessages[field] = false;
       }
-      // khởi tạo đối tượng dùng để so sánh
+      // Khởi tạo originalData (sau khi DOM được updated)
       this.$nextTick(function () {
-        // khởi tạo đối tượng dùng để so sánh
         this.originalData = Object.assign({}, this.data);
       });
     } catch (error) {
@@ -416,7 +410,10 @@ export default {
       if (!e.shiftKey) this.$refs.firstInput.focus();
     },
 
-    // focus vào ô input đầu tiên
+    /**
+     * @description thực hiện hàm focusInput() của component có ref là "secondInput"
+     * @author NVThinh 28/12/2022
+     */
     focusFirstInput() {
       this.$refs.secondInput.focusInput();
     },
@@ -447,7 +444,7 @@ export default {
     },
 
     /**
-     * Emit: Đóng popup
+     * @description So sánh data và original data => Nếu khác nhau => Hiển thị dialog cảnh báo
      * @author Nguyen Van Thinh 11/11/2022
      */
     showDialogCancel: function () {
@@ -673,6 +670,7 @@ export default {
       Title: Resource.Title, // tooltip
       Label: Resource.PopupLabel, // the label of inputs
       data: {}, // the data of popup which contain pair field:key
+      originalData: {}, // Được sinh ra để so sánh với data khi nhấn phím hủy => kiểm tra xem người dùng có tương tác với popup không
       placeholder: Resource.Placeholder, // placeholder of inputs
       maxLength: Resource.InputLength, // the maxlength of inputs
       fields: Resource.PopupField, // Các trường trong popup
@@ -683,7 +681,6 @@ export default {
       dlgType: "blank", // Kiểu của dialog
       errorMessages: {}, // Đối tượng chứa các trường bắt buộc nhập
       depreciation_value: 0, // Giá trị hao mòn
-      originalData: {}, // Đối tượng khởi tạo ban đầu -> Kiểm tra popup có được tương tác không
       requiredData: [], // Mảng chứa những dữ liệu yêu cầu
 
       Resource, // Tài nguyên
