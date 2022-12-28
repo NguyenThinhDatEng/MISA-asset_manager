@@ -44,6 +44,23 @@ import Enum from "@/js/enum/enum";
 
 export default {
   name: "InputNumber",
+  props: {
+    type: {
+      type: Number,
+      default: Enum.DataType.Number,
+    },
+    value: {
+      type: String,
+      default: "0",
+    },
+    field: String,
+    maxLength: Number,
+    labelContent: String,
+    isError: {
+      type: Boolean,
+      default: false,
+    },
+  },
   created() {
     const val = Number(this.value);
     if (val < 10) {
@@ -55,28 +72,12 @@ export default {
       this.amount = this.amount.toString().replace(".", ",");
     }
   },
-  props: {
-    type: {
-      type: Number,
-      default: Enum.DataType.Number,
-    },
-    field: String,
-    value: {
-      type: String,
-      default: "0",
-    },
-    maxLength: Number,
-    labelContent: String,
-    isError: {
-      type: Boolean,
-      default: false,
-    },
-  },
+
   emits: ["update-input"],
   watch: {
     amount: function () {
       const amountStr = this.amount.toString();
-      // Thay thế ',' bằng '.'
+      // Chuyển đổi thành string có thể ép kiểu sang Number
       if (this.type == Enum.DataType.Rate)
         this.amount = amountStr.replace(",", ".");
       // Gửi dữ liệu đến cha qua emit
@@ -124,8 +125,9 @@ export default {
      * @author NVThinh 27/12/2022
      */
     decrease: function () {
-      this.amount = this.toNumber(this.amount);
-      this.amount > 1 ? this.amount-- : this.amount;
+      if (this.toNumber(this.amount) !== 1) {
+        this.amount = this.toNumber(this.amount) - 1;
+      }
     },
 
     /**

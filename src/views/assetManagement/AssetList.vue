@@ -85,6 +85,7 @@
   <Popup
     v-if="isShowPopup"
     :mode="mode"
+    :title="popupTitle"
     :popup-obj="popupObj"
     :departments="departments"
     :fixed-categories="fixedAssetCategories"
@@ -321,16 +322,22 @@ export default {
     },
 
     /**
-     * Hiển thị popup với chế độ và dữ liệu được truyền vào
+     * Show popup
      * @param {Number} mode
      * @param {Object} popupObj
      * @author NVThinh 09/11/2022
      */
     showPopup: function (mode, popupObj) {
       try {
-        // Cập nhật chế độ của popup
+        // update the mode of popup
         this.mode = mode;
-        // Cập nhật đối tượng được chọn
+        // update the title of popup
+        if (this.mode == Enum.Mode.Update) {
+          this.popupTitle = Resource.PopupTitle.edit;
+        } else {
+          this.popupTitle = Resource.PopupTitle.duplicate;
+        }
+        // update the data of popup
         this.popupObj = popupObj;
         // Hiển thị popup
         this.isShowPopup = true;
@@ -345,8 +352,9 @@ export default {
      */
     handleOnclickAddButton: function () {
       try {
-        // Cập nhật chế độ popup
+        // Cập nhật chế độ và tiêu đề popup
         this.mode = Enum.Mode.Add;
+        this.popupTitle = Resource.PopupTitle.add;
         // Hiển thị popup
         this.isShowPopup = true;
       } catch (error) {
@@ -388,6 +396,7 @@ export default {
 
   data() {
     return {
+      popupTitle: "", // the title of control
       // Các thông tin yêu cầu từ toast component
       toastObj: {
         actionStatus: 0,

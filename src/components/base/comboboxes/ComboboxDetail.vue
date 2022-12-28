@@ -236,7 +236,7 @@ export default {
     focusFirstOption: function () {
       try {
         document.getElementById(`comboBox${this.field}0`).focus();
-        this.highlightIndex++;
+        if(this.isShow) this.highlightIndex++;
       } catch (error) {
         console.log(error);
       }

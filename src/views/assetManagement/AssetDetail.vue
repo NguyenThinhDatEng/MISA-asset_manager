@@ -3,7 +3,7 @@
     <div class="center popup">
       <!-- Popup Header -->
       <div class="popup__header">
-        <span>{{ theTitle }}</span>
+        <span>{{ title }}</span>
         <button
           class="icon icon-18px icon--close"
           :title="Title.close"
@@ -21,7 +21,7 @@
             <Input
               :label-content="Label.fixed_asset_code"
               :max-length="maxLength.fixed_asset_code"
-              :value="popupObject[fields.fixed_asset_code]"
+              :value="data[fields.fixed_asset_code]"
               :field="fields.fixed_asset_code"
               :is-error="errorMessages[fields.fixed_asset_code]"
               ref="secondInput"
@@ -35,7 +35,7 @@
               :label-content="Label.fixed_asset_name"
               :is-error="errorMessages[fields.fixed_asset_name]"
               :max-length="maxLength.fixed_asset_name"
-              :value="popupObject.fixed_asset_name"
+              :value="data.fixed_asset_name"
               :field="fields.fixed_asset_name"
               :placeholder="placeholder.fixed_asset_name"
               @update-input="updateInput"
@@ -56,7 +56,7 @@
               :combobox-data="departments"
               :field="'department'"
               :max-length="maxLength.department"
-              :value="popupObject.department_code"
+              :value="data.department_code"
               :is-error="errorMessages[fields.department_code]"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
@@ -71,7 +71,7 @@
             <label>{{ Label.department_name }}</label>
             <input
               class="input input--disabled"
-              :value="popupObject.department_name"
+              :value="data.department_name"
               disabled
             />
           </div>
@@ -91,7 +91,7 @@
               :combobox-data="fixedCategories"
               :field="'fixed_asset_category'"
               :max-length="maxLength.fixed_asset_category"
-              :value="popupObject.fixed_asset_category_code"
+              :value="data.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
             <p
@@ -109,7 +109,7 @@
             <label>{{ Label.fixed_asset_category_name }}</label>
             <input
               class="input input--disabled"
-              :value="popupObject[fields.fixed_asset_category_name]"
+              :value="data[fields.fixed_asset_category_name]"
               disabled
             />
           </div>
@@ -120,7 +120,7 @@
             <InputNumber
               :label-content="Label.quantity"
               :field="fields.quantity"
-              :value="popupObject[fields.quantity].toString() || ''"
+              :value="data.quantity ? data.quantity.toString() : ''"
               @update-input="updateInput"
             ></InputNumber>
           </div>
@@ -132,7 +132,7 @@
                   :is-error="errorMessages[fields.cost]"
                   :field="fields.cost"
                   :mode="mode"
-                  :value="popupObject[fields.cost]"
+                  :value="data[fields.cost]"
                   @update-input="updateInput"
                 ></InputMoney>
               </div>
@@ -143,8 +143,8 @@
                   :field="fields.life_time"
                   :type="Enum.DataType.Year"
                   :value="
-                    popupObject[fields.life_time]
-                      ? popupObject[fields.life_time].toString()
+                    data[fields.life_time]
+                      ? data[fields.life_time].toString()
                       : '0'
                   "
                   @update-input="updateInput"
@@ -162,7 +162,9 @@
               :field="fields.depreciation_rate"
               :type="Enum.DataType.Rate"
               :max-length="maxLength.depreciation_rate"
-              :value="popupObject.depreciation_rate.toString()"
+              :value="
+                data.depreciation_rate ? data.depreciation_rate.toString() : ''
+              "
               @update-input="updateInput"
             ></InputNumber>
             <p class="error-message"></p>
@@ -184,8 +186,8 @@
                   :label-content="Label.tracked_year"
                   :type="Enum.DataType.Year"
                   :value="
-                    popupObject[fields.tracked_year]
-                      ? popupObject[fields.tracked_year].toString()
+                    data[fields.tracked_year]
+                      ? data[fields.tracked_year].toString()
                       : '0'
                   "
                   :isDisabled="true"
@@ -205,7 +207,7 @@
               <InputCalendar
                 :field="fields.purchase_date"
                 :mode="mode"
-                :value="popupObject[fields.purchase_date]"
+                :value="data[fields.purchase_date]"
                 @update-input="updateInput"
               ></InputCalendar>
             </div>
@@ -222,7 +224,7 @@
                   <InputCalendar
                     :field="fields.production_date"
                     :mode="mode"
-                    :value="popupObject[fields.production_date]"
+                    :value="data[fields.production_date]"
                     @update-input="updateInput"
                   ></InputCalendar>
                 </div>
@@ -292,9 +294,18 @@ import {
 
 export default {
   name: "AssetDetail",
+
   props: {
     // Chế độ của popup
-    mode: Number,
+    mode: {
+      type: Number,
+      default: 0,
+    },
+    // Tiêu đề của popup
+    title: {
+      type: String,
+      required: true,
+    },
     // Đối tượng popup
     popupObj: {
       type: Object,
@@ -317,6 +328,7 @@ export default {
       },
     },
   },
+
   components: {
     Input,
     InputMoney,
@@ -327,64 +339,6 @@ export default {
     DialogValidate,
     DialogCancelVue,
   },
-  created() {
-    try {
-      // Cập nhật đối tượng popup tương ứng với các chế độ tương ứng
-      switch (this.mode) {
-        // Chế dộ chỉnh sửa và nhân bản
-        case Enum.Mode.Duplicate:
-        case Enum.Mode.Update:
-          this.theTitle = Resource.PopupTitle.edit;
-          // Bind dữ liệu của table row được chọn vào popup object
-          for (let prop in this.popupObj) {
-            this.popupObject[prop] = this.popupObj[prop];
-          }
-          // Cập nhật giá trị hao mòn năm
-          this.depreciation_value = Function.depreciationValue(
-            this.popupObject[this.fields.cost],
-            this.popupObject[this.fields.depreciation_rate]
-          );
-          // Cập nhật đối tượng popup
-          this.popupObject[this.fields.depreciation_value] =
-            this.depreciation_value;
-          // Khởi tạo đối tượng ban đầu
-          this.initObj = Object.assign({}, this.popupObject);
-          // Cập nhật nguyên giá và giá trị hao mòn năm
-          this.initObj.cost = Math.round(this.initObj.cost);
-          this.initObj.depreciation_value =
-            (this.initObj.cost * this.initObj.depreciation_rate) / 100;
-          // Chuyển đổi cùng kiểu dữ liệu ngày tháng năm
-          this.initObj[this.fields.purchase_date] = new Date(
-            this.initObj[this.fields.purchase_date]
-          ).toISOString();
-          this.initObj[this.fields.production_date] = new Date(
-            this.initObj[this.fields.production_date]
-          ).toISOString();
-          if (this.mode == Enum.Mode.Duplicate) {
-            // Thiết lập title popup
-            this.theTitle = Resource.PopupTitle.duplicate;
-            // Gọi API lấy mã mới tài sản
-            this.getNewCode();
-          }
-          break;
-        // Thêm mới nhân viên
-        default:
-          // Thiết lập title popup
-          this.theTitle = Resource.PopupTitle.add;
-          // Gọi API lấy mã mới tài sản
-          this.getNewCode();
-          // Khởi tạo giá trị mặc định cho popup Object
-          for (let prop in this.defaultValue) {
-            this.popupObject[prop] = this.defaultValue[prop];
-          }
-          // Khởi tạo đối tượng ban đầu
-          this.initObj = Object.assign({}, this.popupObject);
-          break;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  },
 
   emits: [
     "close-popup",
@@ -393,9 +347,32 @@ export default {
     "reload-content",
     "update-table-row",
   ],
+
+  created() {
+    try {
+      // Gán giá trị mặc định cho các trường cần thiết
+      this.setDefaultValue();
+      // Tự động lấy mã tài sản
+      if (this.mode !== Enum.Mode.Update) this.getNewCode();
+      if (this.mode != Enum.Mode.Add) {
+        // Bind dữ liệu của table row được chọn vào popup object
+        this.data = Object.assign(this.popupObj)
+        // Khởi tạo giá trị hao mòn năm
+        this.depreciation_value = Function.depreciationValue(
+          this.data[this.fields.cost],
+          this.data[this.fields.depreciation_rate]
+        );
+        // Cập nhật đối tượng popup
+        this.data[this.fields.depreciation_value] = this.depreciation_value;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   watch: {
-    popupObject: function () {
-      console.log(this.popupObject);
+    data: function () {
+      console.log(this.data);
     },
   },
   /**
@@ -404,17 +381,19 @@ export default {
    */
   mounted() {
     try {
-      // Focus vào ô input đầu tiên
+      // focus vào input đầu tiên
       this.focusFirstInput();
       // Khởi tạo đối tượng errorMessage
       for (const field in this.fields) {
         if (Resource.RequiredData[field])
-          if (
-            this.popupObject[field] == undefined ||
-            this.popupObject[field] == ""
-          )
+          if (this.data[field] == undefined || this.data[field] == "")
             this.errorMessages[field] = false;
       }
+      // khởi tạo đối tượng dùng để so sánh
+      this.$nextTick(function () {
+        // khởi tạo đối tượng dùng để so sánh
+        this.originalData = Object.assign({}, this.data);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -428,6 +407,7 @@ export default {
     onShiftTab: function (e) {
       if (e.shiftKey) this.$refs.lastInput.focus();
     },
+
     /**
      * @description press tab when placed at the last button => focus the first input
      * @author NVT 26/12/2022
@@ -442,12 +422,37 @@ export default {
     },
 
     /**
+     * @description pass default values to new control
+     * @author NVThinh 27/12/2022
+     */
+    setDefaultValue: function () {
+      try {
+        // init default value
+        const defaultValue = {
+          quantity: 1,
+          depreciation_rate: 0,
+          depreciation_value: 0,
+          life_time: 0,
+          tracked_year: Function.getCurrentYear(),
+          purchase_date: Function.getCurrentDate(),
+          production_date: Function.getCurrentDate(),
+        };
+        // Assign
+        for (const property in defaultValue) {
+          this.data[property] = defaultValue[property];
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
      * Emit: Đóng popup
      * @author Nguyen Van Thinh 11/11/2022
      */
     showDialogCancel: function () {
       try {
-        if (Function.isObjectEqual(this.initObj, this.popupObject))
+        if (Function.isObjectEqual(this.originalData, this.data))
           this.$emit("close-popup");
         else this.isShowDlgCancel = true;
       } catch (error) {
@@ -472,7 +477,7 @@ export default {
     updateInput: function (value, field) {
       try {
         // Cập nhật đối tượng popup
-        this.popupObject[field] = value;
+        this.data[field] = value;
         // Bỏ hiển thị lỗi
         this.errorMessages ? (this.errorMessages[field] = false) : "";
         // Cập nhật các giá trị tương ứng khi nguyên giá thay đổi
@@ -481,11 +486,10 @@ export default {
           case this.fields.depreciation_rate:
             // Hao mòn năm
             this.depreciation_value = Function.depreciationValue(
-              this.popupObject[this.fields.cost],
-              this.popupObject[this.fields.depreciation_rate]
+              this.data[this.fields.cost],
+              this.data[this.fields.depreciation_rate]
             );
-            this.popupObject[this.fields.depreciation_value] =
-              this.depreciation_value;
+            this.data[this.fields.depreciation_value] = this.depreciation_value;
             break;
           default:
             console.log(field, "is updated!");
@@ -504,7 +508,7 @@ export default {
         }
         for (let obj of data) {
           if (obj.value) {
-            this.popupObject[obj.field] = obj.value;
+            this.data[obj.field] = obj.value;
           }
         }
       } catch (error) {
@@ -521,12 +525,9 @@ export default {
         this.requiredData = [];
         // Kiểm tra thông tin yêu cầu
         for (const field in this.fields) {
-          // console.log("@!@", this.popupObject[field], this.Label[field]);
+          // console.log("@!@", this.data[field], this.Label[field]);
           if (Resource.RequiredData[field])
-            if (
-              this.popupObject[field] == undefined ||
-              this.popupObject[field] == ""
-            ) {
+            if (this.data[field] == undefined || this.data[field] == "") {
               this.requiredData.push(this.Label[field]);
               this.errorMessages[field] = true;
             }
@@ -539,17 +540,17 @@ export default {
         } else {
           // Tỉ lệ hao mòn <> 1/Số năm sử dụng
           const depreciation_rate =
-            (1 / this.popupObject[this.fields.life_time]) * 100;
+            (1 / this.data[this.fields.life_time]) * 100;
           if (
-            this.popupObject[this.fields.depreciation_rate].toFixed(2) !=
+            this.data[this.fields.depreciation_rate].toFixed(2) !=
             depreciation_rate.toFixed(2)
           ) {
             this.showDlgValidate(Resource.WarningMessage.depreciation);
           } else {
             // Hao mòn năm > Nguyên giá
             if (
-              this.popupObject[this.fields.depreciation_value] >
-              this.popupObject[this.fields.cost]
+              this.data[this.fields.depreciation_value] >
+              this.data[this.fields.cost]
             ) {
               this.showDlgValidate(
                 Resource.WarningMessage.costAndDepreciationValue
@@ -559,7 +560,7 @@ export default {
                 case Enum.Mode.Add:
                 case Enum.Mode.Duplicate:
                   // Call API tạo mới tài sản
-                  await createFixedAsset(this.popupObject)
+                  await createFixedAsset(this.data)
                     .then(() => {
                       this.handleSuccessAPI();
                     })
@@ -569,10 +570,7 @@ export default {
                   break;
                 case Enum.Mode.Update:
                   // Gọi API cập nhật tài sản
-                  await editFixedAsset(
-                    this.popupObject.fixed_asset_id,
-                    this.popupObject
-                  )
+                  await editFixedAsset(this.data.fixed_asset_id, this.data)
                     .then(() => {
                       this.handleSuccessAPI();
                     })
@@ -582,7 +580,7 @@ export default {
                   // Gửi giá trị hao mòn năm lên table row để cập nhật hao mòn lũy kế và giá trị còn lại
                   this.$emit(
                     "update-table-row",
-                    this.popupObject[this.fields.cost], // Nguyên giá mới
+                    this.data[this.fields.cost], // Nguyên giá mới
                     this.depreciation_value
                   );
                   break;
@@ -621,8 +619,8 @@ export default {
       try {
         getNewCode().then((res) => {
           // Gán vào đối tượng
-          this.popupObject[this.fields.fixed_asset_code] = res.data;
-          this.initObj[this.fields.fixed_asset_code] = res.data;
+          this.data[this.fields.fixed_asset_code] = res.data;
+          this.originalData[this.fields.fixed_asset_code] = res.data;
         });
       } catch (error) {
         console.log(error);
@@ -672,12 +670,12 @@ export default {
   },
   data() {
     return {
-      Title: Resource.Title, // Tiêu đề
-      Label: Resource.PopupLabel, // Nhãn
-      placeholder: Resource.Placeholder, // Placholder
-      maxLength: Resource.InputLength, // Độ dài ô input
+      Title: Resource.Title, // tooltip
+      Label: Resource.PopupLabel, // the label of inputs
+      data: {}, // the data of popup which contain pair field:key
+      placeholder: Resource.Placeholder, // placeholder of inputs
+      maxLength: Resource.InputLength, // the maxlength of inputs
       fields: Resource.PopupField, // Các trường trong popup
-      theTitle: "", // Tiêu đề
       currentYear: Function.getCurrentYear(), // Năm hiện tại
       showDialogValidate: false, /// Hiển thị validate dialog
       isShowDlgCancel: false, // Trạng thái ẩn hiện Cancel dialog
@@ -685,18 +683,9 @@ export default {
       dlgType: "blank", // Kiểu của dialog
       errorMessages: {}, // Đối tượng chứa các trường bắt buộc nhập
       depreciation_value: 0, // Giá trị hao mòn
-      popupObject: {}, // Đối tượng popup
-      initObj: {}, // Đối tượng khởi tạo ban đầu -> Kiểm tra popup có được tương tác không
+      originalData: {}, // Đối tượng khởi tạo ban đầu -> Kiểm tra popup có được tương tác không
       requiredData: [], // Mảng chứa những dữ liệu yêu cầu
-      defaultValue: {
-        quantity: 1,
-        depreciation_rate: 0,
-        depreciation_value: 0,
-        life_time: 0,
-        tracked_year: Function.getCurrentYear(),
-        purchase_date: Function.getCurrentDate(),
-        production_date: Function.getCurrentDate(),
-      },
+
       Resource, // Tài nguyên
       Enum, // enum
       Function, // Các hàm chung

@@ -129,7 +129,7 @@ export default {
   },
   // Độ dài ký tự có thể nhập trong ô input
   InputLength: {
-    fixed_asset_code: 100,
+    fixed_asset_code: 50,
     fixed_asset_name: 255,
     department: 255,
     fixed_asset_category: 255,

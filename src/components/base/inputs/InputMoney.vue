@@ -52,7 +52,7 @@ export default {
       config: {
         spinner: false,
         min: 0,
-        max: 1e19 - 1,
+        max: 1e18, // cost: decimal(22,4) -> 18 integer numbers
         precision: 0,
         // decimal: ".",
         thousands: ".",
