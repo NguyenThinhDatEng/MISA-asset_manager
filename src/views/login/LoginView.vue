@@ -97,7 +97,7 @@ export default {
         await login(user).then((res) => {
           if (res.status === Enum.API.OK) {
             console.log(res.request);
-            // this.$router.push(API.Path.asset);
+            this.$router.push(API.Path.asset);
           }
         });
       } catch (error) {
