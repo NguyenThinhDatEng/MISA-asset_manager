@@ -49,4 +49,7 @@ export default {
     Error: 1,
     Warning: 2,
   },
+  API: {
+    OK: 200,
+  },
 };

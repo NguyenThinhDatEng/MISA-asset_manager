@@ -60,7 +60,8 @@ export default {
   QLTS: {
     logo: "MISA QLTS",
     file_name: "Danh sách tài sản cố định",
-    login: "Đăng nhập để làm việc với ",
+    login_with: "Đăng nhập để làm việc với ",
+    copyright: "Copyright © 2020 MISA JSC",
   },
   // Tiêu đề trang
   PageTitle: {
@@ -81,10 +82,13 @@ export default {
     fixed_asset_name: "Nhập tên tài sản",
     department_code: "Chọn mã bộ phận sử dụng",
     asset_category_code: "Chọn mã loại tài sản",
+    login_account: "Username, email hoặc số điện thoại",
+    password: "Mật khẩu",
   },
   // Tên button
   ButtonName: {
     "asset-add": "Thêm tài sản",
+    login: "Đăng nhập",
   },
   // Từ viết tắt
   Abbreviations: {
