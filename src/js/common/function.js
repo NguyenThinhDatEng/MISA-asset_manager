@@ -96,19 +96,19 @@ export default {
   },
 
   // Kiểm tra input đầu vào chỉ có ký tự số
-  onlyNumbers: function (e, numberType) {
+  onlyNumbers: function (e) {
     try {
       // Mã key
       const keyCode = e.keyCode;
       // Lấy mảng các chức năng cơ bản
-      const excludedKeys = KeyCode.BasicFeature;
+      let excludedKeys = KeyCode.BasicFeature;
+      excludedKeys.push(Enum.KeyCode.Comma);
       // Kiểm tra điều kiện
       if (
         !(
           (keyCode >= 48 && keyCode <= 57) ||
           (keyCode >= 96 && keyCode <= 105) ||
-          excludedKeys.includes(keyCode) ||
-          (numberType == Enum.DataType.Rate && keyCode == Enum.KeyCode.Comma)
+          excludedKeys.includes(keyCode)
         )
       ) {
         e.preventDefault();

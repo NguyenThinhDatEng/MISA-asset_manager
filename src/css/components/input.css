@@ -133,6 +133,10 @@ input::placeholder {
     z-index: -1;
 }
 
-.input--money {
+.spinner {
     text-align: right;
+}
+
+.input--icon {
+    padding-right: 36px !important;
 }

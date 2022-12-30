@@ -120,21 +120,23 @@
             <InputNumber
               :label-content="Label.quantity"
               :field="fields.quantity"
-              :value="data.quantity ? data.quantity.toString() : ''"
+              :value="data.quantity"
+              :min="1"
               @update-input="updateInput"
-            ></InputNumber>
+            />
           </div>
           <div class="popup__body--right">
             <div class="input-row">
               <div class="popup__body--left">
-                <InputMoney
+                <input-number
                   :labelContent="Label.cost"
                   :is-error="errorMessages[fields.cost]"
                   :field="fields.cost"
                   :mode="mode"
-                  :value="data[fields.cost]"
+                  :value="data.cost"
+                  :type="Enum.DataType.Money"
                   @update-input="updateInput"
-                ></InputMoney>
+                />
               </div>
               <div class="popup__body--right-child">
                 <InputNumber
@@ -142,13 +144,9 @@
                   :is-error="errorMessages.life_time"
                   :field="fields.life_time"
                   :type="Enum.DataType.Year"
-                  :value="
-                    data[fields.life_time]
-                      ? data[fields.life_time].toString()
-                      : '0'
-                  "
+                  :value="data.life_time"
                   @update-input="updateInput"
-                ></InputNumber>
+                />
               </div>
             </div>
           </div>
@@ -163,7 +161,7 @@
               :type="Enum.DataType.Rate"
               :max-length="maxLength.depreciation_rate"
               :value="
-                data.depreciation_rate ? data.depreciation_rate.toString() : ''
+                data.depreciation_rate ? data.depreciation_rate.toString() : '0'
               "
               @update-input="updateInput"
             ></InputNumber>
@@ -172,14 +170,15 @@
           <div class="popup__body--right">
             <div class="input-row">
               <div class="popup__body--left">
-                <InputMoney
+                <input-number
                   :labelContent="Label.depreciation_value"
                   :is-error="errorMessages[fields.depreciation_value]"
                   :field="fields.depreciation_value"
                   :value="depreciation_value"
                   :mode="mode"
+                  :type="Enum.DataType.Money"
                   @update-input="updateInput"
-                ></InputMoney>
+                />
               </div>
               <div class="popup__body--right-child">
                 <Input
@@ -278,7 +277,6 @@
 import DialogCancelVue from "@/components/base/dialogs/DialogCancel.vue";
 import Input from "@/components/base/inputs/Input.vue";
 import InputNumber from "@/components/base/inputs/InputNumber.vue";
-import InputMoney from "@/components/base/inputs/InputMoney.vue";
 import InputCalendar from "@/components/base/datepicker/InputCalendar.vue";
 import ComboboxDetail from "@/components/base/comboboxes/ComboboxDetail.vue";
 import ButtonMain from "@/components/base/buttons/ButtonMain.vue";
@@ -331,7 +329,6 @@ export default {
 
   components: {
     Input,
-    InputMoney,
     InputNumber,
     InputCalendar,
     ButtonMain,

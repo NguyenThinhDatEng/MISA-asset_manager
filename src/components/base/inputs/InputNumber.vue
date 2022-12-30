@@ -3,18 +3,33 @@
   <label>{{ labelContent }} <span style="color: red">*</span></label>
   <!-- input wrapper -->
   <div :class="[{ 'input--number': this.type != Enum.DataType.Year }]">
-    <!-- input -->
+    <!-- input 01 -->
+    <v-money-spinner
+      v-if="type !== Enum.DataType.Rate"
+      :class="[
+        'input',
+        'spinner',
+        { 'input--error': isError },
+        { 'input--icon': isShowIcons() },
+      ]"
+      v-bind="config"
+      v-model="amount"
+      @keydown.down="decrease"
+      @keydown.up="increase"
+    />
+    <!-- input 02 -->
     <input
+      v-else
       type="text"
       :class="['input', { 'input--error': isError }]"
       :maxlength="maxLength"
       v-model="amount"
-      @keydown="Function.onlyNumbers($event, type)"
+      @keydown="Function.onlyNumbers($event)"
       @keydown.down="decrease"
       @keydown.up="increase"
     />
     <!-- icon -->
-    <div class="icon--up_down" v-show="this.type != Enum.DataType.Year">
+    <div class="icon--up_down" v-show="isShowIcons()">
       <!-- icon up -->
       <div
         class="icon icon--up"
@@ -38,6 +53,7 @@
 </template>
 
 <script>
+// Tài nguyên
 import Resource from "@/js/resource/resource";
 import Function from "@/js/common/function";
 import Enum from "@/js/enum/enum";
@@ -50,8 +66,11 @@ export default {
       default: Enum.DataType.Number,
     },
     value: {
-      type: String,
-      default: "0",
+      type: [Number, String],
+    },
+    min: {
+      type: Number,
+      default: 0,
     },
     field: String,
     maxLength: Number,
@@ -61,26 +80,28 @@ export default {
       default: false,
     },
   },
+
+  emits: ["update-input"],
+
   created() {
-    const val = Number(this.value);
-    if (val < 10) {
-      this.amount = Function.formatNumber(val);
-    } else {
-      this.amount = Function.formatMoney(val);
-    }
+    // Cập nhật giá trị nhỏ nhất
+    this.config.min = this.min;
+    // Cập nhật amount
+    this.amount = Number(this.value);
     if (this.type == Enum.DataType.Rate) {
-      this.amount = this.amount.toString().replace(".", ",");
+      this.amount = this.value.toString().replace(".", ",");
     }
   },
 
-  emits: ["update-input"],
   watch: {
     amount: function () {
       const amountStr = this.amount.toString();
-      // Chuyển đổi thành string có thể ép kiểu sang Number
-      if (this.type == Enum.DataType.Rate)
-        this.amount = amountStr.replace(",", ".");
-      // Gửi dữ liệu đến cha qua emit
+      if (this.type == Enum.DataType.Rate) {
+        // Chuyển đổi thành string có thể ép kiểu sang Number
+        if (this.type == Enum.DataType.Rate)
+          this.amount = amountStr.replace(",", ".");
+      }
+      // Update dữ liệu cho control
       this.$emit("update-input", Number(this.amount), this.field);
       // Format cho giá trị hiển thị
       if (this.type == Enum.DataType.Rate) {
@@ -89,17 +110,25 @@ export default {
       }
     },
     value: function () {
-      // Cập nhật giá trị input khi có giá trị từ ngoài truyền vào
-      const val = Number(this.value);
-      if (this.type == Enum.DataType.Rate && val > 100) {
-        // Giới hạn giá trị lớn nhất khi ô input có kiểu là tỉ lệ
-        this.amount = "100";
-      } else {
-        this.amount = Function.formatNumber(val);
-      }
+      this.amount = this.value;
     },
   },
+
   methods: {
+    /**
+     * @description Trạng thái ẩn hiện của icon
+     * @author NVThinh 29/12/2022
+     */
+    isShowIcons: function () {
+      try {
+        return (
+          this.type == Enum.DataType.Number || this.type == Enum.DataType.Rate
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     // Cập nhật giá trị input khi nhập dữ liệu
     updateInput: function (e) {
       try {
@@ -125,7 +154,7 @@ export default {
      * @author NVThinh 27/12/2022
      */
     decrease: function () {
-      if (this.toNumber(this.amount) !== 1) {
+      if (this.toNumber(this.amount) !== this.min) {
         this.amount = this.toNumber(this.amount) - 1;
       }
     },
@@ -146,10 +175,21 @@ export default {
   },
   data() {
     return {
-      amount: "", // giá trị ô input
+      amount: 0, // giá trị ô input
       Resource, // Tài nguyên
       Function, // Các hàm dùng chung
       Enum, // enum
+      // Cấu hình input
+      config: {
+        spinner: false,
+        min: 0,
+        max: 1e18, // cost: decimal(22,4) -> 18 integer numbers
+        precision: 0,
+        decimal: ",",
+        thousands: ".",
+        masked: false,
+        disableNegative: false,
+      },
     };
   },
 };
@@ -162,8 +202,8 @@ export default {
 }
 
 .input--number .input {
-  position: absolute;
-  padding-right: 36px !important;
+  text-align: right;
+  padding-right: 36px;
 }
 
 .input--number .icon--up_down {
@@ -171,9 +211,5 @@ export default {
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-}
-
-.input {
-  text-align: right;
 }
 </style>

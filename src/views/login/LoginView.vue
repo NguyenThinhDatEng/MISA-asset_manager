@@ -68,7 +68,7 @@
 import Resource from "@/js/resource/resource";
 import { login } from "@/apis/user";
 import Enum from "@/js/enum/enum";
-// import API from "@/js/resource/api";
+import API from "@/js/resource/api";
 
 export default {
   name: "LoginScreen",
