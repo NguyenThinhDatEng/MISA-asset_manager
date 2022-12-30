@@ -18,7 +18,7 @@
       :disabled="isDisabled"
       :placeholder="getPlaceholder()"
       ref="input"
-      @keyup="updateInput($event)"
+    @keyup="updateInput($event)"
     />
     <!-- error message -->
     <p

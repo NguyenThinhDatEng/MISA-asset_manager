@@ -68,7 +68,6 @@
 import Resource from "@/js/resource/resource";
 import { login } from "@/apis/user";
 import Enum from "@/js/enum/enum";
-import API from "@/js/resource/api";
 
 export default {
   name: "LoginScreen",
@@ -97,7 +96,7 @@ export default {
         await login(user).then((res) => {
           if (res.status === Enum.API.OK) {
             console.log(res.request);
-            this.$router.push(API.Path.asset);
+            this.$router.push(Resource.ItemContents.asset.router);
           }
         });
       } catch (error) {

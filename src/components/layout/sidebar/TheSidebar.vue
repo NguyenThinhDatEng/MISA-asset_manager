@@ -12,7 +12,8 @@
     <div class="sidebar__body">
       <Item
         v-for="item in items"
-        v-bind:key="item.id"
+        :key="item.id"
+        :id="item.id"
         :iconName="setIconName(item.id)"
         :item="item"
         :title="setTitle(item.id, item.content)"

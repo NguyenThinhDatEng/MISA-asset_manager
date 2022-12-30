@@ -6,17 +6,30 @@ import MainView from "@/views/main/MainView.vue";
 import AssetList from "@/views/assetManagement/AssetList.vue";
 import LoginScreen from "@/views/login/LoginView.vue";
 // import resource
-import API from "@/js/resource/api";
+import Resource from "@/js/resource/resource";
+
+const items = Resource.ItemContents;
 
 // Define routers
 const routes = [
   {
-    path: "",
+    path: "/",
     component: MainView,
     children: [
-      { path: API.Path.asset, name: "AssetList", component: AssetList },
+      {
+        path: items.asset.router,
+        name: "AssetList",
+        component: AssetList,
+      },
     ],
   },
+  { path: `/${items.general.router}`, component: MainView },
+  { path: `/${items.category.router}`, component: MainView },
+  { path: `/${items.path.router}`, component: MainView },
+  { path: `/${items.report.router}`, component: MainView },
+  { path: `/${items.search.router}`, component: MainView },
+  { path: `/${items.tool.router}`, component: MainView },
+  { path: `/${items.asset.sub_list.write_increase.router}`, component: MainView},
   { path: "/login", name: "Login", component: LoginScreen },
 ];
 

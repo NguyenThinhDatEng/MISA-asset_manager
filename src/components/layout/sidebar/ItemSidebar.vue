@@ -1,7 +1,7 @@
 <template>
   <router-link :to="getRouter(item.router)">
     <div
-      :id="id ? id : ''"
+      :id="id"
       :class="{ item: true, 'item--active': active }"
       :title="title ? title : ''"
     >
@@ -12,16 +12,26 @@
       <!-- right -->
       <div class="item__content">
         <p>{{ item.content }}</p>
-        <div class="icon-item_wrapper" v-if="isShow(item.content)">
+        <div
+          class="icon-item_wrapper"
+          v-if="isShow(item.content)"
+          @click="toggle"
+        >
           <div class="icon icon-arrow center icon--down-arrow"></div>
         </div>
       </div>
     </div>
+    <!-- list sub item -->
+    <ul class="sub-item" v-show="isShowSubList">
+      <router-link :to="getRouter('ghi-tang')">
+        <li v-for="item in subList" :key="item.content">{{ item.content }}</li>
+      </router-link>
+    </ul>
   </router-link>
 </template>
 
 <script>
-import resource from "@/js/resource/resource";
+import Resource from "@/js/resource/resource";
 
 export default {
   name: "ItemSidebar",
@@ -33,8 +43,8 @@ export default {
       type: Object,
       default: function () {
         return {
-          content: resource.ItemContents.asset.content,
-          router: resource.ItemContents.asset.router,
+          content: Resource.ItemContents.asset.content,
+          router: Resource.ItemContents.asset.router,
         };
       },
     },
@@ -44,6 +54,11 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+
+  created() {
+    // Cập nhật danh sách danh mục con
+    this.subList = this.Items[this.id].sub_list;
   },
 
   methods: {
@@ -72,12 +87,22 @@ export default {
      * @author Nguyen Van Thinh 19/12/2022
      */
     getRouter: (router) => "/" + router,
+
+    /**
+     * @description Hiển thị danh sách danh mục con
+     * @author NVThinh 30/12/2022
+     */
+    toggle: function () {
+      this.isShowSubList = !this.isShowSubList;
+    },
   },
   // data
   data() {
     return {
       hasArrowIcon: true, // true nếu danh mục có icon mũi tên
-      Items: resource.ItemContents,
+      Items: Resource.ItemContents, // Các danh mục của sidebar
+      subList: null, // Các mục bên trong item tài sản
+      isShowSubList: false, // Trạng thái hiển thị danh sách danh mục con
     };
   },
 };
@@ -116,6 +141,26 @@ export default {
   align-items: center;
   justify-content: space-between;
   flex: 1;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  color: white;
+  background-color: #33455b;
+}
+
+.sub-item li {
+  height: 40px;
+  line-height: 40px;
+  padding: 0 0 0 44px;
+  opacity: 0.2;
+}
+
+.sub-item li:hover {
+  background-color: #48586c;
+  opacity: 1;
 }
 
 @media only screen and (max-width: 1500px) {

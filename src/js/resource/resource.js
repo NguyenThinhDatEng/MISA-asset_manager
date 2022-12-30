@@ -8,7 +8,20 @@ export default {
     },
     asset: {
       content: "Tài sản",
-      router: "",
+      router: "tai-san",
+      sub_list: {
+        write_increase: {
+          content: "Ghi tăng",
+          router: "ghi-tang",
+        },
+        change_info: { content: "Thay đổi thông tin" },
+        "re-review": { content: "Đánh giá lại" },
+        depreciation: { content: "Tính hao mòn" },
+        transfer: { content: "Điều chuyển tài sản" },
+        write_decrease: { content: "Ghi giảm" },
+        inventory: { content: "Kiểm kê" },
+        other: { content: "Khác" },
+      },
     },
     path: {
       content: "Tài sản HT-ĐB",

@@ -15,7 +15,7 @@
               class="checkbox"
               :checked="checkedHeader"
               v-model="isCheckAll"
-            />
+            />  
           </th>
           <th
             v-for="(value, key) of ths"
