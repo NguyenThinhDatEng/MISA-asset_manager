@@ -1,29 +1,36 @@
 <template>
   <button :class="['button', buttonType]">
-    <div class="button__content-wrapper">
-      <div :class="['icon', iconName]"></div>
-      <p :class="buttonName">{{ resource.ButtonName[buttonName] }}</p>
+    <div :class="['button__content-wrapper', { center: !hasIcon }]">
+      <div :class="['icon', iconName]" v-show="hasIcon"></div>
+      <p>{{ buttonContent }}</p>
     </div>
   </button>
 </template>
 
 <script>
-import resource from "@/js/resource/resource";
-
 export default {
   name: "ButtonIcon",
   props: {
+    // true nếu button có icon
+    hasIcon: {
+      type: Boolean,
+      default: true,
+    },
+    buttonContent: {
+      type: String,
+      required: true,
+    },
     buttonType: String,
     iconName: String,
-    buttonName: String,
   },
   data() {
-    return {
-      resource,
-    };
+    return {};
   },
 };
 </script>
 
 <style scoped>
+button p {
+  color: white;
+}
 </style>

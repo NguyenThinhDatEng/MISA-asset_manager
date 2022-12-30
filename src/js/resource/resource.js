@@ -68,6 +68,7 @@ export default {
     noSave: "Không lưu thông tin thay đổi",
     cancel: "Hủy bỏ",
     delete: "Xóa tài sản",
+    add_voucher: "Thêm mới chứng từ",
   },
   // Liên quan sản phẩm
   QLTS: {
@@ -89,7 +90,8 @@ export default {
   },
   // placeholder các input
   Placeholder: {
-    "asset-search": "Tìm kiếm tài sản",
+    search_asset: "Tìm kiếm tài sản",
+    search_voucher: "Tìm kiếm theo số chứng từ, nội dung",
     category: "Loại tài sản",
     department: "Bộ phận sử dụng",
     fixed_asset_name: "Nhập tên tài sản",

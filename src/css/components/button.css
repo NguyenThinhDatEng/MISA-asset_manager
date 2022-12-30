@@ -57,10 +57,6 @@ button {
     margin-right: 4px;
 }
 
-.button--add .asset-add {
-    color: white;
-}
-
 .button--export,
 .button--delete {
     position: relative;

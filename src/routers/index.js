@@ -3,8 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 
 // import components
 import MainView from "@/views/main/MainView.vue";
-import AssetList from "@/views/assetManagement/AssetList.vue";
+import AssetList from "@/views/asset/AssetList.vue";
 import LoginScreen from "@/views/login/LoginView.vue";
+import VoucherList from "@/views/asset/voucher/VoucherList.vue";
 // import resource
 import Resource from "@/js/resource/resource";
 
@@ -21,6 +22,10 @@ const routes = [
         name: "AssetList",
         component: AssetList,
       },
+      {
+        path: `/${items.asset.sub_list.write_increase.router}`,
+        component: VoucherList,
+      },
     ],
   },
   { path: `/${items.general.router}`, component: MainView },
@@ -29,7 +34,7 @@ const routes = [
   { path: `/${items.report.router}`, component: MainView },
   { path: `/${items.search.router}`, component: MainView },
   { path: `/${items.tool.router}`, component: MainView },
-  { path: `/${items.asset.sub_list.write_increase.router}`, component: MainView},
+
   { path: "/login", name: "Login", component: LoginScreen },
 ];
 

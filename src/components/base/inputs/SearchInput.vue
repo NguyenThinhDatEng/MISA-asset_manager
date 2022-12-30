@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div class="input__wrapper">
     <input
       type="text"
       class="input input--search"
-      :placeholder="Resource.Placeholder['asset-search']"
+      :style="{ width: width }"
+      :placeholder="placeholder"
       :maxlength="maxLength"
       :title="Resource.Title['search-input']"
       v-model="value"
@@ -17,11 +18,20 @@
 
 <script>
 import Resource from "@/js/resource/resource";
+import Dictionary from "@/js/resource/dictionary";
 
 export default {
   name: "SearchInput",
   props: {
-    field: String,
+    field: String, // bắn emit đến lớp cha
+    placeholder: {
+      type: String,
+      default: Dictionary.action.search,
+    },
+    width: {
+      type: String,
+      default: "179px",
+    },
   },
   emits: ["update-filter"],
   watch: {},
@@ -43,4 +53,7 @@ export default {
 </script>
 
 <style scoped>
+.input__wrapper {
+  position: relative;
+}
 </style>

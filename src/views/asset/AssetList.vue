@@ -7,6 +7,7 @@
     <div class="function_left">
       <!-- Search  -->
       <Input
+        :placeholder="Resource.Placeholder.search_asset"
         :field="Object.keys(this.conditions)[0]"
         @update-filter="updateFilter"
       ></Input>
@@ -35,6 +36,7 @@
       <Button
         :buttonType="'button--add'"
         :buttonName="'asset-add'"
+        :buttonContent="Resource.ButtonName['asset-add']"
         :iconName="'icon--add'"
         :title="Resource.Title.add"
         @click="handleOnclickAddButton"
@@ -109,7 +111,7 @@ import TheTable from "@/components/base/table/Table.vue";
 import Input from "@/components/base/inputs/SearchInput.vue";
 import Button from "@/components/base/buttons/ButtonIcon.vue";
 import ButtonFeature from "@/components/base/buttons/ButtonFeature.vue";
-import Popup from "@/views/assetManagement/AssetDetail.vue";
+import Popup from "@/views/asset/AssetDetail.vue";
 import DialogDeleteVue from "@/components/base/dialogs/DialogDelete.vue";
 import Loader from "@/components/base/more/Loader.vue";
 import Enum from "@/js/enum/enum";
