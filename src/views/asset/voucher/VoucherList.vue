@@ -37,7 +37,8 @@
           </div>
         </div>
       </div>
-      <div class="table"></div>
+      <!-- Table  -->
+      <TableVue :cols="TableResource.TableRow.Voucher" :tds="tds_of_master" />
     </div>
     <!-- Table 02 -->
     <div class="detail">
@@ -49,7 +50,13 @@
           </div>
         </div>
       </div>
-      <div class="table"></div>
+      <!-- Table  -->
+      <TableVue
+        :cols="TableResource.TableRow.FixedAssetDetail"
+        :tds="tds_of_detail"
+        :isShowFooter="false"
+        :isShowCheckbox="false"
+      />
     </div>
   </div>
 </template>
@@ -58,21 +65,136 @@
 // Components
 import Button from "@/components/base/buttons/ButtonIcon.vue";
 import SearchInput from "@/components/base/inputs/SearchInput.vue";
+import TableVue from "@/components/base/table/Table.vue";
 // Resources
 import Resource from "@/js/resource/resource";
 import Dictionary from "@/js/resource/dictionary";
+import TableResource from "@/js/resource/tableResource";
+import Enum from "@/js/enum/enum";
 
 export default {
   name: "VoucherList",
-  components: { Button, SearchInput },
+  components: { Button, SearchInput, TableVue },
   created() {},
   props: {},
   emits: [],
   methods: {},
   data() {
     return {
+      // Resource
       Resource,
       Dictionary,
+      TableResource,
+      // Style
+      tds_of_master: [
+        {
+          col: TableResource.TableRow.Voucher.checkbox.ENG,
+          type: Enum.TableData.type.checkbox,
+          minWidth: "40px",
+          maxWidth: "50px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.Voucher.numerical_order.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "40px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.Voucher.voucher_code.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "70px",
+          maxWidth: "110px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.Voucher.voucher_date.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "90px",
+          maxWidth: "180px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.Voucher.increment_date.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "70px",
+          maxWidth: "120px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.Voucher.total_of_cost.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "60px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.Voucher.description.ENG,
+          type: Enum.TableData.type.text,
+          align: "left",
+        },
+      ],
+      // Style cho detail table
+      tds_of_detail: [
+        {
+          col: TableResource.TableRow.FixedAsset.checkbox.ENG,
+          type: Enum.TableData.type.checkbox,
+          minWidth: "40px",
+          maxWidth: "50px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "40px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "70px",
+          maxWidth: "110px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "90px",
+          maxWidth: "180px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.department_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "100px",
+          maxWidth: "120px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.quantity.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "60px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.cost.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "50px",
+          maxWidth: "60px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "90px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.residual_value.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "80px",
+          align: "right",
+        },
+      ],
     };
   },
 };
@@ -82,11 +204,18 @@ export default {
 @import url(@/css/icon.css);
 @import url(@/css/font.css);
 
+#write_increase {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .function-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 36px;
+  padding-left: 18px;
 }
 
 .function__left {
@@ -119,6 +248,10 @@ export default {
 
 .detail,
 .master {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 5;
   background-color: #fff;
 }
 
@@ -132,13 +265,12 @@ export default {
   width: 32px;
 }
 
-.master .table {
-  height: 300px;
-  box-shadow: none;
-}
-
 .master + .detail {
   margin-top: 8px;
+}
+
+.detail {
+  flex: 3;
 }
 
 .detail .function__left {
@@ -149,8 +281,11 @@ export default {
   width: 44px;
 }
 
-.detail .table{
-  height: 170px;
+/* Table */
+.table {
+  flex: 1;
+  height: unset;
+  border: none;
+  box-shadow: none;
 }
-
 </style>

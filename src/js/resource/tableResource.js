@@ -20,6 +20,24 @@ export default {
       residual_value: { ENG: "residual_value", VN: "Giá trị còn lại" },
       feature: { ENG: "feature", VN: "Tính năng" },
     },
+    FixedAssetDetail: {
+      numerical_order: { ENG: "numerical_order", VN: "STT" },
+      fixed_asset_code: { ENG: "fixed_asset_code", VN: "Mã tài sản" },
+      fixed_asset_name: { ENG: "fixed_asset_name", VN: "Tên tài sản" },
+      department_name: { ENG: "department_name", VN: "Bộ phận sử dụng" },
+      cost: { ENG: "cost", VN: "Nguyên giá" },
+      accumulated_value: { ENG: "accumulated_value", VN: "HM/KH lũy kế" },
+      residual_value: { ENG: "residual_value", VN: "Giá trị còn lại" },
+    },
+    Voucher: {
+      checkbox: { ENG: "checkbox" },
+      numerical_order: { ENG: "numerical_order", VN: "STT" },
+      voucher_code: { ENG: "voucher_code", VN: "Số chứng từ" },
+      voucher_date: { ENG: "voucher_date", VN: "Ngày chứng từ" },
+      increment_date: { ENG: "increment_date", VN: "Ngày ghi tăng" },
+      total_of_cost: { ENG: "total_of_cost", VN: "Tổng nguyên giá" },
+      description: { ENG: "description", VN: "Nội dung" },
+    },
   },
   // Table Head
   TableHead: {

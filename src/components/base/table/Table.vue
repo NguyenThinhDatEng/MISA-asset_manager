@@ -4,7 +4,7 @@
       <!-- Table Header  -->
       <thead>
         <tr>
-          <th class="th--checkbox checkbox__wrapper">
+          <th v-if="isShowCheckbox" class="checkbox__wrapper">
             <input
               id="checkbox-header"
               type="checkbox"
@@ -18,9 +18,10 @@
             :key="key"
             :title="getTooltip(value.ENG)"
             :style="[
-              { 'min-width': value.style.minWidth },
-              { 'max-width': value.style.maxWidth },
-              { 'text-align': value.style.align },
+              { 'min-width': value.style?.minWidth },
+              { 'max-width': value.style?.maxWidth },
+              { 'text-align': value.style?.align },
+              { 'padding-right': '4px' },
             ]"
           >
             {{ value.VN }}
@@ -30,7 +31,7 @@
       <!-- Table body  -->
       <tbody>
         <Row
-          v-for="(asset, index) in fixedAssets"
+          v-for="(asset, index) in data"
           :key="index"
           :tableRowObj="asset"
           :numerical_order="index + startIndex + 1"
@@ -43,13 +44,14 @@
           ref="Row"
         ></Row>
         <tr class="ignoreRow">
-          <td v-show="fixedAssets.length === 0" colspan="100">
+          <td v-show="data.length === 0" colspan="100">
             {{ TableResource.Status.noContent }}
           </td>
         </tr>
       </tbody>
       <!-- Table footer  -->
       <TableFoot
+        v-if="isShowFooter"
         :footerData="footerData"
         :number-of-records="numberOfRecords"
         :totalOfQuantities="totalOfQuantities"
@@ -67,16 +69,36 @@ import TableFoot from "./TableFoot.vue";
 import Function from "@/js/common/function";
 import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
-import Enum from "@/js/enum/enum";
 
 export default {
   name: "TheTable",
   props: {
-    fixedAssets: {
+    // Mảng chứa nội dung hiển thị trong bảng
+    data: {
       type: Array,
       default: () => {
         return [];
       },
+    },
+    // Các côt có trong bảng
+    cols: {
+      type: Object,
+      required: true,
+    },
+    // Style cho các cột
+    tds: {
+      type: Array,
+      required: true,
+    },
+    // Ẩn/hiện table footer
+    isShowFooter: {
+      type: Boolean,
+      default: true,
+    },
+    // Ẩn/hiện ô checkbox
+    isShowCheckbox: {
+      type: Boolean,
+      default: true,
     },
   },
   components: { Row, TableFoot },
@@ -90,7 +112,7 @@ export default {
         if (this.isCheckAll == true) {
           // Thêm tất cả các dòng vào mảng
           this.selectedRows = [];
-          for (const asset of this.fixedAssets) {
+          for (const asset of this.data) {
             this.selectedRows.push(asset);
           }
         } else {
@@ -106,7 +128,7 @@ export default {
       }
     },
     // Mảng dữ liệu thay đổi
-    fixedAssets: function () {
+    data: function () {
       // Cập nhật tổng các cột ở table footer
       this.updateFooterData();
       // Làm mới bảng dữ liệu
@@ -187,7 +209,7 @@ export default {
       try {
         if (value === this.cols.numerical_order.ENG)
           return Resource.Abbreviations.STT;
-        if (value === this.cols.accumulated_value.ENG)
+        if (value === this.cols.accumulated_value?.ENG)
           return Resource.Abbreviations.depreciation;
         return "";
       } catch (error) {
@@ -215,7 +237,7 @@ export default {
       this.totalOfQuantities = 0;
       for (const key in this.footerData) this.footerData[key] = 0;
       // Cập nhật các dữ liệu trên table footer
-      for (const obj of this.fixedAssets) {
+      for (const obj of this.data) {
         this.totalOfQuantities += obj.quantity;
         this.footerData.totalOfCost += obj.cost;
         this.footerData.totalDepreciationValue += Function.accumulatedValue(
@@ -280,78 +302,6 @@ export default {
       // Resource
       Resource,
       TableResource,
-      cols: TableResource.TableRow.FixedAsset, // Các cột có trong bảng
-      tds: [
-        {
-          col: TableResource.TableRow.FixedAsset.checkbox.ENG,
-          type: Enum.TableData.type.checkbox,
-          minWidth: "40px",
-          maxWidth: "50px",
-          align: "center",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "40px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "70px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "90px",
-          maxWidth: "160px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.fixed_asset_category_name.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "70px",
-          maxWidth: "120px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.department_name.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "100px",
-          maxWidth: "120px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.quantity.ENG,
-          type: Enum.TableData.type.number,
-          minWidth: "60px",
-          align: "right",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.cost.ENG,
-          type: Enum.TableData.type.number,
-          align: "right",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
-          type: Enum.TableData.type.number,
-          minWidth: "90px",
-          align: "right",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.residual_value.ENG,
-          type: Enum.TableData.type.number,
-          minWidth: "80px",
-          align: "right",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.feature.ENG,
-          minWidth: "60px",
-          maxWidth: "80px",
-          align: "center",
-        },
-      ],
     };
   },
 };
@@ -362,6 +312,7 @@ export default {
 .ignoreRow {
   height: 100%;
   text-align: center;
+  border: none;
 }
 
 .ignoreRow:hover {

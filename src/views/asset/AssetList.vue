@@ -70,7 +70,9 @@
   </div>
   <!-- Table  -->
   <TheTable
-    :fixed-assets="fixedAssets"
+    :data="fixedAssets"
+    :cols="TableResource.TableRow.FixedAsset"
+    :tds="tds"
     @update-row="updateRow"
     @show-popup="showPopup"
     ref="theTable"
@@ -105,7 +107,18 @@
 </template>
   
   <script>
+// Resources
 import Resource from "@/js/resource/resource";
+import Enum from "@/js/enum/enum";
+import Function from "@/js/common/function";
+import Constants from "@/js/common/constants";
+import TableResource from "@/js/resource/tableResource";
+import {
+  getFixedAssetByFilterAndPaging,
+  deleteFixedAsset,
+  deleteMultipleFixedAssets,
+} from "@/apis/fixedAsset";
+// Components
 import DropdownTick from "@/components/base/dropdowns/DropdownTick.vue";
 import TheTable from "@/components/base/table/Table.vue";
 import Input from "@/components/base/inputs/SearchInput.vue";
@@ -114,16 +127,7 @@ import ButtonFeature from "@/components/base/buttons/ButtonFeature.vue";
 import Popup from "@/views/asset/AssetDetail.vue";
 import DialogDeleteVue from "@/components/base/dialogs/DialogDelete.vue";
 import Loader from "@/components/base/more/Loader.vue";
-import Enum from "@/js/enum/enum";
-import Function from "@/js/common/function";
-import Constants from "@/js/common/constants";
-import TableResource from "@/js/resource/tableResource";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
-import {
-  getFixedAssetByFilterAndPaging,
-  deleteFixedAsset,
-  deleteMultipleFixedAssets,
-} from "@/apis/fixedAsset";
 import { getAllDepartments } from "@/apis/department";
 import { getAllFixedAssetCategories } from "@/apis/fixedAssetCategory";
 
@@ -299,11 +303,6 @@ export default {
       try {
         this.conditions[field] = value;
         this.searchAndFilter();
-        // Nếu giới hạn bản ghi thay đổi không cần cập nhật "Tổng số bản ghi" trên table footer
-        // if (field != Object.keys(this.conditions)[3]) {
-        //   // Thực hiện updateLimit tại con để cập nhật tổng số bản ghi
-        //   this.$ref.updateLimit(this.is);
-        // }
       } catch (error) {
         console.log(error);
       }
@@ -453,11 +452,88 @@ export default {
           field: "department",
         },
       ],
-      Resource, // resource
+      json_data: [], // Mảng chứa các json data dùng cho việc xuất dữ liệu
+      // Resource
+      Resource,
+      TableResource,
       Function, // Hàm dùng chung
       Enum, // enum
       json_fields: TableResource.TableHead.FixedAsset, // tên cột
-      json_data: [], // Mảng chứa các json data dùng cho việc xuất dữ liệu
+      // Style của các cột
+      tds: [
+        {
+          col: TableResource.TableRow.FixedAsset.checkbox.ENG,
+          type: Enum.TableData.type.checkbox,
+          minWidth: "40px",
+          maxWidth: "50px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "40px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "70px",
+          maxWidth: "110px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "90px",
+          maxWidth: "180px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.fixed_asset_category_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "70px",
+          maxWidth: "120px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.department_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "100px",
+          maxWidth: "120px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.quantity.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "60px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.cost.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "50px",
+          maxWidth: "60px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "90px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.residual_value.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "80px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.feature.ENG,
+          minWidth: "60px",
+          maxWidth: "80px",
+          width: "70px",
+        },
+      ],
     };
   },
 };

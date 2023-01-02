@@ -678,9 +678,9 @@ export default {
       errorMessages: {}, // Đối tượng chứa các trường bắt buộc nhập
       depreciation_value: 0, // Giá trị hao mòn
       requiredData: [], // Mảng chứa những dữ liệu yêu cầu
-
-      Resource, // Tài nguyên
-      Enum, // enum
+      // Resources
+      Resource,
+      Enum,
       Function, // Các hàm chung
     };
   },

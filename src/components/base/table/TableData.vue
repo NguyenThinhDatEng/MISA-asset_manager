@@ -4,6 +4,8 @@
       { 'min-width': config.minWidth },
       { 'max-width': config.maxWidth },
       { 'text-align': config.align },
+      { width: config.width },
+      { padding: config.padding },
     ]"
   >
     <!-- check box -->
@@ -18,11 +20,11 @@
       {{ content }}
     </p>
     <!-- number box -->
-    <p v-else-if="config.type === tdType.number">
+    <p v-else-if="isNumberData()">
       {{ Function.formatMoney(content) }}
     </p>
     <!-- other -->
-    <div v-else class="feature">
+    <div v-else class="feature center">
       <!-- edit button -->
       <div
         class="icon icon--edit"
@@ -73,6 +75,10 @@ export default {
     onClickFeatureButton: function (mode) {
       this.$parent.carryOutFeature(mode);
     },
+
+    isNumberData: function () {
+      return this.config.type === this.tdType.number;
+    },
   },
 
   data() {
@@ -88,6 +94,14 @@ export default {
 </script>
 
 <style scoped>
+/* td */
+td {
+  position: relative;
+}
+
+td p {
+  padding-right: 4px;
+}
 /* Check box */
 .checkbox__wrapper {
   position: relative;

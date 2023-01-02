@@ -65,7 +65,6 @@ tfoot tr {
 
 tbody tr * {
     cursor: context-menu;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -86,6 +85,8 @@ tfoot {
 }
 
 .feature {
+    width: 70px;
+    min-width: 60px;
     display: none;
     justify-content: space-evenly;
 }
