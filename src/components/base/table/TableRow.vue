@@ -23,7 +23,7 @@ import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import TableResource from "@/js/resource/tableResource";
 // Components
-import TableData from "@/components/base/table/TableData.vue";
+import TableData from "./TableData.vue";
 
 export default {
   name: "TableRow",

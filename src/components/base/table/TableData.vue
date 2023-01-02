@@ -23,15 +23,17 @@
     </p>
     <!-- other -->
     <div v-else class="feature">
+      <!-- edit button -->
       <div
         class="icon icon--edit"
         :title="title.edit"
-        @click="carryOutFeature(Enum.Mode.Update)"
+        @click="onClickFeatureButton(Enum.Mode.Update)"
       ></div>
+      <!-- duplicate button -->
       <div
         class="icon icon--duplicate"
         :title="title.duplicate"
-        @click="carryOutFeature(Enum.Mode.Duplicate)"
+        @click="onClickFeatureButton(Enum.Mode.Duplicate)"
       ></div>
     </div>
   </td>
@@ -61,9 +63,22 @@ export default {
       required: true,
     },
   },
+
+  methods: {
+    /**
+     * @description xử lý sự kiện ấn vào nút tính năng (using $parent)
+     * @param {Number} mode chế độ hiển thị popup
+     * @author NVThinh 2/1/2022
+     */
+    onClickFeatureButton: function (mode) {
+      this.$parent.carryOutFeature(mode);
+    },
+  },
+
   data() {
     return {
       // Resources
+      Enum,
       Function, // Hàm dùng chung
       tdType: Enum.TableData.type, // Các kiểu dữ liệu trong td
       title: Resource.Title, // tooltip

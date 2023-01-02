@@ -11,6 +11,7 @@ input:focus {
     border: 1px solid var(--input--hover);
 }
 
+/* Checkbox ---------------------------*/
 input[type="checkbox"] {
     width: 14px;
     height: 14px;
@@ -25,16 +26,11 @@ input[type="checkbox"]:checked {
 }
 
 input[type="checkbox"]::before {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     content: '';
     width: 14px;
     height: 14px;
     background: url('../../assets/imgs/qlts-icon.png');
     background-position: -69.5px -509px;
-    display: none;
 }
 
 input:checked[type="checkbox"]::before {
