@@ -104,12 +104,6 @@ input::placeholder {
     width: 219px;
 }
 
-.checkbox {
-    position: absolute;
-    top: 11px;
-    left: 16px;
-}
-
 .limit input {
     position: absolute;
     border: none;

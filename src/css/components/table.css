@@ -85,10 +85,6 @@ tfoot {
     align-items: center;
 }
 
-.checkbox__wrapper {
-    position: relative;
-}
-
 .feature {
     display: none;
     justify-content: space-evenly;
@@ -159,10 +155,6 @@ tfoot .value {
 
 tbody .col--stt {
     padding-left: 4px;
-}
-
-.col--asset-code {
-    text-align: left;
 }
 
 .col--asset-name {

@@ -5,75 +5,50 @@
     @click="handleOnClickRow"
     @dblclick="carryOutFeature(Enum.Mode.Update)"
   >
-    <!-- Cột checkbox -->
-    <td class="checkbox__wrapper col--checkbox">
-      <input type="checkbox" class="checkbox" :checked="isActive" />
-    </td>
-    <!-- Cột số thứ tự -->
-    <td class="col--stt">{{ numerical_order }}</td>
-    <!-- Cột mã tài sản -->
-    <td class="col--asset-code">{{ tableRowObj.fixed_asset_code }}</td>
-    <!-- Cột tên tài sản -->
-    <td class="col--asset-name" :title="tableRowObj.fixed_asset_name">
-      {{ tableRowObj.fixed_asset_name }}
-    </td>
-    <!-- Cột loại tài sản -->
-    <td
-      class="col--asset-category"
-      :title="tableRowObj.fixed_asset_category_name"
-    >
-      {{ tableRowObj.fixed_asset_category_name }}
-    </td>
-    <!-- Cột bộ phận sử dụng -->
-    <td class="col--department" :title="tableRowObj.department_name">
-      {{ tableRowObj.department_name }}
-    </td>
-    <!-- Cột số lượng -->
-    <td class="col--quantity">
-      {{ Function.formatMoney(tableRowObj.quantity) }}
-    </td>
-    <!-- Cột nguyên giá -->
-    <td class="col--cost">{{ Function.formatMoney(tableRowObj.cost) }}</td>
-    <!-- Cột hao mòn lũy kế -->
-    <td class="col--depreciation">
-      {{ Function.formatMoney(accumulated_value) }}
-    </td>
-    <!-- Cột giá trị còn lại -->
-    <td class="col--residual_value">
-      {{ Function.formatMoney(residual_value) }}
-    </td>
-    <!-- Cột chức năng -->
-    <td class="col--feature">
-      <div class="feature">
-        <div
-          class="icon icon--edit"
-          :title="Title.edit"
-          @click="carryOutFeature(Enum.Mode.Update)"
-        ></div>
-        <div
-          class="icon icon--duplicate"
-          :title="Title.duplicate"
-          @click="carryOutFeature(Enum.Mode.Duplicate)"
-        ></div>
-      </div>
-    </td>
+    <TableData
+      v-for="td in tds"
+      :key="td.col"
+      :config="td"
+      :content="getTdContent(td.col)"
+      :isActive="isActive"
+      ref="td"
+    />
   </tr>
 </template>
 
 <script>
+// Resources
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import TableResource from "@/js/resource/tableResource";
+// Components
+import TableData from "@/components/base/table/TableData.vue";
 
 export default {
   name: "TableRow",
   props: {
+    tds: {
+      type: Array,
+      required: true,
+    },
     tableRowObj: Object,
     numerical_order: Number,
     isCheckAll: Boolean,
     isRefreshTable: Boolean,
   },
+
+  components: {
+    TableData,
+  },
+
+  emits: [
+    "update-row",
+    "update-checked-header",
+    "update-popup-object",
+    "reload-content",
+    "show-popup",
+  ],
 
   created() {
     try {
@@ -86,13 +61,6 @@ export default {
     }
   },
 
-  emits: [
-    "update-row",
-    "update-checked-header",
-    "update-popup-object",
-    "reload-content",
-    "show-popup",
-  ],
   watch: {
     // Cập nhật trạng thái active của dòng
     isCheckAll: function () {
@@ -111,7 +79,24 @@ export default {
       this.isActive = false;
     },
   },
+
   methods: {
+    /**
+     * @description Lấy nội dung hiển thị của td
+     * @param {String} col Tên cột
+     * @author NVThinh 2/1/2023
+     */
+    getTdContent: function (col) {
+      try {
+        if (col === TableResource.TableRow.FixedAsset.numerical_order.ENG) {
+          return this.numerical_order;
+        }
+        return this.tableRowObj[col];
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     /**
      * Sự kiện nhấn vào tính năng chỉnh sửa hoặc nhân bản
      * @author Nguyen Van Thinh 05/11/2022
@@ -192,12 +177,12 @@ export default {
       isActive: false, // trạng thái của table row
       accumulated_value: 0, // tỉ lệ khấu hao
       residual_value: 0, // giá trị còn lại
-      Resource, // tài nguyên
       fields: Resource.PopupField, // các trường input trong popup
-      Title: Resource.Title, // tooltip
-      Function, // Hàm dùng chung
-      Enum, // enum
-      props: TableResource.TableRow.FixedAsset, // Các thuộc tính của dòng
+      // Resources
+      Resource,
+      Function,
+      Enum,
+      props: TableResource.TableRow.FixedAsset,
     };
   },
 };

@@ -1,10 +1,6 @@
 <template>
   <div class="table" id="table">
     <table>
-      <!-- Table columns -->
-      <colgroup>
-        <col v-for="obj in styleObject" :key="obj.col" :style="obj" />
-      </colgroup>
       <!-- Table Header  -->
       <thead>
         <tr>
@@ -15,15 +11,19 @@
               class="checkbox"
               :checked="checkedHeader"
               v-model="isCheckAll"
-            />  
+            />
           </th>
           <th
             v-for="(value, key) of ths"
             :key="key"
-            :title="setTitle(value)"
-            :class="'col--' + key"
+            :title="getTooltip(value.ENG)"
+            :style="[
+              { 'min-width': value.style.minWidth },
+              { 'max-width': value.style.maxWidth },
+              { 'text-align': value.style.align },
+            ]"
           >
-            {{ value }}
+            {{ value.VN }}
           </th>
         </tr>
       </thead>
@@ -36,14 +36,15 @@
           :numerical_order="index + startIndex + 1"
           :is-check-all="isCheckAll"
           :is-refresh-table="isRefreshTable"
+          :tds="tds"
           @update-row="updateRow"
           @update-checked-header="updateCheckedHeader"
           @show-popup="showPopup"
           ref="Row"
         ></Row>
         <tr class="ignoreRow">
-          <td v-show="fixedAssets.length == 0" colspan="100">
-            Không có dữ liệu trên grid
+          <td v-show="fixedAssets.length === 0" colspan="100">
+            {{ TableResource.Status.noContent }}
           </td>
         </tr>
       </tbody>
@@ -59,10 +60,14 @@
 </template>
 
 <script>
-import Function from "@/js/common/function";
+// Components
 import Row from "./TableRow.vue";
 import TableFoot from "./TableFoot.vue";
+// Resources
+import Function from "@/js/common/function";
 import Resource from "@/js/resource/resource";
+import TableResource from "@/js/resource/tableResource";
+import Enum from "@/js/enum/enum";
 
 export default {
   name: "TheTable",
@@ -76,6 +81,7 @@ export default {
   },
   components: { Row, TableFoot },
   emits: ["update-row", "reload-content", "show-popup"],
+
   watch: {
     // Trạng thái chọn tất cả thay đổi
     isCheckAll: function () {
@@ -110,6 +116,17 @@ export default {
       // Làm mới mảng được chọn
       this.selectedRows = [];
     },
+  },
+
+  mounted() {
+    // Cập nhật table head
+    this.ths = Object.assign(this.cols);
+    let index = 0;
+    for (const key in this.ths) {
+      this.ths[key].style = this.tds[index];
+      index++;
+    }
+    delete this.ths.checkbox;
   },
 
   methods: {
@@ -166,12 +183,13 @@ export default {
     },
 
     // Thiếp lập title cho từ viết tắt (table header)
-    setTitle: function (value) {
+    getTooltip: function (value) {
       try {
-        if (value == "STT") return Resource.Abbreviations.STT;
-        else if (value == "HM/KH lũy kế")
+        if (value === this.cols.numerical_order.ENG)
+          return Resource.Abbreviations.STT;
+        if (value === this.cols.accumulated_value.ENG)
           return Resource.Abbreviations.depreciation;
-        else return "";
+        return "";
       } catch (error) {
         console.log("Table Header", error);
       }
@@ -244,6 +262,8 @@ export default {
   },
   data() {
     return {
+      // Variables
+      ths: [], // object chứa tên cột
       startIndex: 0, // chỉ số bắt đầu của số thứ tự
       numberOfRecords: 0, // Tổng số bản ghi
       isCheckAll: false, // Trạng thái check tất cả
@@ -257,69 +277,81 @@ export default {
         totalDepreciationValue: 0, // Tổng giá trị hao mòn
         totalResidualValue: 0, // Tổng giá trị còn lại
       },
-      // Style cho từng cột
-      styleObject: [
+      // Resource
+      Resource,
+      TableResource,
+      cols: TableResource.TableRow.FixedAsset, // Các cột có trong bảng
+      tds: [
         {
-          col: "checkbox",
-          "min-width": "40px",
-          "text-align": "center",
+          col: TableResource.TableRow.FixedAsset.checkbox.ENG,
+          type: Enum.TableData.type.checkbox,
+          minWidth: "40px",
+          maxWidth: "50px",
+          align: "center",
         },
         {
-          col: "stt",
-          "min-width": "40px",
-          "text-align": "left",
+          col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "40px",
+          align: "left",
         },
         {
-          col: "asset-code",
-          "min-width": "70px",
-          "text-align": "left",
+          col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "70px",
+          align: "left",
         },
         {
-          col: "asset-name",
-          "min-width": "90px",
-          "max-width": "160px",
-          "text-align": "left",
+          col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "90px",
+          maxWidth: "160px",
+          align: "left",
         },
         {
-          col: "asset-category",
-          "min-width": "70px",
-          "max-width": "120px",
-          "text-align": "left",
+          col: TableResource.TableRow.FixedAsset.fixed_asset_category_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "70px",
+          maxWidth: "120px",
+          align: "left",
         },
         {
-          col: "department",
-          "min-width": "100px",
-          "max-width": "120px",
-          "text-align": "left",
+          col: TableResource.TableRow.FixedAsset.department_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "100px",
+          maxWidth: "120px",
+          align: "left",
         },
         {
-          col: "quantity",
-          "min-width": "60px",
-          "text-align": "right",
+          col: TableResource.TableRow.FixedAsset.quantity.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "60px",
+          align: "right",
         },
         {
-          col: "cost",
-          "text-align": "right",
+          col: TableResource.TableRow.FixedAsset.cost.ENG,
+          type: Enum.TableData.type.number,
+          align: "right",
         },
         {
-          col: "depreciation",
-          "min-width": "90px",
-          "text-align": "right",
+          col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "90px",
+          align: "right",
         },
         {
-          col: "residual_value",
-          "min-width": "80px",
-          "text-align": "right",
+          col: TableResource.TableRow.FixedAsset.residual_value.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "80px",
+          align: "right",
         },
         {
-          col: "feature",
-          "min-width": "60px",
-          "max-width": "80px",
-          "text-align": "center",
+          col: TableResource.TableRow.FixedAsset.feature.ENG,
+          minWidth: "60px",
+          maxWidth: "80px",
+          align: "center",
         },
       ],
-      ths: Resource.Columns, // object chứa tên cột
-      Resource, // tài nguyên
     };
   },
 };
@@ -334,5 +366,10 @@ export default {
 
 .ignoreRow:hover {
   background-color: #fff;
+}
+
+.checkbox__wrapper {
+  position: relative;
+  width: 50px;
 }
 </style>

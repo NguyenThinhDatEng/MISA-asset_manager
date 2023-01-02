@@ -52,4 +52,12 @@ export default {
   API: {
     OK: 200,
   },
+  // td trong table
+  TableData: {
+    type: {
+      text: 0, // nhận dữ liệu chuỗi
+      number: 1, // nhận dữ liệu kiểu số
+      checkbox: 2, // nhận checkbox
+    },
+  },
 };
