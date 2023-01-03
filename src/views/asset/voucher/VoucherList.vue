@@ -19,7 +19,7 @@
       </div>
     </div>
     <!-- Table 01 -->
-    <div class="master">
+    <div class="master" v-show="!isZoomIn">
       <div class="function-bar">
         <div class="function__left">
           <!-- Search  -->
@@ -42,21 +42,32 @@
         :cols="TableResource.TableRow.Voucher"
         :tds="tds_of_master"
         :data="vouchers"
-        :is-show-footer="false"
+        :is-show-feature="true"
+        :page="TableResource.TableFoot.Page.voucher"
       />
     </div>
     <!-- Table 02 -->
-    <div class="detail">
+    <div
+      class="detail"
+      :style="[{ 'max-height': isZoomIn ? 'none' : '218px' }]"
+    >
       <div class="function-bar">
         <div class="function__left">Thông tin chi tiết</div>
         <div class="function__right">
           <div class="icon-item_wrapper">
-            <div class="icon icon--14px icon--zoom-out center"></div>
+            <div
+              class="icon icon--14px icon--zoom-in center"
+              @click="toggle"
+            ></div>
           </div>
         </div>
       </div>
       <!-- Table  -->
       <TableVue
+        :style="[
+          { height: isZoomIn ? 'none' : '158px' },
+          { 'max-height': isZoomIn ? 'none' : '218px' },
+        ]"
         :cols="TableResource.TableRow.FixedAssetDetail"
         :tds="tds_of_detail"
         :data="assetDetail"
@@ -84,9 +95,19 @@ export default {
   created() {},
   props: {},
   emits: [],
-  methods: {},
+  methods: {
+    /**
+     * @description Phóng to/Thu nhỏ bảng chi tiết
+     * @author NVT 3/1/2022
+     */
+    toggle: function () {
+      this.isZoomIn = !this.isZoomIn;
+    },
+  },
   data() {
     return {
+      // Variables
+      isZoomIn: false, // Phóng to bảng chi tiết
       // Resource
       Resource,
       Dictionary,
@@ -191,11 +212,62 @@ export default {
           voucher_date: "03/01/2023",
           increment_date: "03/01/2023",
           total_of_cost: 234838248,
-          description: "okla",
+          description: "Chứng từ đã được chứng nhận ",
+        },
+        {
+          voucher_code: "GT00001",
+          voucher_date: "03/01/2023",
+          increment_date: "03/01/2023",
+          total_of_cost: 234838248,
+          description: "Chứng từ đã được chứng nhận ",
+        },
+        {
+          voucher_code: "GT00001",
+          voucher_date: "03/01/2023",
+          increment_date: "03/01/2023",
+          total_of_cost: 234838248,
+          description: "Chứng từ đã được chứng nhận ",
+        },
+        {
+          voucher_code: "GT00001",
+          voucher_date: "03/01/2023",
+          increment_date: "03/01/2023",
+          total_of_cost: 234838248,
+          description: "Chứng từ đã được chứng nhận ",
+        },
+        {
+          voucher_code: "GT00001",
+          voucher_date: "03/01/2023",
+          increment_date: "03/01/2023",
+          total_of_cost: 234838248,
+          description: "Chứng từ đã được chứng nhận ",
+        },
+        {
+          voucher_code: "GT00001",
+          voucher_date: "03/01/2023",
+          increment_date: "03/01/2023",
+          total_of_cost: 234838248,
+          description: "Chứng từ đã được chứng nhận ",
         },
       ],
       // detail
       assetDetail: [
+        {
+          fixed_asset_code: "TTTTTT124TT00000000001",
+          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
+          department_name: "Phòng kỹ thuật",
+          cost: 15516810,
+          accumulated_value: 100000,
+          residual_value: 156515615,
+        },
+        {
+          fixed_asset_code: "TTTTTT124TT00000000001",
+          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
+          department_name: "Phòng kỹ thuật",
+          cost: 15516810,
+          accumulated_value: 100000,
+          residual_value: 156515615,
+        },
         {
           fixed_asset_code: "TTTTTT124TT00000000001",
           fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
@@ -256,6 +328,10 @@ export default {
   margin-top: 14px;
 }
 
+.master {
+  max-height: 363px;
+}
+
 .detail,
 .master {
   position: relative;
@@ -273,6 +349,7 @@ export default {
 
 .icon-item_wrapper {
   width: 32px;
+  cursor: pointer;
 }
 
 .master + .detail {
@@ -280,6 +357,7 @@ export default {
 }
 
 .detail {
+  max-height: 218px;
   flex: 3;
 }
 
@@ -293,9 +371,12 @@ export default {
 
 /* Table */
 .table {
-  flex: 1;
   height: unset;
   border: none;
   box-shadow: none;
+}
+
+.master .table {
+  flex: 1;
 }
 </style>

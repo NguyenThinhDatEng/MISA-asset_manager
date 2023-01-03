@@ -6,8 +6,10 @@ const httpClient = axios.create({
   timeout: 3000, // Nếu kết nối có vấn đề -> tránh treo kết nối mãi mãi
   headers: {
     "Content-Type": "application/json",
+    "Access-Control-Allow-Credentials": true,
     // anything you want to add to the headers
   },
+  credentials: "same-origin/include",
 });
 
 export default httpClient;

@@ -21,7 +21,6 @@
               { 'min-width': value.style?.minWidth },
               { 'max-width': value.style?.maxWidth },
               { 'text-align': value.style?.align },
-              { 'padding-right': '4px' },
             ]"
           >
             {{ value.VN }}
@@ -38,6 +37,7 @@
           :is-check-all="isCheckAll"
           :is-refresh-table="isRefreshTable"
           :tds="tds"
+          :isShowFeature="isShowFeature"
           @update-row="updateRow"
           @update-checked-header="updateCheckedHeader"
           @show-popup="showPopup"
@@ -55,6 +55,7 @@
         :footerData="footerData"
         :number-of-records="numberOfRecords"
         :totalOfQuantities="totalOfQuantities"
+        :page="page"
         ref="tableFoot"
       />
     </table>
@@ -99,6 +100,16 @@ export default {
     isShowCheckbox: {
       type: Boolean,
       default: true,
+    },
+    // Ẩn/hiện các tính năng
+    isShowFeature: {
+      type: Boolean,
+      default: false,
+    },
+    // loại trang xác định table foot
+    page: {
+      type: String,
+      default: TableResource.TableFoot.Page.fixedAsset,
     },
   },
   components: { Row, TableFoot },

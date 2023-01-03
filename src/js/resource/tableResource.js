@@ -39,6 +39,13 @@ export default {
       description: { ENG: "description", VN: "Nội dung" },
     },
   },
+  // Table Foot
+  TableFoot: {
+    Page: {
+      fixedAsset: "fixedAsset",
+      voucher: "voucher",
+    },
+  },
   // Table Head
   TableHead: {
     FixedAsset: {
@@ -52,9 +59,5 @@ export default {
       "Hao mòn/Khấu hao lũy kế": "accumulated_value",
       "Giá trị còn lại": "residual_value",
     },
-  },
-  // Table Data
-  TableData: {
-    type: {},
   },
 };

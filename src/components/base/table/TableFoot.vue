@@ -1,6 +1,123 @@
 <template>
   <tfoot class="table__footer">
-    <tr>
+    <!-- Voucher -->
+    <!-- Footer 01 -->
+    <tr v-if="page === pages.voucher" id="voucher">
+      <td colspan="5" />
+      <td id="totalOfCost">{{ Function.formatMoney(10000000) }}</td>
+      <td></td>
+    </tr>
+    <!-- Footer 02 -->
+    <tr v-if="page === pages.voucher">
+      <td colspan="100">
+        <div class="footer__left">
+          <div class="total-of-records__wrapper">
+            <p class="total-of-records" v-html="records()"></p>
+          </div>
+          <!-- Combobox: Limit of records  -->
+          <ComboboxPagingVue :title="Resource.Title.limit"></ComboboxPagingVue>
+          <!-- Paging  -->
+          <div class="paging">
+            <div class="paging__icon--wrapper" @click="backPreviousPage()">
+              <div
+                :class="[
+                  'icon center icon-footer icon--left-arrow',
+                  { 'icon--disable': selectedNumber == 1 },
+                ]"
+                :title="Resource.PageNumber.prePage"
+              ></div>
+            </div>
+            <div class="page-numbers">
+              <!-- Trang thứ nhất  -->
+              <button
+                :class="['number', { 'number--selected': numberState[0] }]"
+                @click="handleOnClickPageNumber(1)"
+              >
+                1
+              </button>
+              <!-- ... -->
+              <span class="number" v-show="isShowFirstThreeDots()">...</span>
+
+              <!-- Trang trước -->
+              <button
+                :title="Resource.PageNumber.prePage"
+                :class="[
+                  'number',
+                  {
+                    'number--selected':
+                      numberState[prePageNumber() - 1] && selectedNumber <= 2,
+                  },
+                ]"
+                v-show="isShowPrePage()"
+                @click="handleOnClickPageNumber(prePageNumber())"
+              >
+                {{ prePageNumber() }}
+              </button>
+
+              <!-- Trang giữa -->
+              <button
+                :title="Resource.PageNumber.currentPage"
+                :class="[
+                  'number',
+                  {
+                    'number--selected': numberState[pageNumber() - 1],
+                  },
+                ]"
+                v-show="isShowCurrentPage()"
+                @click="handleOnClickPageNumber(pageNumber())"
+              >
+                {{ pageNumber() }}
+              </button>
+
+              <!-- Trang sau -->
+              <button
+                :title="Resource.PageNumber.nextPage"
+                :class="[
+                  'number',
+                  {
+                    'number--selected':
+                      numberState[nextPageNumber() - 1] &&
+                      selectedNumber >= numberOfPages - 1,
+                  },
+                ]"
+                v-show="isShowNextPage()"
+                @click="handleOnClickPageNumber(nextPageNumber())"
+              >
+                {{ nextPageNumber() }}
+              </button>
+
+              <!-- ...  -->
+              <span class="number" v-show="isShowSecondThreeDots()">...</span>
+
+              <!-- Trang cuối cùng  -->
+              <button
+                :class="[
+                  'number',
+                  {
+                    'number--selected': numberState[numberOfPages - 1],
+                  },
+                ]"
+                v-show="numberOfPages > 1"
+                @click="handleOnClickPageNumber(numberOfPages)"
+              >
+                {{ numberOfPages }}
+              </button>
+            </div>
+            <div class="paging__icon--wrapper" @click="goNextPage()">
+              <div
+                :class="[
+                  'icon center icon-footer icon--right-arrow',
+                  { 'icon--disable': selectedNumber == numberOfPages },
+                ]"
+                :title="Resource.PageNumber.nextPage"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <!-- Fixed Asset -->
+    <tr v-if="page === pages.fixedAsset">
       <td colspan="6">
         <div class="footer__left">
           <div class="total-of-records__wrapper">
@@ -107,7 +224,9 @@
           </div>
         </div>
       </td>
-      <td class="value">{{ Function.formatMoney(totalOfQuantities) }}</td>
+      <td class="value">
+        {{ Function.formatMoney(totalOfQuantities) }}
+      </td>
       <td class="value" v-for="(val, key) of footerData" :key="key">
         {{ Function.formatMoney(val) }}
       </td>
@@ -117,9 +236,12 @@
 </template>
 
 <script>
+// Resources
 import Resource from "@/js/resource/resource";
-import ComboboxPagingVue from "../comboboxes/ComboboxPaging.vue";
 import Function from "@/js/common/function";
+import TableResource from "@/js/resource/tableResource";
+// Components
+import ComboboxPagingVue from "../comboboxes/ComboboxPaging.vue";
 
 export default {
   name: "TableFoot",
@@ -128,6 +250,7 @@ export default {
     footerData: Object, // Đối tượng chứa tổng của các cột tiền
     numberOfRecords: Number, // tổng số lượng bản ghi
     totalOfQuantities: Number, // tổng của cột số lượng
+    page: String, // loại trang giúp xác định kiểu footer
   },
   watch: {
     // Cập nhật số trang khi tổng số bản ghi thay đổi
@@ -382,7 +505,9 @@ export default {
      */
     isShowFirstThreeDots: function () {
       try {
-        if (this.numberOfPages > 3 && this.selectedNumber > 2) return true;
+        if (this.numberOfPages > 3 && this.selectedNumber > 3) {
+          return true;
+        }
         return false;
       } catch (error) {
         console.log(error);
@@ -391,12 +516,15 @@ export default {
   },
   data() {
     return {
+      // Variables
       numberOfPages: 1, // số lượng trang
       selectedNumber: 1, // trang được chọn
       numberState: [], // Mảng quản lý số trang đang được chọn
       pageSize: 20, // Số lượng bản ghi / trang
+      // Resources
       Resource, // Tài nguyên
       Function, // Hàm dùng chung
+      pages: TableResource.TableFoot.Page,
     };
   },
 };
@@ -405,9 +533,23 @@ export default {
 <style scoped>
 @import url(@/css/font.css);
 
+/* Footer */
 tfoot {
   position: sticky;
 }
+
+#voucher {
+  background-color: #f5f5f5;
+}
+
+/* td */
+#totalOfCost {
+  text-align: right;
+  padding-right: 8px;
+  font-family: MISA Bold;
+}
+
+/* Icon */
 
 .icon-footer {
   width: 8px;

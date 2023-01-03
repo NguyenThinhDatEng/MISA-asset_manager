@@ -100,6 +100,8 @@ export default {
     this.val = this.value;
   },
 
+  beforeUnmount() {},
+
   watch: {
     val: function () {
       try {

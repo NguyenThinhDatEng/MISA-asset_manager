@@ -438,6 +438,7 @@ export default {
         limit: 20,
         offset: 0,
       },
+      // Cấu hình bộ lọc
       filters: [
         {
           id: "dropdown--asset-type",
@@ -530,8 +531,7 @@ export default {
         {
           col: TableResource.TableRow.FixedAsset.feature.ENG,
           minWidth: "60px",
-          maxWidth: "80px",
-          width: "70px",
+          width: "80px",
         },
       ],
     };

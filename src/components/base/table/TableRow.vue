@@ -13,6 +13,20 @@
       :isActive="isActive"
       ref="td"
     />
+    <div class="feature" v-show="isShowFeature">
+      <!-- edit button -->
+      <div
+        class="icon icon--edit"
+        :title="Resource.Title.edit"
+        @click="carryOutFeature(Enum.Mode.Update)"
+      ></div>
+      <!-- duplicate button -->
+      <div
+        class="icon icon--18px icon--delete"
+        :title="Resource.Title.duplicate"
+        @click="carryOutFeature(Enum.Mode.Duplicate)"
+      ></div>
+    </div>
   </tr>
 </template>
 
@@ -32,8 +46,9 @@ export default {
       type: Array,
       required: true,
     },
+    numerical_order: Number, // Số thứ tự
+    isShowFeature: Boolean, // Ẩn/hiện các tính năng
     tableRowObj: Object,
-    numerical_order: Number,
     isCheckAll: Boolean,
     isRefreshTable: Boolean,
   },
@@ -189,4 +204,13 @@ export default {
 </script>
 
 <style scoped>
+tr {
+  position: relative;
+}
+tr .feature {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(0, -50%);
+}
 </style>

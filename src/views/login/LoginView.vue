@@ -95,7 +95,7 @@ export default {
         // Gọi API
         await login(user).then((res) => {
           if (res.status === Enum.API.OK) {
-            console.log(res.request);
+            console.log(res);
             this.$router.push(Resource.ItemContents.asset.router);
           }
         });
