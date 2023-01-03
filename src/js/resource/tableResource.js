@@ -26,7 +26,7 @@ export default {
       fixed_asset_name: { ENG: "fixed_asset_name", VN: "Tên tài sản" },
       department_name: { ENG: "department_name", VN: "Bộ phận sử dụng" },
       cost: { ENG: "cost", VN: "Nguyên giá" },
-      accumulated_value: { ENG: "accumulated_value", VN: "HM/KH lũy kế" },
+      accumulated_value: { ENG: "accumulated_value", VN: "Hao mòn năm" },
       residual_value: { ENG: "residual_value", VN: "Giá trị còn lại" },
     },
     Voucher: {

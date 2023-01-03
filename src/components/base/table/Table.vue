@@ -56,7 +56,7 @@
         :number-of-records="numberOfRecords"
         :totalOfQuantities="totalOfQuantities"
         ref="tableFoot"
-      ></TableFoot>
+      />
     </table>
   </div>
 </template>
@@ -309,6 +309,8 @@ export default {
 
 <style scoped>
 @import url(@/css/components/table.css);
+
+/* Row -------------------- */
 .ignoreRow {
   height: 100%;
   text-align: center;
@@ -319,8 +321,14 @@ export default {
   background-color: #fff;
 }
 
+/* Checkbox ---------------- */
 .checkbox__wrapper {
   position: relative;
   width: 50px;
+}
+
+/* th ----------------------- */
+th {
+  padding: 0 8px;
 }
 </style>

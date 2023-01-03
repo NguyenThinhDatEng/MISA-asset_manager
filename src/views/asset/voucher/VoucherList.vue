@@ -38,7 +38,12 @@
         </div>
       </div>
       <!-- Table  -->
-      <TableVue :cols="TableResource.TableRow.Voucher" :tds="tds_of_master" />
+      <TableVue
+        :cols="TableResource.TableRow.Voucher"
+        :tds="tds_of_master"
+        :data="vouchers"
+        :is-show-footer="false"
+      />
     </div>
     <!-- Table 02 -->
     <div class="detail">
@@ -54,6 +59,7 @@
       <TableVue
         :cols="TableResource.TableRow.FixedAssetDetail"
         :tds="tds_of_detail"
+        :data="assetDetail"
         :isShowFooter="false"
         :isShowCheckbox="false"
       />
@@ -88,43 +94,39 @@ export default {
       // Style
       tds_of_master: [
         {
-          col: TableResource.TableRow.Voucher.checkbox.ENG,
+          col: TableResource.TableRow.Voucher.checkbox?.ENG,
           type: Enum.TableData.type.checkbox,
-          minWidth: "40px",
-          maxWidth: "50px",
+          width: "50px",
           align: "center",
         },
         {
           col: TableResource.TableRow.Voucher.numerical_order.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "40px",
+          width: "50px",
           align: "center",
         },
         {
           col: TableResource.TableRow.Voucher.voucher_code.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "70px",
-          maxWidth: "110px",
+          width: "150px",
           align: "left",
         },
         {
           col: TableResource.TableRow.Voucher.voucher_date.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "90px",
-          maxWidth: "180px",
-          align: "left",
+          width: "150px",
+          align: "center",
         },
         {
           col: TableResource.TableRow.Voucher.increment_date.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "70px",
-          maxWidth: "120px",
-          align: "left",
+          width: "150px",
+          align: "center",
         },
         {
           col: TableResource.TableRow.Voucher.total_of_cost.ENG,
           type: Enum.TableData.type.number,
-          minWidth: "60px",
+          width: "200px",
           align: "right",
         },
         {
@@ -136,17 +138,10 @@ export default {
       // Style cho detail table
       tds_of_detail: [
         {
-          col: TableResource.TableRow.FixedAsset.checkbox.ENG,
-          type: Enum.TableData.type.checkbox,
-          minWidth: "40px",
-          maxWidth: "50px",
-          align: "center",
-        },
-        {
           col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
           type: Enum.TableData.type.text,
           minWidth: "40px",
-          align: "left",
+          align: "center",
         },
         {
           col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
@@ -170,12 +165,6 @@ export default {
           align: "left",
         },
         {
-          col: TableResource.TableRow.FixedAsset.quantity.ENG,
-          type: Enum.TableData.type.number,
-          minWidth: "60px",
-          align: "right",
-        },
-        {
           col: TableResource.TableRow.FixedAsset.cost.ENG,
           type: Enum.TableData.type.number,
           minWidth: "50px",
@@ -193,6 +182,27 @@ export default {
           type: Enum.TableData.type.number,
           minWidth: "80px",
           align: "right",
+        },
+      ],
+      // voucher
+      vouchers: [
+        {
+          voucher_code: "GT00001",
+          voucher_date: "03/01/2023",
+          increment_date: "03/01/2023",
+          total_of_cost: 234838248,
+          description: "okla",
+        },
+      ],
+      // detail
+      assetDetail: [
+        {
+          fixed_asset_code: "TTTTTT124TT00000000001",
+          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
+          department_name: "Phòng kỹ thuật",
+          cost: 15516810,
+          accumulated_value: 100000,
+          residual_value: 156515615,
         },
       ],
     };

@@ -100,7 +100,7 @@ td {
 }
 
 td p {
-  padding-right: 4px;
+  padding: 0 8px;
 }
 /* Check box */
 .checkbox__wrapper {

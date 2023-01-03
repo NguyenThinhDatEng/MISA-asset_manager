@@ -462,7 +462,7 @@ export default {
       // Style của các cột
       tds: [
         {
-          col: TableResource.TableRow.FixedAsset.checkbox.ENG,
+          col: TableResource.TableRow.FixedAsset.checkbox?.ENG,
           type: Enum.TableData.type.checkbox,
           minWidth: "40px",
           maxWidth: "50px",
