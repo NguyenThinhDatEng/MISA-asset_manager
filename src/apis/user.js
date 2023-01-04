@@ -11,9 +11,7 @@ const END_POINT = "/Users/";
 const login = (user) => {
   try {
     console.log("login...");
-    const res = httpClient.post(END_POINT + "login", user, {
-      withCredentials: true,
-    });
+    const res = httpClient.post(END_POINT + "login", user);
     return res;
   } catch (error) {
     console.log(error);

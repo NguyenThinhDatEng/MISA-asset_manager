@@ -85,6 +85,10 @@ export default {
       this.onEye = !this.onEye;
     },
 
+    /**
+     * @description API đăng nhập
+     * @author NVThinh 4/1/2022
+     */
     signIn: async function () {
       try {
         // Khởi tạo đối tượng user
@@ -95,7 +99,7 @@ export default {
         // Gọi API
         await login(user).then((res) => {
           if (res.status === Enum.API.OK) {
-            console.log(res);
+            // Chuyển trang
             this.$router.push(Resource.ItemContents.asset.router);
           }
         });

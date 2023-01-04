@@ -506,7 +506,7 @@ export default {
         {
           col: TableResource.TableRow.FixedAsset.quantity.ENG,
           type: Enum.TableData.type.number,
-          minWidth: "60px",
+          width: "70px",
           align: "right",
         },
         {

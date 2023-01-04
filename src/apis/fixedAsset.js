@@ -95,7 +95,9 @@ const getNewCode = () => {
 const createFixedAsset = (fixedAsset) => {
   try {
     console.log("Create a new fixed asset");
-    const res = httpClient.post(END_POINT, fixedAsset);
+    const res = httpClient.post(END_POINT, fixedAsset, {
+      withCredentials: true,
+    });
     return res;
   } catch (error) {
     console.log(error);

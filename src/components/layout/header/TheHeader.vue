@@ -4,8 +4,17 @@
     <p class="header--left">{{ Resource.PageTitle.assetList }}</p>
     <!-- Right header -->
     <div class="header--right">
+      <!-- User info -->
+      <div
+        class="user-options"
+        v-show="isShowOptions"
+        @blur="isShowOptions = false"
+      >
+        <div class="option">Thông tin tài khoản</div>
+        <div class="option">Đăng xuất</div>
+      </div>
       <!-- Title -->
-      <div class="icon icon--down" :title="Title.more"></div>
+      <div class="icon icon--down" :title="Title.more" @click="toggle"></div>
       <!-- Icons -->
       <Icon
         v-for="(value, key) in Resource.HeaderTitle"
@@ -48,6 +57,9 @@ export default {
     Icon,
   },
   methods: {
+    toggle: function () {
+      this.isShowOptions = !this.isShowOptions;
+    },
     // Thiết lập tên icon
     setIconName(key) {
       try {
@@ -59,6 +71,9 @@ export default {
   },
   data() {
     return {
+      // Variables
+      isShowOptions: false,
+      // Resources
       Title: Resource.Title, // Tiêu đề
       year: Function.getCurrentYear(), // năm hiện tại
       Resource, // tài nguyên
@@ -70,4 +85,42 @@ export default {
 @import url(@/css/base.css);
 @import url(@/css/layout/header.css);
 @import url(@/css/components/input.css);
+
+/* Header */
+.header--right {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+/* others */
+.icon {
+  cursor: pointer;
+}
+
+.user-options {
+  position: absolute;
+  top: 110%;
+  line-height: 25px;
+  text-align: center;
+  background: #fff;
+  z-index: 1;
+  border: 1px solid #afafaf;
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+}
+
+.option {
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: #d1edf4;
+}
+
+.option + .option {
+  border-top: 1px solid #afafaf;
+}
 </style>

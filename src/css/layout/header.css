@@ -12,12 +12,6 @@
     font-weight: 700;
 }
 
-.header--right {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-}
-
 .header_year {
     display: flex;
     align-items: center;
