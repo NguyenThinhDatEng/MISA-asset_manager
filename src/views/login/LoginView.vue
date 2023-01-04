@@ -22,34 +22,34 @@
               <div class="grid-login-normal">
                 <!-- user name -->
                 <div class="username-login login">
-                  <input
-                    id="iptUserName"
-                    class="input-login"
-                    :placeholder="Resource.Placeholder.login_account"
-                    v-model="userName"
+                  <InputVue
+                    :has-label="false"
+                    :labelContent="data.account.placeholder"
+                    :placeholder="data.account.placeholder"
+                    :field="fields.account"
+                    :isError="data.account.isError"
+                    :type="Enum.DataType.Text"
+                    @update-input="updateInput"
                   />
                 </div>
                 <!-- password -->
-                <div class="password-login login">
-                  <input
-                    id="iptPassword"
-                    class="input-login"
-                    :type="onEye ? 'password' : 'text'"
-                    :placeholder="Resource.Placeholder.password"
-                    v-model="password"
-                  />
-                  <div
-                    :class="['eye', { 'on-eye': onEye }, { 'off-eye': !onEye }]"
-                    @click="toggle"
-                  ></div>
-                </div>
+                <InputVue
+                  :has-label="false"
+                  :is-password="true"
+                  :labelContent="data.password.placeholder"
+                  :placeholder="data.password.placeholder"
+                  :field="fields.password"
+                  :type="Enum.DataType.Text"
+                  :isError="data.password.isError"
+                  @update-input="updateInput"
+                ></InputVue>
                 <!-- login button -->
                 <div class="button-login">
                   <button
                     class="button"
                     id="login"
-                    @click="signIn"
-                    @keydown.enter="signIn"
+                    @click="handleOnClickButton"
+                    @keydown.enter="handleOnClickButton"
                   >
                     {{ Resource.ButtonName.login }}
                   </button>
@@ -65,26 +65,20 @@
 </template>
 
 <script>
+// Resources
 import Resource from "@/js/resource/resource";
 import { login } from "@/apis/user";
 import Enum from "@/js/enum/enum";
+// Components
+import InputVue from "@/components/base/inputs/Input.vue";
 
 export default {
   name: "LoginScreen",
-  watch: {
-    userName: function () {
-      console.log(this.userName);
-    },
+  components: {
+    InputVue,
   },
-  methods: {
-    /**
-     * @description Ẩn/hiện mật khẩu
-     * @author NVThinh 28/12/2022
-     */
-    toggle: function () {
-      this.onEye = !this.onEye;
-    },
 
+  methods: {
     /**
      * @description API đăng nhập
      * @author NVThinh 4/1/2022
@@ -93,8 +87,8 @@ export default {
       try {
         // Khởi tạo đối tượng user
         const user = {
-          userName: this.userName,
-          password: this.password,
+          userName: this.data.account.value,
+          password: this.data.password.value,
         };
         // Gọi API
         await login(user).then((res) => {
@@ -107,13 +101,70 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * @description Cập nhật dữ liệu nhận được từ component con (Input)
+     * @param {String} value giá trị ô input được cập nhật
+     * @param {String} field trường dữ liệu
+     * @author NVThinh 04/01/2023
+     */
+    updateInput: function (value, field) {
+      try {
+        console.log("updateInput", field, value);
+        // Cập nhật giá trị ô input
+        this.data[field].value = value;
+        // Loại bỏ hiện thị báo lỗi
+        this.data[field].isError = false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Xử lý sự kiện khi ấn vào nút đăng nhập
+     * @author NVThinh 4/1/2023
+     */
+    handleOnClickButton: function () {
+      try {
+        // Kiểm tra đầu vào bắt buộc
+        if (!this.data.account.value) {
+          this.data.account.isError = true;
+        }
+        if (!this.data.password.value) {
+          this.data.password.isError = true;
+          return;
+        }
+        // Call API đăng nhập
+        this.signIn();
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
-      Resource, // tài nguyên import từ bên ngoài
-      onEye: true, // Trạng thái ẩn/hiện mật khẩu
-      userName: "", // Tên đăng nhập
-      password: "", // Mật khẩu
+      // Variables
+      // Dữ liệu bao gồm tài khoản và mật khẩu
+      data: {
+        account: {
+          placeholder: "Tên đăng nhập",
+          value: "",
+          isError: false,
+        },
+        password: {
+          placeholder: "Mật khẩu",
+          value: "",
+          isError: false,
+        },
+      },
+      // Resources
+      Resource,
+      Enum,
+      // Các trường dữ liệu
+      fields: {
+        account: "account",
+        password: "password",
+      },
     };
   },
 };
@@ -122,6 +173,7 @@ export default {
 <style scoped>
 @import url(@/css/views/login.css);
 @import url(@/css/base.css);
+@import url(@/css/components/button.css);
 
 .button-login {
   margin-top: 20px;
@@ -211,8 +263,8 @@ export default {
 }
 
 .login {
-  font-family: inherit;
   position: relative;
+  padding-bottom: 8px;
 }
 
 .input-login {
@@ -242,34 +294,11 @@ export default {
   font-style: normal;
 }
 
-.password-login {
-  position: relative;
-}
-
-.eye {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  right: 10px;
-  top: 28px;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-
-.on-eye {
-  background-image: url(@/assets/imgs/Icon-qlts-update.svg);
-  background-position: -64px -328px;
-}
-
-.off-eye {
-  background-image: url(@/assets/imgs/Icon-qlts-update.svg);
-  background-position: -19px -329px;
-}
-
 .button {
   width: 100%;
   height: 44px;
   border-radius: 4px;
+  margin-top: 4px;
   font-size: 16px !important;
   outline: none;
   border: none;
@@ -278,12 +307,8 @@ export default {
   cursor: pointer;
 }
 
-.button:hover {
-  background-image: none;
-}
-
-button:hover {
-  color: white;
+.button:focus {
+    border: 2px solid var(--border--focus);
 }
 
 .copy-right {
@@ -295,58 +320,5 @@ button:hover {
   left: calc(50% - 100px);
   text-align: center;
   color: #fff;
-}
-
-@media (max-width: 1366px) {
-  #grid-login {
-    width: 770px;
-    display: flex;
-    box-sizing: border-box;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.16);
-    overflow: hidden;
-    position: absolute;
-    height: 560px;
-  }
-
-  .logo-text {
-    text-align: center;
-    font-size: 15px;
-  }
-
-  .logo {
-    margin: 0px auto;
-    background-repeat: no-repeat;
-    height: 60px;
-    width: 100px;
-    background-size: cover;
-    /* background-image: url("/src/img/Logo MISA_VN.svg"); */
-    background-size: contain;
-  }
-
-  .copy-right {
-    width: 200px;
-    height: 14px;
-    position: absolute;
-    bottom: 9px;
-    color: #000;
-    left: calc(50% - 100px);
-    text-align: center;
-    color: #fff;
-  }
-}
-
-@media (max-width: 1536px) {
-  .copy-right {
-    width: 200px;
-    height: 14px;
-    position: absolute;
-    bottom: 15px;
-    color: #000;
-    left: calc(50% - 100px);
-    text-align: center;
-    color: #fff;
-  }
 }
 </style>

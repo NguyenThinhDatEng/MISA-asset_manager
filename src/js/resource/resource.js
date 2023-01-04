@@ -90,6 +90,7 @@ export default {
   },
   // placeholder các input
   Placeholder: {
+    fixed_asset_code: "Nhập mã tài sản",
     search_asset: "Tìm kiếm tài sản",
     search_voucher: "Tìm kiếm theo số chứng từ, nội dung",
     category: "Loại tài sản",

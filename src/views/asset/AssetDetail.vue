@@ -20,10 +20,11 @@
             <!-- input 01 -->
             <Input
               :label-content="Label.fixed_asset_code"
-              :max-length="maxLength.fixed_asset_code"
+              :max-length="MaxLength.fixed_asset_code"
               :value="data[fields.fixed_asset_code]"
               :field="fields.fixed_asset_code"
               :is-error="errorMessages[fields.fixed_asset_code]"
+              :placeholder="Placeholder.fixed_asset_code"
               ref="secondInput"
               @update-input="updateInput"
               @keydown.tab="onShiftTab"
@@ -34,10 +35,10 @@
             <Input
               :label-content="Label.fixed_asset_name"
               :is-error="errorMessages[fields.fixed_asset_name]"
-              :max-length="maxLength.fixed_asset_name"
+              :max-length="MaxLength.fixed_asset_name"
               :value="data.fixed_asset_name"
               :field="fields.fixed_asset_name"
-              :placeholder="placeholder.fixed_asset_name"
+              :placeholder="Placeholder.fixed_asset_name"
               @update-input="updateInput"
             ></Input>
           </div>
@@ -52,10 +53,10 @@
             <!-- Combobox -->
             <ComboboxDetail
               :label-content="Label.department_code"
-              :placeholder="placeholder.department_code"
+              :placeholder="Placeholder.department_code"
               :combobox-data="departments"
               :field="'department'"
-              :max-length="maxLength.department"
+              :max-length="MaxLength.department"
               :value="data.department_code"
               :is-error="errorMessages[fields.department_code]"
               @update-combobox="updateCombobox"
@@ -87,10 +88,10 @@
             <ComboboxDetail
               :label-content="Label.fixed_asset_category_code"
               :is-error="errorMessages.fixed_asset_category_code"
-              :placeholder="placeholder.asset_category_code"
+              :placeholder="Placeholder.asset_category_code"
               :combobox-data="fixedCategories"
               :field="'fixed_asset_category'"
-              :max-length="maxLength.fixed_asset_category"
+              :max-length="MaxLength.fixed_asset_category"
               :value="data.fixed_asset_category_code"
               @update-combobox="updateCombobox"
             ></ComboboxDetail>
@@ -159,7 +160,7 @@
               :is-error="errorMessages.depreciation_rate"
               :field="fields.depreciation_rate"
               :type="Enum.DataType.Rate"
-              :max-length="maxLength.depreciation_rate"
+              :max-length="MaxLength.depreciation_rate"
               :value="
                 data.depreciation_rate ? data.depreciation_rate.toString() : '0'
               "
@@ -663,12 +664,8 @@ export default {
   },
   data() {
     return {
-      Title: Resource.Title, // tooltip
-      Label: Resource.PopupLabel, // the label of inputs
       data: {}, // the data of popup which contain pair field:key
       originalData: {}, // Được sinh ra để so sánh với data khi nhấn phím hủy => kiểm tra xem người dùng có tương tác với popup không
-      placeholder: Resource.Placeholder, // placeholder of inputs
-      maxLength: Resource.InputLength, // the maxlength of inputs
       fields: Resource.PopupField, // Các trường trong popup
       currentYear: Function.getCurrentYear(), // Năm hiện tại
       showDialogValidate: false, /// Hiển thị validate dialog
@@ -680,6 +677,10 @@ export default {
       requiredData: [], // Mảng chứa những dữ liệu yêu cầu
       // Resources
       Resource,
+      Title: Resource.Title, // tooltip
+      Label: Resource.PopupLabel, // the label of inputs
+      Placeholder: Resource.Placeholder, // placeholder of inputs
+      MaxLength: Resource.InputLength, // the maxlength of inputs
       Enum,
       Function, // Các hàm chung
     };
