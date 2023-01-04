@@ -22,17 +22,27 @@ import Enum from "@/js/enum/enum";
 export default {
   name: "ToastVue",
   props: {
+    // Trạng thái: Lỗi, Thành công, ...
     actionStatus: {
       type: Number,
       default: 0,
     },
+    // Nội dung hiển thị
     content: {
       type: String,
       default: "Chưa có nội dung để hiển thị",
     },
   },
+
+  mounted() {
+    setTimeout(() => {
+      this.$parent.closeToast();
+    }, 2000);
+  },
+
   data() {
     return {
+      // Resources
       Enum, // enum
     };
   },

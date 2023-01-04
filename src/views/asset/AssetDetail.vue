@@ -275,13 +275,7 @@
 </template>
   
   <script>
-import DialogCancelVue from "@/components/base/dialogs/DialogCancel.vue";
-import Input from "@/components/base/inputs/Input.vue";
-import InputNumber from "@/components/base/inputs/InputNumber.vue";
-import InputCalendar from "@/components/base/datepicker/InputCalendar.vue";
-import ComboboxDetail from "@/components/base/comboboxes/ComboboxDetail.vue";
-import ButtonMain from "@/components/base/buttons/ButtonMain.vue";
-import DialogValidate from "@/components/base/dialogs/DialogValidate.vue";
+// Resources
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
@@ -290,6 +284,14 @@ import {
   editFixedAsset,
   getNewCode,
 } from "@/apis/fixedAsset";
+//Components
+import DialogCancelVue from "@/components/base/dialogs/DialogCancel.vue";
+import Input from "@/components/base/inputs/Input.vue";
+import InputNumber from "@/components/base/inputs/InputNumber.vue";
+import InputCalendar from "@/components/base/datepicker/InputCalendar.vue";
+import ComboboxDetail from "@/components/base/comboboxes/ComboboxDetail.vue";
+import ButtonMain from "@/components/base/buttons/ButtonMain.vue";
+import DialogValidate from "@/components/base/dialogs/DialogValidate.vue";
 
 export default {
   name: "AssetDetail",

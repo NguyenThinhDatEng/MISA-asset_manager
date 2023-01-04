@@ -173,12 +173,6 @@ export default {
   },
 
   watch: {
-    // Thiết lập thời gian hiển thị cho toast
-    isShowToast: function () {
-      setTimeout(() => {
-        this.isShowToast = false;
-      }, 2000);
-    },
     // Cập nhật Tổng số bản ghi
     totalOfRecords: function () {
       this.$refs.theTable.updateLimit(this.totalOfRecords);
@@ -186,6 +180,13 @@ export default {
   },
 
   methods: {
+    /**
+     * @description Ẩn toast
+     * @author NVThinh 4/1/2023
+     */
+    closeToast: function () {
+      this.isShowToast = false;
+    },
     /**
      * @description xử lý sự kiện khi nhấn vào nút xóa
      * @author NVThinh 28/12/2022

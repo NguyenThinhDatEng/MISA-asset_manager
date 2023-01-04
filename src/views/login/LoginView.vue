@@ -62,6 +62,12 @@
     </div>
     <div class="copy-right">{{ Resource.QLTS.copyright }}</div>
   </div>
+  <!-- Toast -->
+  <ToastVue
+    v-if="isShowToast"
+    :action-status="Enum.ActionStatus.Error"
+    :content="'Thông tin đăng nhập không hợp lệ'"
+  ></ToastVue>
 </template>
 
 <script>
@@ -71,11 +77,13 @@ import { login } from "@/apis/user";
 import Enum from "@/js/enum/enum";
 // Components
 import InputVue from "@/components/base/inputs/Input.vue";
+import ToastVue from "@/components/base/toast/ToastVue.vue";
 
 export default {
   name: "LoginScreen",
   components: {
     InputVue,
+    ToastVue,
   },
 
   methods: {
@@ -91,13 +99,13 @@ export default {
           password: this.data.password.value,
         };
         // Gọi API
-        await login(user).then((res) => {
-          if (res.status === Enum.API.OK) {
-            // Chuyển trang
-            this.$router.push(Resource.ItemContents.asset.router);
-          }
+        await login(user).then(() => {
+          // Chuyển sang trang danh sách tài sản cố định
+          this.$router.push(Resource.ItemContents.asset.router);
         });
       } catch (error) {
+        // Hiển thị toast thông báo
+        this.isShowToast = true;
         console.log(error);
       }
     },
@@ -110,7 +118,6 @@ export default {
      */
     updateInput: function (value, field) {
       try {
-        console.log("updateInput", field, value);
         // Cập nhật giá trị ô input
         this.data[field].value = value;
         // Loại bỏ hiện thị báo lỗi
@@ -126,21 +133,29 @@ export default {
      */
     handleOnClickButton: function () {
       try {
-        // Kiểm tra đầu vào bắt buộc
-        if (!this.data.account.value) {
-          this.data.account.isError = true;
-        }
-        if (!this.data.password.value) {
-          this.data.password.isError = true;
-          return;
+        // Kiểm tra các trường yêu cầu nhập
+        for (const key in this.fields) {
+          if (!this.data[key].value) {
+            this.data[key].isError = true;
+          }
         }
         // Call API đăng nhập
-        this.signIn();
+        if (!this.data.account.isError && !this.data.password.isError) {
+          this.signIn();
+        }
       } catch (error) {
         console.log(error);
       }
     },
+    /**
+     * @description Ẩn toast
+     * @author NVThinh 4/1/2023
+     */
+    closeToast: function () {
+      this.isShowToast = false;
+    },
   },
+
   data() {
     return {
       // Variables
@@ -157,6 +172,8 @@ export default {
           isError: false,
         },
       },
+      // Ẩn/hiện toast
+      isShowToast: false,
       // Resources
       Resource,
       Enum,
@@ -308,7 +325,7 @@ export default {
 }
 
 .button:focus {
-    border: 2px solid var(--border--focus);
+  border: 2px solid var(--border--focus);
 }
 
 .copy-right {
