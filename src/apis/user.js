@@ -18,4 +18,19 @@ const login = (user) => {
   }
 };
 
-export { login };
+/**
+ * @description API đăng xuất
+ * @author NVThinh (4-1-2023)
+ * @returns a promise
+ */
+const logout = () => {
+  try {
+    console.log("logout...");
+    const res = httpClient.get(END_POINT + "logout");
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { login, logout };

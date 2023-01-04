@@ -5,16 +5,17 @@
     <!-- Right header -->
     <div class="header--right">
       <!-- User info -->
-      <div
-        class="user-options"
-        v-show="isShowOptions"
-        @blur="isShowOptions = false"
-      >
+      <div class="user-options" v-show="isShowOptions" ref="options">
         <div class="option">Thông tin tài khoản</div>
-        <div class="option">Đăng xuất</div>
+        <div class="option" @click="logOut">Đăng xuất</div>
       </div>
       <!-- Title -->
-      <div class="icon icon--down" :title="Title.more" @click="toggle"></div>
+      <div
+        class="icon icon--down"
+        :title="Title.more"
+        ref="icon"
+        @click="toggle"
+      ></div>
       <!-- Icons -->
       <Icon
         v-for="(value, key) in Resource.HeaderTitle"
@@ -47,16 +48,38 @@
 </template>
 
 <script>
+// Components
 import Icon from "./IconHeader.vue";
+// Resources
 import Resource from "@/js/resource/resource";
 import Function from "@/js/common/function";
+import { logout } from "@/apis/user";
 
 export default {
   name: "TheHeader",
   components: {
     Icon,
   },
+
+  mounted() {
+    // Đóng options nếu click ra ngoài
+    const me = this;
+    document.addEventListener("click", (e) => {
+      const target = e.target;
+      if (
+        !target.parentElement.isEqualNode(me.$refs.options) &&
+        !target.isEqualNode(me.$refs.icon)
+      ) {
+        this.close();
+      }
+    });
+  },
+
   methods: {
+    /**
+     * @description Ẩn/hiện options
+     * @author NVThinh 4/1/2023
+     */
     toggle: function () {
       this.isShowOptions = !this.isShowOptions;
     },
@@ -64,6 +87,26 @@ export default {
     setIconName(key) {
       try {
         return "icon--" + key;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
+     * @description Ẩn options
+     * @author NVThinh 4/1/2023
+     */
+    close: function () {
+      this.isShowOptions = false;
+    },
+    /**
+     * @description call API log out
+     * @author NVThinh 4/1/2023
+     */
+    logOut: async function () {
+      try {
+        await logout().then(() => {
+          this.$router.push("login");
+        });
       } catch (error) {
         console.log(error);
       }
