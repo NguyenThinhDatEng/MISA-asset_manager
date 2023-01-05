@@ -56,7 +56,6 @@ export default {
   },
   created() {
     try {
-      console.log(this.itemContents);
       let isActive;
       // Thêm thuộc tính isActive cho từng đối tượng item
       for (const key in this.itemContents) {

@@ -42,7 +42,8 @@
           @update-row="updateRow"
           @update-checked-header="updateCheckedHeader"
           @show-popup="showPopup"
-          ref="Row"
+          @click="handleOnClickRow"
+          ref="tableRow"
         ></Row>
         <tr class="ignoreRow">
           <td v-show="data.length === 0" colspan="100">
@@ -170,7 +171,6 @@ export default {
       this.ths[key].style = this.tds[index];
       index++;
     }
-    console.log(this.ths);
     delete this.ths.checkbox;
   },
 
@@ -193,16 +193,22 @@ export default {
      * Thêm hoặc xóa tài sản khỏi mảng chứa các dòng được chọn
      * @param {Boolean} isNewRow true - thêm dòng mới, false - xóa dòng cũ
      * @param {Object} obj là tài sản được chọn
+     * @param {Number} numericalOrder là số thứ tự của dòng
      * @author Nguyen Van Thinh 05/11/2022
      */
     updateRow: function (isNewRow, obj, numericalOrder) {
       try {
         // Thêm dòng mới vào mảng
         if (isNewRow) {
-          // if (this.onlyOneRow && this.selectedRows.length > 0) {
-          //   this.selectedRows.pop();
-          // }
-          console.log(numericalOrder);
+          // Nếu Bảng chỉ cho chọn 1 dòng và đã có ít nhất 1 dòng được chọn
+          if (this.onlyOneRow && this.selectedRows.length > 0) {
+            // Làm mới bảng (xóa tất cả các dòng được active)
+            this.toggle();
+            // Bỏ dòng cũ
+            this.selectedRows.pop();
+            // Active dòng theo số thứ tự
+            this.$refs.tableRow[numericalOrder - 1].onActive();
+          }
           this.selectedRows.push(obj);
         } else {
           // Xóa tài sản khỏi mảng
@@ -216,7 +222,7 @@ export default {
         }
         // Bắn chiều dài mảng được chọn lên cha của nó (Table)
         this.$emit("update-row", this.selectedRows);
-        // console.log(this.selectedRows);
+        console.log(this.selectedRows);
       } catch (error) {
         console.log(error);
       }

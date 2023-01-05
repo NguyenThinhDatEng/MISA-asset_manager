@@ -100,6 +100,16 @@ export default {
 
   methods: {
     /**
+     * @description active dòng
+     * @author NVThinh 5/1/2023
+     */
+    onActive: function () {
+      this.$nextTick(() => {
+        this.isActive = true;
+      });
+    },
+
+    /**
      * @description Lấy nội dung hiển thị của td
      * @param {String} col Tên cột
      * @author NVThinh 2/1/2023
@@ -143,7 +153,7 @@ export default {
         this.isActive = !this.isActive;
         // Nếu dòng được active, bắn đối tượng đến Table
         if (this.isActive == isNew) {
-          this.$emit("update-row", isNew, this.data);
+          this.$emit("update-row", isNew, this.data, this.numerical_order);
         } else {
           if (this.isCheckAll == true) {
             this.$emit("update-checked-header", false);
@@ -189,11 +199,11 @@ export default {
   data() {
     return {
       data: {}, // Đối tượng table row chứa các dữ liệu hiển thị trong file excel
+      isActive: false, // trạng thái của table row
       popupMode: 0, // chế độ popup
       popupObj: {}, // đối tượng popup
       isShowPopup: false, // trạng thái ẩn hiện popup
       isShowToast: false, // trạng thái ẩn hiện toast
-      isActive: false, // trạng thái của table row
       accumulated_value: 0, // tỉ lệ khấu hao
       residual_value: 0, // giá trị còn lại
       fields: Resource.PopupField, // các trường input trong popup
