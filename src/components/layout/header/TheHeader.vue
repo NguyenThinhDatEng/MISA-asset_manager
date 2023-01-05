@@ -67,7 +67,7 @@ export default {
     document.addEventListener("click", (e) => {
       const target = e.target;
       if (
-        !target.parentElement.isEqualNode(me.$refs.options) &&
+        !target.parentElement?.isEqualNode(me.$refs.options) &&
         !target.isEqualNode(me.$refs.icon)
       ) {
         this.close();

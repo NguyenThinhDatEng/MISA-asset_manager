@@ -10,6 +10,7 @@
           :buttonContent="Dictionary.action.add.VN"
           :hasIcon="false"
           :title="Resource.Title.add_voucher"
+          @click="isShowPopup = true"
         ></Button>
         <!-- Button: toggle between horizontal page and vertical page -->
         <button class="button page--state">
@@ -77,6 +78,7 @@
       />
     </div>
   </div>
+  <VPopupVue :isShow="isShowPopup" @close-popup="closePopup"></VPopupVue>
 </template>
 
 <script>
@@ -84,6 +86,7 @@
 import Button from "@/components/base/buttons/ButtonIcon.vue";
 import SearchInput from "@/components/base/inputs/SearchInput.vue";
 import TableVue from "@/components/base/table/Table.vue";
+import VPopupVue from "@/components/base/popup/VPopup.vue";
 // Resources
 import Resource from "@/js/resource/resource";
 import Dictionary from "@/js/resource/dictionary";
@@ -92,10 +95,8 @@ import Enum from "@/js/enum/enum";
 
 export default {
   name: "VoucherList",
-  components: { Button, SearchInput, TableVue },
-  created() {},
-  props: {},
-  emits: [],
+  components: { Button, SearchInput, TableVue, VPopupVue },
+
   methods: {
     /**
      * @description Phóng to/Thu nhỏ bảng chi tiết
@@ -104,11 +105,20 @@ export default {
     toggle: function () {
       this.isZoomIn = !this.isZoomIn;
     },
+
+    /**
+     * @description Đóng popup
+     * @author NVThinh 5/1/2022
+     */
+    closePopup: function () {
+      this.isShowPopup = false;
+    },
   },
   data() {
     return {
       // Variables
       isZoomIn: false, // Phóng to bảng chi tiết
+      isShowPopup: false,
       // Resource
       Resource,
       Dictionary,

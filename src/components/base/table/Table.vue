@@ -149,7 +149,7 @@ export default {
       // Cập nhật tổng các cột ở table footer
       this.updateFooterData();
       // Làm mới bảng dữ liệu
-      this.isRefreshTable = !this.isRefreshTable;
+      this.toggle();
       // Đưa ô check ở Header về mặc định
       this.isCheckAll = false;
       // Làm mới mảng được chọn
@@ -160,11 +160,17 @@ export default {
   mounted() {
     // Cập nhật table head
     this.ths = Object.assign(this.cols);
-    let index = 0;
+    let index;
+    if (this.isShowCheckbox == false) {
+      index = 0;
+    } else {
+      index = this.ths.checkbox ? 0 : 1;
+    }
     for (const key in this.ths) {
       this.ths[key].style = this.tds[index];
       index++;
     }
+    console.log(this.ths);
     delete this.ths.checkbox;
   },
 
@@ -189,14 +195,15 @@ export default {
      * @param {Object} obj là tài sản được chọn
      * @author Nguyen Van Thinh 05/11/2022
      */
-    updateRow: function (isNewRow, obj) {
+    updateRow: function (isNewRow, obj, numericalOrder) {
       try {
         // Thêm dòng mới vào mảng
         if (isNewRow) {
-          if (this.onlyOneRow && this.selectedRows.length > 0) {
-            this.selectedRows.pop();
-          }
-          // this.selectedRows.push(obj);
+          // if (this.onlyOneRow && this.selectedRows.length > 0) {
+          //   this.selectedRows.pop();
+          // }
+          console.log(numericalOrder);
+          this.selectedRows.push(obj);
         } else {
           // Xóa tài sản khỏi mảng
           const length = this.selectedRows.length;
@@ -301,7 +308,16 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * @description làm mới trạng thái của tất cả các dòng
+     * @author NVThinh 5/1/2023
+     */
+    toggle: function () {
+      this.isRefreshTable = !this.isRefreshTable;
+    },
   },
+
   data() {
     return {
       // Variables
