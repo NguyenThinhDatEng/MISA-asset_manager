@@ -38,6 +38,7 @@
           :is-refresh-table="isRefreshTable"
           :tds="tds"
           :isShowFeature="isShowFeature"
+          :isOnly="onlyOneRow"
           @update-row="updateRow"
           @update-checked-header="updateCheckedHeader"
           @show-popup="showPopup"
@@ -110,6 +111,11 @@ export default {
     page: {
       type: String,
       default: TableResource.TableFoot.Page.fixedAsset,
+    },
+    // Chỉ chọn 1 dòng trong bảng
+    onlyOneRow: {
+      type: Boolean,
+      default: false,
     },
   },
   components: { Row, TableFoot },
@@ -187,7 +193,10 @@ export default {
       try {
         // Thêm dòng mới vào mảng
         if (isNewRow) {
-          this.selectedRows.push(obj);
+          if (this.onlyOneRow && this.selectedRows.length > 0) {
+            this.selectedRows.pop();
+          }
+          // this.selectedRows.push(obj);
         } else {
           // Xóa tài sản khỏi mảng
           const length = this.selectedRows.length;

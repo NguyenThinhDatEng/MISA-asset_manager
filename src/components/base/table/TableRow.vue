@@ -42,15 +42,18 @@ import TableData from "./TableData.vue";
 export default {
   name: "TableRow",
   props: {
-    tds: {
-      type: Array,
-      required: true,
-    },
     numerical_order: Number, // Số thứ tự
     isShowFeature: Boolean, // Ẩn/hiện các tính năng
     tableRowObj: Object,
     isCheckAll: Boolean,
     isRefreshTable: Boolean,
+    // Style các ô dữ liệu trong bảng
+    tds: {
+      type: Array,
+      required: true,
+    },
+    // Chỉ 1 dòng được active trong bảng
+    isOnly: Boolean,
   },
 
   components: {
@@ -130,7 +133,7 @@ export default {
     },
 
     /**
-     * Sự kiện nhấn vào 1 dòng
+     * @description Xử lý sự kiện click vào 1 dòng
      * @author Nguyen Van Thinh 05/11/2022
      */
     handleOnClickRow: function () {
@@ -139,8 +142,9 @@ export default {
         // Thay đổi trạng thái của dòng
         this.isActive = !this.isActive;
         // Nếu dòng được active, bắn đối tượng đến Table
-        if (this.isActive == isNew) this.$emit("update-row", isNew, this.data);
-        else {
+        if (this.isActive == isNew) {
+          this.$emit("update-row", isNew, this.data);
+        } else {
           if (this.isCheckAll == true) {
             this.$emit("update-checked-header", false);
           }

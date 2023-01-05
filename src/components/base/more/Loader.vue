@@ -8,10 +8,7 @@
 export default {
   name: "TheLoader",
   props: {
-    isShow: {
-      type: Boolean,
-      default: true,
-    },
+    isShow: Boolean,
   },
   data() {
     return {};

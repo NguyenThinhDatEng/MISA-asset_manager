@@ -246,6 +246,7 @@ export default {
     DeleteMulti: { Fail: Status.action.deleteMulti + " " + Status.status.fail },
     DeleteMultiSuccess: " bản ghi đã được xóa thành công", // 02 bản ghi đã được xóa thành công
     Error: "Có lỗi xảy ra!",
+    Login: "Tài khoản hoặc mật khẩu không chính xác",
   },
   // Các trường áp dụng vào tìm kiếm, lọc và phân trang dữ liệu
   Filter: {

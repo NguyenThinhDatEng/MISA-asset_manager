@@ -37,13 +37,14 @@
           </div>
         </div>
       </div>
-      <!-- Table  -->
+      <!-- Master table  -->
       <TableVue
         :cols="TableResource.TableRow.Voucher"
         :tds="tds_of_master"
         :data="vouchers"
         :is-show-feature="true"
         :page="TableResource.TableFoot.Page.voucher"
+        :only-one-row="true"
       />
     </div>
     <!-- Table 02 -->

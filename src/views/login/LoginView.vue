@@ -1,6 +1,7 @@
 <template>
   <!-- background -->
   <div id="frmLogin">
+    <LoaderVue :is-show="isShowLoader" />
     <!-- Main -->
     <div class="h-100 w-100 main">
       <!-- Form -->
@@ -64,9 +65,9 @@
   </div>
   <!-- Toast -->
   <ToastVue
-    v-if="isShowToast"
+    v-if="toast.isShow"
     :action-status="Enum.ActionStatus.Error"
-    :content="'Thông tin đăng nhập không hợp lệ'"
+    :content="toast.content"
   ></ToastVue>
 </template>
 
@@ -78,12 +79,14 @@ import Enum from "@/js/enum/enum";
 // Components
 import InputVue from "@/components/base/inputs/Input.vue";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
+import LoaderVue from "@/components/base/more/Loader.vue";
 
 export default {
   name: "LoginScreen",
   components: {
     InputVue,
     ToastVue,
+    LoaderVue,
   },
 
   methods: {
@@ -98,15 +101,24 @@ export default {
           userName: this.data.account.value,
           password: this.data.password.value,
         };
+        // Hiển thị loader
+        this.openLoader();
         // Gọi API
         await login(user).then(() => {
+          // Ẩn toast
+          this.closeLoader();
           // Chuyển sang trang danh sách tài sản cố định
           this.$router.push(Resource.ItemContents.asset.router);
         });
       } catch (error) {
-        // Hiển thị toast thông báo
-        this.isShowToast = true;
+        // Ẩn toast
+        this.closeLoader();
+        this.toast.content = error.response
+          ? Resource.ToastContent.Login
+          : Resource.ToastContent.Error;
         console.log(error);
+        // Hiển thị toast thông báo
+        this.openToast();
       }
     },
 
@@ -147,18 +159,42 @@ export default {
         console.log(error);
       }
     },
+
     /**
      * @description Ẩn toast
      * @author NVThinh 4/1/2023
      */
     closeToast: function () {
-      this.isShowToast = false;
+      this.toast.isShow = false;
+    },
+
+    /**
+     * @description Hiển thị toast
+     * @author NVThinh 5/1/2023
+     */
+    openToast: function () {
+      this.toast.isShow = true;
+    },
+
+    /**
+     * @description Ẩn Loader
+     * @author NVThinh 4/1/2023
+     */
+    closeLoader: function () {
+      this.isShowLoader = false;
+    },
+
+    /**
+     * @description Hiển thị Loader
+     * @author NVThinh 5/1/2023
+     */
+    openLoader: function () {
+      this.isShowLoader = true;
     },
   },
 
   data() {
     return {
-      // Variables
       // Dữ liệu bao gồm tài khoản và mật khẩu
       data: {
         account: {
@@ -172,8 +208,13 @@ export default {
           isError: false,
         },
       },
-      // Ẩn/hiện toast
-      isShowToast: false,
+      // Toast
+      toast: {
+        isShow: false, // Ẩn/hiện toast
+        content: "", // Nội dung hiển thị
+      },
+      // Loader
+      isShowLoader: false,
       // Resources
       Resource,
       Enum,
