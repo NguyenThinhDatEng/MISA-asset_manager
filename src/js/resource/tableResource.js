@@ -44,6 +44,8 @@ export default {
     Page: {
       fixedAsset: "fixedAsset",
       voucher: "voucher",
+      fixedAssetDetail: "fixedAssetDetail",
+      assetList: "assetList",
     },
   },
   // Table Head

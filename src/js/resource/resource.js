@@ -91,6 +91,7 @@ export default {
   // placeholder các input
   Placeholder: {
     fixed_asset_code: "Nhập mã tài sản",
+    search_asset_code_name: "Tìm kiếm theo mã, tên tài sản",
     search_asset: "Tìm kiếm tài sản",
     search_voucher: "Tìm kiếm theo số chứng từ, nội dung",
     category: "Loại tài sản",
@@ -130,6 +131,8 @@ export default {
     add: "Thêm mới tài sản",
     edit: "Sửa tài sản",
     duplicate: "Nhân bản tài sản",
+    add_voucher: "Thêm chứng từ ghi tăng",
+    select_increment_asset: "Chọn tài sản ghi tăng",
   },
   // Nhãn các ô input trong popup
   PopupLabel: {
@@ -169,6 +172,7 @@ export default {
     no: "Không",
     noSave: "Không lưu",
     close: "Đóng",
+    select_asset: "Chọn tài sản",
   },
   // ...
   Name: {
@@ -261,5 +265,12 @@ export default {
     prePage: "Trang trước",
     currentPage: "Trang hiện tại",
     nextPage: "Trang sau",
+  },
+  // Nhãn các inputs
+  InputLabel: {
+    voucher_code: "Mã chứng từ",
+    voucher_date: "Ngày chứng từ",
+    increment_date: "Ngày ghi tăng",
+    description: "Ghi chú",
   },
 };

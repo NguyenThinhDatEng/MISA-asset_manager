@@ -19,7 +19,7 @@
             <input ref="firstInput" class="ignoreInput" readonly />
             <!-- input 01 -->
             <Input
-              :label-content="Label.fixed_asset_code"
+              :label="Label.fixed_asset_code"
               :max-length="MaxLength.fixed_asset_code"
               :value="data[fields.fixed_asset_code]"
               :field="fields.fixed_asset_code"
@@ -33,7 +33,7 @@
           <div class="popup__body--right">
             <!-- input 02 -->
             <Input
-              :label-content="Label.fixed_asset_name"
+              :label="Label.fixed_asset_name"
               :is-error="errorMessages[fields.fixed_asset_name]"
               :max-length="MaxLength.fixed_asset_name"
               :value="data.fixed_asset_name"
@@ -183,7 +183,7 @@
               </div>
               <div class="popup__body--right-child">
                 <Input
-                  :label-content="Label.tracked_year"
+                  :label="Label.tracked_year"
                   :type="Enum.DataType.Year"
                   :value="
                     data[fields.tracked_year]
@@ -692,6 +692,11 @@ export default {
   
   <style scoped>
 @import url(@/css/components/popup.css);
+
+.popup__body {
+  padding: 0 16px;
+}
+
 .ignoreInput {
   width: 0;
   height: 0;

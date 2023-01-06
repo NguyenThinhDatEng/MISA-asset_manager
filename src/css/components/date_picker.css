@@ -1,10 +1,15 @@
 @import url(../font.css);
 
+.dp__input_wrap {
+    z-index: 1;
+}
+
 .dp__input {
     height: 36px;
     background-color: transparent;
     border: 1px solid #afafaf;
     font-family: MISA Regular;
+    z-index: 1;
 }
 
 .dp__input::placeholder {
@@ -18,4 +23,14 @@
 .dp__input:hover,
 .dp__input:active {
     border: 1px solid #1AA4C8;
+}
+
+.input--date__icon__wrapper {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border: none;
+    width: 36px;
+    height: 36px;
+    background-color: transparent;
 }

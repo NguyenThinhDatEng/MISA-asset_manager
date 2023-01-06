@@ -111,17 +111,6 @@ input::placeholder {
 
 /* In popup  */
 
-.input--date__icon__wrapper {
-    position: absolute;
-    right: 0;
-    top: 0;
-    border: none;
-    width: 36px;
-    height: 36px;
-    background-color: transparent;
-    z-index: -1;
-}
-
 .spinner {
     text-align: right;
 }

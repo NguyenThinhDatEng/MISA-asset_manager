@@ -8,7 +8,7 @@
       <td></td>
     </tr>
     <!-- Footer 02 -->
-    <tr v-if="page === pages.voucher">
+    <tr v-if="page === pages.voucher || page === pages.assetList">
       <td colspan="100">
         <div class="footer__left">
           <div class="total-of-records__wrapper">
@@ -117,8 +117,8 @@
       </td>
     </tr>
     <!-- Fixed Asset -->
-    <tr v-if="page === pages.fixedAsset">
-      <td colspan="6">
+    <tr v-if="page === pages.fixedAsset || page === pages.fixedAssetDetail">
+      <td :colspan="page === pages.fixedAsset ? 6 : 4">
         <div class="footer__left">
           <div class="total-of-records__wrapper">
             <p class="total-of-records" v-html="records()"></p>
@@ -224,13 +224,13 @@
           </div>
         </div>
       </td>
-      <td class="value">
+      <td v-if="page === pages.fixedAsset" class="value">
         {{ Function.formatMoney(totalOfQuantities) }}
       </td>
       <td class="value" v-for="(val, key) of footerData" :key="key">
         {{ Function.formatMoney(val) }}
       </td>
-      <td></td>
+      <td v-if="page === pages.fixedAsset"></td>
     </tr>
   </tfoot>
 </template>
@@ -547,6 +547,10 @@ tfoot {
   text-align: right;
   padding-right: 8px;
   font-family: MISA Bold;
+}
+
+td {
+  padding-right: 8px;
 }
 
 /* Icon */

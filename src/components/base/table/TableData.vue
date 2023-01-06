@@ -1,5 +1,6 @@
 <template>
   <td
+    :title="content"
     :style="[
       { 'min-width': config.minWidth },
       { 'max-width': config.maxWidth },

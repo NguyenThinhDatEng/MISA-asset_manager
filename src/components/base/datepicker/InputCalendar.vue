@@ -1,6 +1,6 @@
 <template>
   <Datepicker
-    name="abc"
+    name="myDate"
     class="datepicker"
     v-model="date"
     placeholder="dd/mm/yyyy"

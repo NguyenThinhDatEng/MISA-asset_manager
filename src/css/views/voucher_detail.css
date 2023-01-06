@@ -1,0 +1,12 @@
+.input--date {
+    flex: 1;
+    position: relative;
+}
+
+.input--date+.input--date {
+    margin-left: 16px;
+}
+
+.input--date label+div {
+    margin-top: 8px;
+}

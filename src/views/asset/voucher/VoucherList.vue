@@ -78,7 +78,8 @@
       />
     </div>
   </div>
-  <VPopupVue :isShow="isShowPopup" @close-popup="closePopup"></VPopupVue>
+  <!-- Popup -->
+  <VoucherDetail :isShow="isShowPopup" />
 </template>
 
 <script>
@@ -86,7 +87,7 @@
 import Button from "@/components/base/buttons/ButtonIcon.vue";
 import SearchInput from "@/components/base/inputs/SearchInput.vue";
 import TableVue from "@/components/base/table/Table.vue";
-import VPopupVue from "@/components/base/popup/VPopup.vue";
+import VoucherDetail from "@/views/asset/voucher/VoucherDetail.vue";
 // Resources
 import Resource from "@/js/resource/resource";
 import Dictionary from "@/js/resource/dictionary";
@@ -95,7 +96,7 @@ import Enum from "@/js/enum/enum";
 
 export default {
   name: "VoucherList",
-  components: { Button, SearchInput, TableVue, VPopupVue },
+  components: { Button, SearchInput, TableVue, VoucherDetail },
 
   methods: {
     /**
@@ -114,11 +115,12 @@ export default {
       this.isShowPopup = false;
     },
   },
+  // ========================================================================
   data() {
     return {
       // Variables
       isZoomIn: false, // Phóng to bảng chi tiết
-      isShowPopup: false,
+      isShowPopup: false, // Hiển thị popup "Thêm chứng từ ghi tăng"
       // Resource
       Resource,
       Dictionary,
@@ -270,6 +272,14 @@ export default {
           cost: 15516810,
           accumulated_value: 100000,
           residual_value: 156515615,
+        },
+        {
+          fixed_asset_code: "TTTT000000001",
+          fixed_asset_name: "Máy bay Ansi (XGA)",
+          department_name: "Phòng kỹ thuật",
+          cost: 155,
+          accumulated_value: 10000,
+          residual_value: 1562225615,
         },
         {
           fixed_asset_code: "TTTTTT124TT00000000001",

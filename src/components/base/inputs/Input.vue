@@ -2,7 +2,7 @@
   <div class="input__wrapper">
     <!-- label of input-->
     <label v-if="hasLabel">
-      {{ labelContent }} <span style="color: red">*</span></label
+      {{ label }} <span style="color: red">*</span></label
     >
     <!-- password input -->
     <div v-if="isPassword" class="password-login">
@@ -41,12 +41,13 @@
     <p
       v-show="isError"
       class="error-message"
-      v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
+      v-html="label + ' ' + Resource.ErrorMessage.blank"
     ></p>
   </div>
 </template>
 
 <script>
+// Resources
 import Function from "@/js/common/function";
 import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
@@ -54,6 +55,7 @@ import Enum from "@/js/enum/enum";
 export default {
   name: "NormalInput",
   props: {
+    label: String, // Nhãn của input
     // Ẩn hiện label của input
     hasLabel: {
       type: Boolean,
@@ -80,7 +82,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    labelContent: String,
     isError: {
       type: Boolean,
       default: false,
@@ -162,7 +163,16 @@ export default {
 </script>
 
 <style scoped>
+@import url(@/css/components/input.css);
+
 /* input */
+
+.input {
+  width: 100%;
+  height: 36px;
+  padding: 0 14px;
+}
+
 .input-login {
   width: 100%;
   height: 44px;
@@ -181,6 +191,10 @@ export default {
 
 .input-login::placeholder {
   font-family: MISA Regular;
+}
+
+label + input {
+  margin-top: 8px;
 }
 
 /* Icons */

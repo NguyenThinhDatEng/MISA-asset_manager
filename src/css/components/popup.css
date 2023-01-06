@@ -23,9 +23,9 @@
     padding: 20px 16px;
 }
 
-.popup__header p {
+.popup__header span {
     font-family: MISA Bold;
-    font-size: 20px;
+    font-size: 17px;
 }
 
 .popup__header button {
@@ -38,7 +38,6 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: 0 16px;
 }
 
 .popup__body .input-row {
@@ -118,11 +117,6 @@ input.input.input--error+.error-message {
     position: absolute;
     right: 0;
     border: none;
-}
-
-.popup .popup__header span {
-    font-family: MISA Bold;
-    font-size: 15px;
 }
 
 .popup__date {
