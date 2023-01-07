@@ -9,8 +9,10 @@
     <div class="function-bar">
       <!-- Search  -->
       <SearchInputVue
+        :field="'keyword'"
         :placeholder="Resource.Placeholder.search_asset_code_name"
         :width="'270px'"
+        @update-filter="updateFilter"
       />
     </div>
     <!-- Table -->

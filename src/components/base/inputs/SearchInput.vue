@@ -40,7 +40,6 @@ export default {
     updateFilter: function () {
       try {
         this.$emit("update-filter", this.field, this.value);
-        console.log("enter");
       } catch (error) {
         console.log(error);
       }
