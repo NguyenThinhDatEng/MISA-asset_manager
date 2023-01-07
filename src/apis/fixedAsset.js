@@ -1,4 +1,5 @@
 import httpClient from "./httpClient";
+import constants from "@/js/common/constants";
 
 const END_POINT = "/FixedAssets";
 
@@ -14,8 +15,8 @@ const END_POINT = "/FixedAssets";
  */
 const getFixedAssetByFilterAndPaging = (
   keyword,
-  departmentID,
-  fixedAssetCategoryID,
+  departmentID = constants.GUID.EMPTY,
+  fixedAssetCategoryID = constants.GUID.EMPTY,
   limit = 20,
   offset = 0
 ) => {

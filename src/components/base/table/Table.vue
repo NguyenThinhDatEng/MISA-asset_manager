@@ -39,10 +39,11 @@
           :tds="tds"
           :isShowFeature="isShowFeature"
           :isOnly="onlyOneRow"
+          @click="handleOnClickRow"
           @update-row="updateRow"
+          @update-voucher="updateVoucher"
           @update-checked-header="updateCheckedHeader"
           @show-popup="showPopup"
-          @click="handleOnClickRow"
           ref="tableRow"
         ></Row>
         <tr class="ignoreRow">
@@ -120,7 +121,7 @@ export default {
     },
   },
   components: { Row, TableFoot },
-  emits: ["update-row", "reload-content", "show-popup"],
+  emits: ["update-row", "reload-content", "show-popup", "update-voucher"],
 
   watch: {
     // Trạng thái chọn tất cả thay đổi
@@ -176,6 +177,14 @@ export default {
 
   methods: {
     /**
+     * @description Phát tín hiệu đến lớp cha khi click vào nút sửa
+     * @author NVThinh 6/1/2023
+     */
+    updateVoucher: function () {
+      this.$emit("update-voucher");
+    },
+
+    /**
      * Hiển thị popup khi thực hiện chức năng
      * @param {Number} mode chế độ popup
      * @param {Object} popupObj đối tượng tài sản trong popup
@@ -222,7 +231,7 @@ export default {
         }
         // Bắn chiều dài mảng được chọn lên cha của nó (Table)
         this.$emit("update-row", this.selectedRows);
-        console.log(this.selectedRows);
+        // console.log(this.selectedRows);
       } catch (error) {
         console.log(error);
       }
@@ -291,6 +300,7 @@ export default {
         // Cập nhật startIndex
         if (field == Resource.Filter.offset) this.startIndex = value;
         // Thực hiện hàm updateFilter tại Vue cha
+        console.log(this.$parent);
         this.$parent.updateFilter(field, value);
       } catch (error) {
         console.log(error);

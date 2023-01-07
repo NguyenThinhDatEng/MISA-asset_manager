@@ -15,17 +15,16 @@
     />
     <div class="feature" v-show="isShowFeature">
       <!-- edit button -->
-      <div
-        class="icon icon--edit"
-        :title="Resource.Title.edit"
-        @click="carryOutFeature(Enum.Mode.Update)"
-      ></div>
+      <div class="icon__wrapper" @click="updateVoucher">
+        <div class="icon icon--edit center" :title="Resource.Title.edit" />
+      </div>
       <!-- duplicate button -->
-      <div
-        class="icon icon--18px icon--delete"
-        :title="Resource.Title.duplicate"
-        @click="carryOutFeature(Enum.Mode.Duplicate)"
-      ></div>
+      <div class="icon__wrapper">
+        <div
+          class="icon icon--18px icon--delete center"
+          :title="Resource.Title.delete"
+        ></div>
+      </div>
     </div>
   </tr>
 </template>
@@ -66,6 +65,7 @@ export default {
     "update-popup-object",
     "reload-content",
     "show-popup",
+    "update-voucher",
   ],
 
   created() {
@@ -99,6 +99,13 @@ export default {
   },
 
   methods: {
+    /**
+     * @description Phát tín hiệu đến lớp cha khi click vào nút sửa
+     * @author NVThinh 6/1/2023
+     */
+    updateVoucher: function () {
+      this.$emit("update-voucher");
+    },
     /**
      * @description active dòng
      * @author NVThinh 5/1/2023
@@ -226,5 +233,16 @@ tr .feature {
   top: 50%;
   right: 0;
   transform: translate(0, -50%);
+}
+
+tr .feature .icon__wrapper {
+  position: relative;
+  width: 25px;
+  height: 25px;
+}
+
+tr .feature .icon__wrapper:hover {
+  border-radius: 100%;
+  background-color: #fff;
 }
 </style>

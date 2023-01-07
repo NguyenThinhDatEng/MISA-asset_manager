@@ -1,11 +1,14 @@
 <template>
   <!-- label -->
-  <label>{{ labelContent }} <span style="color: red">*</span></label>
+  <label v-if="hasLabel"
+    >{{ labelContent }} <span style="color: red">*</span></label
+  >
   <!-- input wrapper -->
   <div :class="[{ 'input--number': this.type != Enum.DataType.Year }]">
     <!-- input 01 -->
     <v-money-spinner
       v-if="type !== Enum.DataType.Rate"
+      :inputClass="inputClass"
       :class="[
         'input',
         'spinner',
@@ -61,16 +64,37 @@ import Enum from "@/js/enum/enum";
 export default {
   name: "InputNumber",
   props: {
+    // Kiểu dữ liệu của ô input
     type: {
       type: Number,
       default: Enum.DataType.Number,
     },
+    // Giá trị đầu vào
     value: {
       type: [Number, String],
     },
+    // Giá trị nhỏ nhất
     min: {
       type: Number,
       default: 0,
+    },
+    // là input bắt buộc nhập
+    isRequired: {
+      type: Boolean,
+      default: true,
+    },
+    // input có nhãn
+    hasLabel: {
+      type: Boolean,
+      default: true,
+    },
+    isDisable: {
+      type: Boolean,
+      default: false,
+    },
+    inputClass: {
+      type: String,
+      default: "",
     },
     field: String,
     maxLength: Number,
@@ -196,9 +220,9 @@ export default {
 </script>
 
 <style scoped>
+@import url(@/css/components/input.css);
 .input--number {
   position: relative;
-  height: 36px;
 }
 
 .input--number .input {

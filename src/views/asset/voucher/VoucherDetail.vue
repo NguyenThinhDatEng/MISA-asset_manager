@@ -8,8 +8,11 @@
       <div class="voucher-info">
         <div class="voucher-info__title">Thông tin chứng từ</div>
         <div class="voucher-info__content">
+          <!-- Row -->
           <div class="row">
+            <!-- Input: voucher code -->
             <InputVue :label="Resource.InputLabel.voucher_code" />
+            <!-- Inputs: voucher date -->
             <div class="input--date">
               <label
                 >{{ Resource.InputLabel.voucher_date }}
@@ -17,6 +20,7 @@
               >
               <InputCalendar />
             </div>
+            <!-- Input: increment date -->
             <div class="input--date">
               <label
                 >{{ Resource.InputLabel.increment_date }}
@@ -25,8 +29,12 @@
               <InputCalendar />
             </div>
           </div>
+          <!-- Row -->
           <div class="row">
-            <InputVue :label="Resource.InputLabel.description" />
+            <InputVue
+              :label="Resource.InputLabel.description"
+              :isRequired="false"
+            />
           </div>
         </div>
       </div>
@@ -57,12 +65,18 @@
           :tds="tds_of_detail"
           :data="assetDetail"
           :page="TableResource.TableFoot.Page.fixedAssetDetail"
+          :is-show-feature="true"
           :isShowCheckbox="false"
+          :onlyOneRow="true"
+          @update-voucher="openBudgetDetail"
         />
       </div>
     </div>
   </Popup>
-  <VoucherAssetList :isShow="isShowAssetList" />
+  <!-- Voucher fixed asset list -->
+  <VoucherAssetList v-if="isShowAssetList" />
+  <!-- Budget Detail -->
+  <BudgetDetail v-if="isShowBudgetDetail" />
 </template>
 
 <script>
@@ -79,6 +93,7 @@ import SearchInputVue from "@/components/base/inputs/SearchInput.vue";
 import Button from "@/components/base/buttons/ButtonOutline.vue";
 // Views
 import VoucherAssetList from "@/views/asset/voucher/VoucherAssetList.vue";
+import BudgetDetail from "@/views/asset/voucher/BudgetDetail.vue";
 
 export default {
   name: "VoucherDetail",
@@ -90,7 +105,9 @@ export default {
     TableVue,
     SearchInputVue,
     Button,
+    // views
     VoucherAssetList,
+    BudgetDetail,
   },
   props: {
     // Hiển thị popup
@@ -99,8 +116,16 @@ export default {
       default: false,
     },
   },
-  emits: [],
+
   methods: {
+    /**
+     * @description Mở popup "Sửa tài sản"
+     * @author NVThinh 6/1/2023
+     */
+    openBudgetDetail: function () {
+      this.isShowBudgetDetail = true;
+    },
+
     /**
      * @description Hiển thị popup "chọn tài sản ghi tăng"
      * @author NVThinh 6/1/2023
@@ -108,17 +133,21 @@ export default {
     showAssetList: function () {
       this.isShowAssetList = true;
     },
+
     /**
      * @description Đóng popup
      * @author NVThinh 6/1/2022
      */
     closePopup: function () {
       this.isShowAssetList = false;
+      this.isShowBudgetDetail = false;
     },
   },
+
   data() {
     return {
-      isShowAssetList: false, // Hiển thị popup chọn tài sản ghi tăng
+      isShowAssetList: false, // Hiển thị popup "chọn tài sản ghi tăng"
+      isShowBudgetDetail: false, // Hiển thị popup "Sửa tài sản"
       // Resources
       Resource,
       TableResource,

@@ -109,10 +109,18 @@ input::placeholder {
     margin-left: 13px;
 }
 
-/* In popup  */
-
+/* Number input  */
 .spinner {
     text-align: right;
+    height: 36px;
+    width: 100%;
+    padding: 0 14px;
+
+}
+
+.input--disabled {
+    pointer-events: none;
+    background-color: #fafafa;
 }
 
 .input--icon {

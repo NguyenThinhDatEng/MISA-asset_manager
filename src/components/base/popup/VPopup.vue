@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isShow" class="popup-wrapper" @keydown.esc="close">
+  <div class="popup-wrapper" @keydown.esc="close">
     <div class="center popup">
       <!-- Popup Header -->
       <div class="popup__header">
@@ -60,11 +60,6 @@ export default {
         return {};
       },
     },
-    // Ẩn/hiện popup
-    isShow: {
-      type: Boolean,
-      default: false,
-    },
   },
 
   components: {
@@ -84,6 +79,20 @@ export default {
      */
     close: function () {
       this.$emit("close-popup");
+    },
+
+    /**
+     * Thực hiện hàm updateFilter của component cha
+     * @param {string} field trường của dữ liệu
+     * @param {string} value giá trị được cập nhật
+     * @author NVThinh 7/1/2023
+     */
+    updateFilter: function (field, value) {
+      try {
+        this.$parent.updateFilter(field, value);
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   data() {

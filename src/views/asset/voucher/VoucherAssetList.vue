@@ -1,9 +1,10 @@
 <template>
   <Popup
-    :isShow="isShow"
     :title="Resource.PopupTitle.select_increment_asset"
     @close-popup="$parent.closePopup"
   >
+    <!-- Loader  -->
+    <Loader :isShow="isShowLoader"></Loader>
     <!-- Function bar -->
     <div class="function-bar">
       <!-- Search  -->
@@ -12,14 +13,21 @@
         :width="'270px'"
       />
     </div>
+    <!-- Table -->
     <TableVue
       :cols="TableResource.TableRow.FixedAssetDetail"
+      :data="fixedAssets"
       :tds="tds_of_detail"
-      :data="assetDetail"
       :page="TableResource.TableFoot.Page.assetList"
-      :isShowCheckbox="false"
+      ref="theTable"
     />
   </Popup>
+  <!-- Toast -->
+  <ToastVue
+    v-if="isShowToast"
+    :action-status="toastObj.actionStatus"
+    :content="toastObj.content"
+  ></ToastVue>
 </template>
   
   <script>
@@ -27,35 +35,123 @@
 import Popup from "@/components/base/popup/VPopup.vue";
 import TableVue from "@/components/base/table/Table.vue";
 import SearchInputVue from "@/components/base/inputs/SearchInput.vue";
+import Loader from "@/components/base/more/Loader.vue";
+import ToastVue from "@/components/base/toast/ToastVue.vue";
 // Resources
 import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
+import { getFixedAssetByFilterAndPaging } from "@/apis/fixedAsset";
 
 export default {
   name: "VoucherDetail",
-  created() {},
   components: {
     Popup,
     TableVue,
     SearchInputVue,
+    Loader,
+    ToastVue,
   },
-  props: {
-    // Hiển thị popup
-    isShow: {
-      type: Boolean,
-      default: false,
+  props: {},
+
+  created() {
+    // Gọi API lấy danh sách tài sản cố định theo tìm kiếm, lọc và giới hạn bản ghi
+    this.searchAndFilter();
+  },
+
+  watch: {
+    // Cập nhật Tổng số bản ghi
+    totalOfRecords: function () {
+      this.$nextTick(() => {
+        this.$refs.theTable.updateLimit(this.totalOfRecords);
+      });
     },
   },
-  methods: {},
+
+  methods: {
+    /**
+     * Gọi API filter
+     * @author NVThinh 7/1/2023
+     */
+    searchAndFilter: async function () {
+      // Gọi API lấy danh sách tài sản cố định theo lọc và phân trang
+      this.isShowLoader = true;
+      await getFixedAssetByFilterAndPaging(
+        this.conditions.keyword,
+        null,
+        null,
+        this.conditions.limit,
+        this.conditions.offset
+      )
+        .then((res) => {
+          this.fixedAssets = res.data.data;
+          this.totalOfRecords = res.data.totalOfRecords;
+          this.isShowLoader = false;
+        })
+        .catch(() => {
+          this.showToast(Enum.ActionStatus.Error, Resource.ToastContent.Error);
+        });
+    },
+
+    /**
+     * Hiển thị toast
+     * @param {Number} actionStatus trạng thái toast
+     * @param {String} content nội dung hiển thị
+     * @author NVThinh 7-1-2023
+     */
+    showToast: function (actionStatus, content) {
+      // Cập nhật đối tượng toast
+      this.toastObj.actionStatus = actionStatus;
+      this.toastObj.content = content;
+      // Hiển thị toast
+      this.isShowToast = true;
+    },
+
+    /**
+     * Cập nhật các điều kiện của filter
+     * @param {string} field trường của dữ liệu
+     * @param {string} value giá trị được cập nhật
+     * @author NVThinh 7/1/2023
+     */
+    updateFilter: async function (field, value) {
+      try {
+        console.log(field, value);
+        this.conditions[field] = value;
+        this.searchAndFilter();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+
   data() {
     return {
+      isShowToast: false, // Hiển thị toast
+      toastObj: {
+        actionStatus: 0,
+        content: "",
+      }, // Các thông tin yêu cầu từ toast component
+      isShowLoader: false, // Hiển thị loading
+      fixedAssets: [], //Mảng chứa các tài sản cố định
+      conditions: {
+        keyword: "",
+        limit: 20,
+        offset: 0,
+      }, // Đối tượng chứa các điều kiện để gọi API
+      totalOfRecords: 0, // Số lượng bản ghi lọc được
       // Resources
       Resource,
       TableResource,
       Enum,
       // Style cho detail table
       tds_of_detail: [
+        {
+          col: TableResource.TableRow.FixedAsset.checkbox?.ENG,
+          type: Enum.TableData.type.checkbox,
+          minWidth: "40px",
+          maxWidth: "50px",
+          align: "center",
+        },
         {
           col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
           type: Enum.TableData.type.text,
@@ -100,41 +196,6 @@ export default {
           type: Enum.TableData.type.number,
           minWidth: "80px",
           align: "right",
-        },
-      ],
-      // detail
-      assetDetail: [
-        {
-          fixed_asset_code: "TTTTTT124TT00000000001",
-          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
-          department_name: "Phòng kỹ thuật",
-          cost: 15516810,
-          accumulated_value: 100000,
-          residual_value: 156515615,
-        },
-        {
-          fixed_asset_code: "TTTT000000001",
-          fixed_asset_name: "Máy bay Ansi (XGA)",
-          department_name: "Phòng kỹ thuật",
-          cost: 155,
-          accumulated_value: 10000,
-          residual_value: 1562225615,
-        },
-        {
-          fixed_asset_code: "TTTTTT124TT00000000001",
-          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
-          department_name: "Phòng kỹ thuật",
-          cost: 15516810,
-          accumulated_value: 100000,
-          residual_value: 156515615,
-        },
-        {
-          fixed_asset_code: "TTTTTT124TT00000000001",
-          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
-          department_name: "Phòng kỹ thuật",
-          cost: 15516810,
-          accumulated_value: 100000,
-          residual_value: 156515615,
         },
       ],
     };

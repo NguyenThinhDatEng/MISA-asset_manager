@@ -2,7 +2,7 @@
   <div class="input__wrapper">
     <!-- label of input-->
     <label v-if="hasLabel">
-      {{ label }} <span style="color: red">*</span></label
+      {{ label }} <span v-show="isRequired" style="color: red">*</span></label
     >
     <!-- password input -->
     <div v-if="isPassword" class="password-login">
@@ -25,7 +25,7 @@
         'input',
         { 'input--disabled': isDisabled },
         { 'input--error': isError },
-        { 'input-login': !hasLabel },
+        { 'input-login': isLogin },
       ]"
       :maxlength="maxLength"
       :style="{
@@ -56,6 +56,7 @@ export default {
   name: "NormalInput",
   props: {
     label: String, // Nhãn của input
+    value: String, // Giá trị đầu vào
     // Ẩn hiện label của input
     hasLabel: {
       type: Boolean,
@@ -71,8 +72,6 @@ export default {
       type: String,
       required: "true",
     },
-    // Giá trị đầu vào
-    value: String,
     maxLength: Number,
     type: {
       type: [Number, String],
@@ -89,6 +88,16 @@ export default {
     placeholder: {
       type: String,
       default: "",
+    },
+    // Thông tin bắt buộc nhập
+    isRequired: {
+      type: Boolean,
+      default: true,
+    },
+    // Là ô input đăng nhập
+    isLogin: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ["update-input"],

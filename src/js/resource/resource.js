@@ -272,5 +272,6 @@ export default {
     voucher_date: "Ngày chứng từ",
     increment_date: "Ngày ghi tăng",
     description: "Ghi chú",
+    department: "Bộ phận sử dụng",
   },
 };

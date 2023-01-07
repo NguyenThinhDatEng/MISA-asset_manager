@@ -277,3 +277,11 @@
 .icon--zoom-in {
     background-position: -245px -333px;
 }
+
+.icon--plus-in-square {
+    background-position: -375px -419px;
+}
+
+.icon--minus-in-circle {
+    background-position: -375px -463px;
+}

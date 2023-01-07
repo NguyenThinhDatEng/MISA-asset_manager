@@ -118,6 +118,8 @@ import {
   deleteFixedAsset,
   deleteMultipleFixedAssets,
 } from "@/apis/fixedAsset";
+import { getAllDepartments } from "@/apis/department";
+import { getAllFixedAssetCategories } from "@/apis/fixedAssetCategory";
 // Components
 import DropdownTick from "@/components/base/dropdowns/DropdownTick.vue";
 import TheTable from "@/components/base/table/Table.vue";
@@ -128,8 +130,6 @@ import Popup from "@/views/asset/AssetDetail.vue";
 import DialogDeleteVue from "@/components/base/dialogs/DialogDelete.vue";
 import Loader from "@/components/base/more/Loader.vue";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
-import { getAllDepartments } from "@/apis/department";
-import { getAllFixedAssetCategories } from "@/apis/fixedAssetCategory";
 
 export default {
   name: "AssetList",

@@ -25,6 +25,7 @@
                 <div class="username-login login">
                   <InputVue
                     :has-label="false"
+                    :isLogin="true"
                     :labelContent="data.account.placeholder"
                     :placeholder="data.account.placeholder"
                     :field="fields.account"
@@ -36,6 +37,7 @@
                 <!-- password -->
                 <InputVue
                   :has-label="false"
+                  :isLogin="true"
                   :is-password="true"
                   :labelContent="data.password.placeholder"
                   :placeholder="data.password.placeholder"

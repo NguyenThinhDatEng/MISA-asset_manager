@@ -22,16 +22,6 @@
     height: 24px;
 }
 
-.dropdown__input {
-    position: absolute;
-    flex: 1;
-    left: 39px;
-}
-
-.dropdown__input.input {
-    border: none;
-}
-
 .dropdown__button {
     position: absolute;
     right: 0;

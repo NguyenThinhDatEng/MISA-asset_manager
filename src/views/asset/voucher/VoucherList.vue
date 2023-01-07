@@ -46,13 +46,11 @@
         :is-show-feature="true"
         :page="TableResource.TableFoot.Page.voucher"
         :only-one-row="true"
+        @update-voucher="openAssetList"
       />
     </div>
     <!-- Table 02 -->
-    <div
-      class="detail"
-      :style="[{ 'max-height': isZoomIn ? 'none' : '218px' }]"
-    >
+    <div class="detail">
       <div class="function-bar">
         <div class="function__left">Thông tin chi tiết</div>
         <div class="function__right">
@@ -66,10 +64,6 @@
       </div>
       <!-- Table  -->
       <TableVue
-        :style="[
-          { height: isZoomIn ? 'none' : '158px' },
-          { 'max-height': isZoomIn ? 'none' : '218px' },
-        ]"
         :cols="TableResource.TableRow.FixedAssetDetail"
         :tds="tds_of_detail"
         :data="assetDetail"
@@ -79,7 +73,7 @@
     </div>
   </div>
   <!-- Popup -->
-  <VoucherDetail :isShow="isShowPopup" />
+  <VoucherDetail v-if="isShowPopup" />
 </template>
 
 <script>
@@ -97,8 +91,15 @@ import Enum from "@/js/enum/enum";
 export default {
   name: "VoucherList",
   components: { Button, SearchInput, TableVue, VoucherDetail },
-
+  // =======================================
   methods: {
+    /**
+     * @description Mở popup "Thêm chứng từ ghi tăng"
+     * @author NVThinh 6/1/2023
+     */
+    openAssetList: function () {
+      this.isShowPopup = true;
+    },
     /**
      * @description Phóng to/Thu nhỏ bảng chi tiết
      * @author NVT 3/1/2022
@@ -388,6 +389,10 @@ export default {
 
 .detail .icon-item_wrapper {
   width: 44px;
+}
+
+.detail .table {
+  height: 158px;
 }
 
 /* Table */

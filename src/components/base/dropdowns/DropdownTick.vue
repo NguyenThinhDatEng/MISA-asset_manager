@@ -1,21 +1,28 @@
 <template>
   <div :class="parentClass ? parentClass : ''">
-    <div id="combobox--checked" class="combobox">
-      <div class="dropdown__icon">
+    <div class="dropdown" :style="[{ 'padding-left: 14px': !hasIcon }]">
+      <!-- Icon -->
+      <div v-if="hasIcon" class="dropdown__icon">
         <div class="icon center icon--18px icon--filter"></div>
       </div>
       <!-- input  -->
       <input
         type="text"
-        class="input dropdown__input"
+        :class="[
+          'input',
+          { dropdown__input: hasIcon },
+          { 'dropdown__input--no-icon': !hasIcon },
+        ]"
         :placeholder="placeholder"
         v-model="selectedValue"
-        @click="isShow = !isShow"
+        @click="toggle"
       />
       <!-- button  -->
-      <div class="combobox__button" @click="isShow = !isShow">
+      <div class="dropdown__button" @click="toggle">
+        <!-- icon -->
         <div class="icon center icon--down"></div>
       </div>
+      <!-- The options of dropdown -->
       <div class="dropdown__data" v-show="isShow">
         <Data
           v-for="item in data"
@@ -38,15 +45,26 @@ export default {
   // =========================== Declaration =========================
   name: "DropdownTick",
   props: {
-    parentClass: String,
-    placeholder: String,
-    field: String,
+    // Các options của dropdown
     dropdownData: {
       type: Array,
       default: () => {
         return [];
       },
     },
+    // Có icon
+    hasIcon: {
+      type: Boolean,
+      default: true,
+    },
+    // Giá trị đầu vào
+    value: {
+      type: String,
+      default: "",
+    },
+    parentClass: String,
+    placeholder: String,
+    field: String,
   },
   components: { Data },
   emits: ["update-filter"],
@@ -58,6 +76,10 @@ export default {
         this.isShow = false;
       }
     });
+    // Cập nhật giá trị đầu vào
+    this.selectedValue = this.value;
+    // Cập nhật mảng dữ liệu
+    this.data = this.dropdownData;
   },
   watch: {
     // Nếu prop dropdownData được cập nhật
@@ -93,6 +115,14 @@ export default {
   },
   methods: {
     /**
+     * @description Ẩn/hiện data options
+     * @author NVThinh 6/1/2023
+     */
+    toggle: function () {
+      this.isShow = !this.isShow;
+    },
+
+    /**
      * Sự kiện chọn thông tin trong dropdown filter
      * @param {String} id định danh của loại dữ liệu
      * @author Nguyen Van Thinh 22/11/2022
@@ -126,15 +156,17 @@ export default {
       }
     },
 
+    /**
+     * @description làm mới dropdown (xóa tất cả các dòng được tick)
+     * @author NVThinh 6/1/2023
+     */
     clear: function () {
       try {
         // reload
         this.$emit("update-filter", this.fields.id, Constants.GUID.EMPTY);
-        // remove focus options
         for (let obj of this.dropdownData) {
           obj.isActive = false;
         }
-        // update "active" variable
         this.active = false;
       } catch (error) {
         console.log(error);
@@ -160,12 +192,18 @@ export default {
 <style scoped>
 @import url(@/css/components/dropdown.css);
 
-.combobox {
-  background-color: #fff;
+.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  outline: none;
+  height: 36px;
+  border: 1px solid #afafaf;
+  border-radius: 2.5px;
 }
 
-.combobox:hover,
-.combobox:focus-within {
+.dropdown:hover,
+.dropdown:focus-within {
   border: 1px solid var(--input--hover);
 }
 
@@ -188,9 +226,28 @@ export default {
   left: 39px;
 }
 
+.dropdown__input--no-icon {
+  position: absolute;
+  flex: 1;
+  padding-left: 14px;
+  height: 100%;
+  width: calc(100% - 36px);
+}
+
+.dropdown__input--no-icon.input::placeholder,
 .dropdown__input.input::placeholder {
   font-family: MISA Regular;
   color: #000;
+}
+
+.dropdown__button {
+  position: absolute;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 2.5px;
+  background-color: transparent;
 }
 
 .dropdown__icon {
@@ -198,5 +255,9 @@ export default {
   left: 6px;
   width: 24px;
   height: 24px;
+}
+
+.input {
+  border: none;
 }
 </style>
