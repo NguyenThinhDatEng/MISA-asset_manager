@@ -64,6 +64,7 @@ export default {
 </script>
 
 <style scoped>
+@import url(@/css/components/combobox.css);
 .combobox {
   cursor: pointer;
 }

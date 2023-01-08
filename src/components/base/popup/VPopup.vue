@@ -20,6 +20,7 @@
           :title="Title.save"
           :button-content="Resource.ButtonContent.save"
           :type="Enum.Type.Main"
+          @click="$emit('on-save')"
         ></ButtonMain>
         <ButtonMain
           :title="Title.cancel"
@@ -66,7 +67,7 @@ export default {
     ButtonMain,
   },
 
-  emits: ["close-popup"],
+  emits: ["close-popup", "on-save"],
 
   created() {},
 
@@ -90,6 +91,20 @@ export default {
     updateFilter: function (field, value) {
       try {
         this.$parent.updateFilter(field, value);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Lấy thông tin các tài sản được chọn
+     * @param {Array} selectedRows mảng các dòng được chọn
+     * @author Nguyen Van Thinh 7/1/2023
+     */
+    updateRow: function (selectedRows) {
+      try {
+        // Truyền mảng các dòng được chọn lên component cha
+        this.$parent.updateRow(selectedRows);
       } catch (error) {
         console.log(error);
       }

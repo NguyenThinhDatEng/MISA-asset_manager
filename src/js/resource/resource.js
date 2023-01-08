@@ -59,7 +59,7 @@ export default {
     department_filter: "lọc theo bộ phận sử dụng",
     add: "Thêm mới tài sản",
     export: "Xuất dữ liệu",
-    edit: "Sửa",
+    edit: "Sửa tài sản",
     duplicate: "Nhân bản",
     limit: "Số lượng bản ghi hiển thị",
     close: "Đóng",

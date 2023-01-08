@@ -33,8 +33,17 @@ export default {
       default: "179px",
     },
   },
-  emits: ["update-filter"],
-  watch: {},
+  emits: ["update-filter", "handle-empty-input"],
+
+  watch: {
+    // Nếu giá trị input cập nhật
+    value: function (newVal, oldVal) {
+      if (!newVal && oldVal) {
+        this.$emit("handle-empty-input");
+      }
+    },
+  },
+
   methods: {
     // Gửi giá trị cập nhật đến cha
     updateFilter: function () {
@@ -45,6 +54,7 @@ export default {
       }
     },
   },
+
   data() {
     return { Resource, maxLength: 255, value: "" };
   },

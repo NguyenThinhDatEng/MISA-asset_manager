@@ -14,12 +14,12 @@
       ref="td"
     />
     <div class="feature" v-show="isShowFeature">
-      <!-- edit button -->
-      <div class="icon__wrapper" @click="updateVoucher">
+      <!-- Edit button -->
+      <div class="icon__wrapper" @click="updateVoucher(Enum.Mode.Update)">
         <div class="icon icon--edit center" :title="Resource.Title.edit" />
       </div>
-      <!-- duplicate button -->
-      <div class="icon__wrapper">
+      <!-- Delete button -->
+      <div class="icon__wrapper" @click="updateVoucher(Enum.Mode.Delete)">
         <div
           class="icon icon--18px icon--delete center"
           :title="Resource.Title.delete"
@@ -63,9 +63,9 @@ export default {
     "update-row",
     "update-checked-header",
     "update-popup-object",
+    "update-voucher",
     "reload-content",
     "show-popup",
-    "update-voucher",
   ],
 
   created() {
@@ -103,8 +103,13 @@ export default {
      * @description Phát tín hiệu đến lớp cha khi click vào nút sửa
      * @author NVThinh 6/1/2023
      */
-    updateVoucher: function () {
-      this.$emit("update-voucher");
+    updateVoucher: function (mode) {
+      this.$emit(
+        "update-voucher",
+        mode,
+        this.tableRowObj,
+        this.numerical_order - 1
+      );
     },
     /**
      * @description active dòng
@@ -239,10 +244,11 @@ tr .feature .icon__wrapper {
   position: relative;
   width: 25px;
   height: 25px;
+  border-radius: 100%;
+  background-color: #d1edf4;
 }
 
 tr .feature .icon__wrapper:hover {
-  border-radius: 100%;
   background-color: #fff;
 }
 </style>

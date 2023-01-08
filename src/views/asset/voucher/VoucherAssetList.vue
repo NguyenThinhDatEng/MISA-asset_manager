@@ -1,7 +1,8 @@
 <template>
   <Popup
     :title="Resource.PopupTitle.select_increment_asset"
-    @close-popup="$parent.closePopup"
+    @close-popup="close"
+    @on-save="onSave"
   >
     <!-- Loader  -->
     <Loader :isShow="isShowLoader"></Loader>
@@ -13,6 +14,7 @@
         :placeholder="Resource.Placeholder.search_asset_code_name"
         :width="'270px'"
         @update-filter="updateFilter"
+        @handle-empty-input="handleEmptyInput"
       />
     </div>
     <!-- Table -->
@@ -21,6 +23,7 @@
       :data="fixedAssets"
       :tds="tds_of_detail"
       :page="TableResource.TableFoot.Page.assetList"
+      @update-row="updateRow"
       ref="theTable"
     />
   </Popup>
@@ -72,6 +75,38 @@ export default {
 
   methods: {
     /**
+     * @description xử lý sự kiện khi ô tìm kiếm trống
+     * @author NVThinh 7/1/2023
+     */
+    handleEmptyInput: function () {
+      this.conditions.keyword = "";
+      this.searchAndFilter();
+    },
+
+    /**
+     * @description Đóng popup
+     * @author NVThinh 7/1/2023
+     */
+    close: function () {
+      this.$parent.closePopup();
+    },
+
+    /**
+     * @description xử lý sự kiện ấn nút lưu
+     * @author NVThinh 7/1/2023
+     */
+    onSave: function () {
+      try {
+        // Chỉ gửi dữ liệu khi có tài sản được chọn
+        if (this.selectedRows.length > 0)
+          this.$parent.updateRow(this.selectedRows);
+        this.close();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
      * Gọi API filter
      * @author NVThinh 7/1/2023
      */
@@ -117,9 +152,22 @@ export default {
      */
     updateFilter: async function (field, value) {
       try {
-        console.log(field, value);
         this.conditions[field] = value;
         this.searchAndFilter();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Lấy thông tin các tài sản được chọn
+     * @param {Array} selectedRows mảng các dòng được chọn
+     * @author Nguyen Van Thinh 7/1/2023
+     */
+    updateRow: function (selectedRows) {
+      try {
+        // Cập nhật mảng các dòng được chọn
+        this.selectedRows = selectedRows;
       } catch (error) {
         console.log(error);
       }
@@ -128,6 +176,7 @@ export default {
 
   data() {
     return {
+      selectedRows: [], // Mảng chứa các dòng trong bảng được chọn
       isShowToast: false, // Hiển thị toast
       toastObj: {
         actionStatus: 0,

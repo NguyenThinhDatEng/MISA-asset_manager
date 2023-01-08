@@ -24,7 +24,13 @@
     <!-- list sub item -->
     <ul class="sub-item" v-show="isShowSubList">
       <router-link :to="getRouter('ghi-tang')">
-        <li v-for="item in subList" :key="item.content">{{ item.content }}</li>
+        <li
+          v-for="item in subList"
+          :key="item.content"
+          @click="onClickSubItem(item)"
+        >
+          {{ item.content }}
+        </li>
       </router-link>
     </ul>
   </router-link>
@@ -54,6 +60,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    // active item con
+    onActiveSubItem: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   created() {
@@ -62,6 +73,15 @@ export default {
   },
 
   methods: {
+    /**
+     * @description xử lý sự kiện click vào 1 sub item
+     * @param {object} item mục được chọn
+     * @author NVThinh 9/1/2023
+     */
+    onClickSubItem: function (item) {
+      console.log(item);
+    },
+
     /**
      * Bỏ icon mũi tên đi xuống của những item không có
      * @param {String} itemContent tên mục

@@ -180,8 +180,8 @@ export default {
      * @description Phát tín hiệu đến lớp cha khi click vào nút sửa
      * @author NVThinh 6/1/2023
      */
-    updateVoucher: function () {
-      this.$emit("update-voucher");
+    updateVoucher: function (mode, fixedAsset, index) {
+      this.$emit("update-voucher", mode, fixedAsset, index);
     },
 
     /**
@@ -229,7 +229,7 @@ export default {
             }
           }
         }
-        // Bắn chiều dài mảng được chọn lên cha của nó (Table)
+        // Truyền mảng các dòng được chọn lên component cha
         this.$emit("update-row", this.selectedRows);
         // console.log(this.selectedRows);
       } catch (error) {

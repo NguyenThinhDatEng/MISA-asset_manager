@@ -259,6 +259,7 @@ export default {
       // Cập nhật giá trị và style trang được chọn
       this.updatePageNumberState();
     },
+
     // Gửi dữ liệu để call API filter khi trang được chọn thay đổi
     selectedNumber: function () {
       try {
@@ -432,6 +433,24 @@ export default {
     },
 
     /**
+     * Kiểm tra trạng thái ẩn hiện dấu 3 chấm đằng sau
+     * @author NVThinh 25/11/2022
+     */
+    isShowFirstThreeDots: function () {
+      try {
+        if (this.numberOfPages == 4 && this.selectedNumber >= 3) {
+          return true;
+        }
+        if (this.numberOfPages > 4 && this.selectedNumber > 3) {
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
      * Kiểm tra trạng thái ẩn hiện dấu 3 chấm đằng trước
      * @author NVThinh 25/11/2022
      */
@@ -455,13 +474,13 @@ export default {
      */
     isShowPrePage: function () {
       try {
+        if (this.numberOfPages == 3) return true;
+        if (this.numberOfPages == 4 && this.selectedNumber <= 2) return true;
         if (
           this.numberOfRecords > 4 &&
-          this.selectedNumber < this.numberOfPages - 2
+          this.selectedNumber <= this.numberOfPages - 2
         )
           return true;
-        if (this.numberOfPages == 4 && this.selectedNumber <= 2) return true;
-        if (this.numberOfPages == 3) return true;
         return false;
       } catch (error) {
         console.log(error);
@@ -493,21 +512,6 @@ export default {
     isShowNextPage: function () {
       try {
         if (this.numberOfPages >= 4 && this.selectedNumber > 2) return true;
-        return false;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    /**
-     * Kiểm tra trạng thái ẩn hiện dấu 3 chấm đằng sau
-     * @author NVThinh 25/11/2022
-     */
-    isShowFirstThreeDots: function () {
-      try {
-        if (this.numberOfPages > 3 && this.selectedNumber > 3) {
-          return true;
-        }
         return false;
       } catch (error) {
         console.log(error);

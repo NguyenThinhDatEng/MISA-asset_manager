@@ -1,14 +1,12 @@
 <template>
-  <Popup
-    :title="Resource.PopupTitle.edit + ' Xe Toyota'"
-    @close-popup="$parent.closePopup"
-  >
+  <Popup :title="getTitle()" @close-popup="$parent.closePopup">
     <div class="popup__body__wrapper">
       <div class="row">
         <div class="row__left">
           <InputVue
             :style="['margin-bottom: 16px', 'width: 100%']"
             :label="Resource.InputLabel.department"
+            :value="department"
             :isRequired="false"
             :isDisabled="true"
           />
@@ -107,7 +105,16 @@ export default {
     InputVue,
     DropdownTickVue,
   },
-  props: {},
+  props: {
+    fixedAssetName: {
+      type: String,
+      isRequired: true,
+    }, // Tên tài sản cần sửa đổi nguồn hình thành
+    department: {
+      type: String,
+      isRequired: true,
+    }, // Bộ phận sử dụng
+  },
 
   mounted() {
     getAllBudgets()
@@ -116,6 +123,15 @@ export default {
   },
 
   methods: {
+    /**
+     * @description Lấy tiêu để của popup
+     * @return {String} tên tiêu đề popup
+     * @author NVThinh 8/1/2023
+     */
+    getTitle: function () {
+      return Resource.PopupTitle.edit + " " + this.fixedAssetName;
+    },
+
     /**
      * @description xử lý sự kiện nhấn vào icon thêm mới nguồn hình thành
      * @author NVThinh 6/1/2023
