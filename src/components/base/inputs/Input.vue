@@ -113,6 +113,11 @@ export default {
       if (this.type != Enum.DataType.Text) this.val = Number(this.val);
       this.$emit("update-input", this.val, this.field);
     },
+
+    // Cập nhật giá trị
+    value: function () {
+      this.val = this.value;
+    },
   },
 
   methods: {

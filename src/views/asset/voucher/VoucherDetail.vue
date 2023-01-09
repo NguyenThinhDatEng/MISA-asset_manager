@@ -11,7 +11,11 @@
           <!-- Row -->
           <div class="row">
             <!-- Input: voucher code -->
-            <InputVue :label="Resource.InputLabel.voucher_code" />
+            <InputVue
+              :label="Resource.InputLabel.voucher_code"
+              :value="voucher.voucher_code"
+              ref="voucherCode"
+            />
             <!-- Inputs: voucher date -->
             <div class="input--date">
               <label
@@ -93,6 +97,7 @@ import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
+import { getNewCode } from "@/apis/voucher/voucher";
 // Components
 import Popup from "@/components/base/popup/VPopup.vue";
 import InputVue from "@/components/base/inputs/Input.vue";
@@ -106,7 +111,6 @@ import BudgetDetail from "@/views/asset/voucher/BudgetDetail.vue";
 
 export default {
   name: "VoucherDetail",
-  created() {},
   components: {
     Popup,
     InputVue,
@@ -126,11 +130,21 @@ export default {
     },
   },
 
+  created() {
+    this.getNewCode();
+    console.log(this.voucher);
+  },
+
   watch: {
     // Cập nhật Tổng số bản ghi
     selectedAssetList: function () {
       this.paging();
     },
+  },
+
+  mounted() {
+    // focus vào ô input đầu tiên
+    this.$refs.voucherCode.focusInput();
   },
 
   methods: {
@@ -266,6 +280,23 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * @description API lấy mã mới
+     * @author Nguyen Van Thinh 9/1/2023
+     */
+    getNewCode: async function () {
+      try {
+        await getNewCode().then((res) => {
+          // Gán vào đối tượng
+          this.voucher.voucher_code = res.data;
+          console.log(this.voucher.voucher_code);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+      console.log(this.voucher);
+    },
   },
 
   data() {
@@ -283,6 +314,12 @@ export default {
         name: "",
         department: "",
       }, // Đối tượng tài sản được chọn trong bảng detail
+      voucher: {
+        voucher_code: "",
+        voucher_date: new Date(),
+        increment_date: new Date(),
+        description: "",
+      }, // Đối tượng chứng từ
       // Resources
       Resource,
       TableResource,

@@ -613,7 +613,7 @@ export default {
      */
     getNewCode: async function () {
       try {
-        getNewCode().then((res) => {
+        await getNewCode().then((res) => {
           // Gán vào đối tượng
           this.data[this.fields.fixed_asset_code] = res.data;
           this.originalData[this.fields.fixed_asset_code] = res.data;

@@ -80,7 +80,7 @@ const getFixedAssetByID = (fixedAssetID) => {
 const getNewCode = () => {
   try {
     console.log("Call API get new fixed asset code");
-    const res = httpClient.get(END_POINT + `/newAssetCode`);
+    const res = httpClient.get(END_POINT + `/newCode`);
     return res;
   } catch (error) {
     console.log(error);
