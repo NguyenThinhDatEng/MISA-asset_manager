@@ -1,11 +1,15 @@
 <template>
+  <!-- Wrapper -->
   <div class="dialog__wrapper">
     <div class="dialog" v-if="this.mode == Enum.Mode.Add">
+      <!-- Header -->
       <div class="dialog__header"></div>
+      <!-- Body -->
       <div id="dialog--no-header" class="dialog__body">
         <div class="icon icon--warning dialog__body__icon"></div>
         <p class="dialog__body__text">{{ content }}</p>
       </div>
+      <!-- Footer -->
       <div class="dialog__footer">
         <ButtonMainVue
           :button-content="Resource.ButtonContent.remove"
@@ -14,6 +18,7 @@
           @click="this.$emit('close-popup')"
         ></ButtonMainVue>
         <ButtonOutlineVue
+          v-show="hasNoButton"
           :button-content="Resource.ButtonContent.no"
           :title="Resource.Title.cancel"
           @click="this.$emit('close-dialog')"
@@ -61,15 +66,24 @@ import SubButton from "@/components/base/buttons/ButtonSub.vue";
 
 export default {
   name: "DialogCancel",
+  components: { ButtonMainVue, ButtonOutlineVue, SubButton },
+  props: {
+    mode: Number,
+    hasNoButton: {
+      type: Boolean,
+      default: true,
+    }, // Dialog có button "Không"
+  },
+  emits: ["close-dialog", "close-popup", "save-and-close"],
+
   created() {
     if (this.mode == Enum.Mode.Add) {
       this.content = this.text.add;
     } else this.content = this.text.edit;
   },
-  components: { ButtonMainVue, ButtonOutlineVue, SubButton },
-  props: { mode: Number },
-  emits: ["close-dialog", "close-popup", "save-and-close"],
+
   methods: {},
+
   data() {
     return {
       content: "",

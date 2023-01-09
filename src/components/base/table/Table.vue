@@ -280,13 +280,19 @@ export default {
         // Khởi tạo lại các giá trị trên footer table
         for (const key in this.footerData) this.footerData[key] = 0;
         // Cập nhật các dữ liệu trên table footer
-        if (this.page == TableResource.TableFoot.Page.fixedAsset) {
-          this.footerData.totalOfQuantities = this.data.reduce(
-            (accumulator, obj) => {
-              return accumulator + obj.quantity;
-            },
-            0
-          );
+        if (
+          this.page == this.pages.fixedAsset ||
+          this.page == this.pages.fixedAssetDetail
+        ) {
+          if (this.page == this.pages.fixedAsset) {
+            // Cập nhật tổng số lượng
+            this.footerData.totalOfQuantities = this.data.reduce(
+              (accumulator, obj) => {
+                return accumulator + obj.quantity;
+              },
+              0
+            );
+          }
           this.footerData.totalOfCost = this.data.reduce((accumulator, obj) => {
             return accumulator + obj.cost;
           }, 0);
@@ -374,6 +380,7 @@ export default {
       // Resource
       Resource,
       TableResource,
+      pages: TableResource.TableFoot.Page,
     };
   },
 };

@@ -77,7 +77,7 @@
             />
           </div>
         </div>
-        <!-- Master table  -->
+        <!--  Table  -->
         <TableVue
           :cols="TableResource.TableRow.FixedAssetDetail"
           :tds="tds_of_detail"
@@ -100,8 +100,12 @@
     :fixed-asset-name="fixedAsset.name"
     :department="fixedAsset.department"
   />
-  <!-- Dialog cancel -->
-  <DialogCancelVue v-if="isShowDialog" />
+  <!-- Dialog warning -->
+  <DialogWarning
+    v-if="isShowDialog"
+    :content="warningMessage"
+    @close-dialog="closeDialog"
+  />
 </template>
 
 <script>
@@ -118,7 +122,7 @@ import InputCalendar from "@/components/base/datepicker/InputCalendar.vue";
 import TableVue from "@/components/base/table/Table.vue";
 import SearchInputVue from "@/components/base/inputs/SearchInput.vue";
 import Button from "@/components/base/buttons/ButtonOutline.vue";
-import DialogCancelVue from "@/components/base/dialogs/DialogCancel.vue";
+import DialogWarning from "@/components/base/dialogs/DialogWarning.vue";
 // Views
 import VoucherAssetList from "@/views/asset/voucher/VoucherAssetList.vue";
 import BudgetDetail from "@/views/asset/voucher/BudgetDetail.vue";
@@ -132,7 +136,7 @@ export default {
     TableVue,
     SearchInputVue,
     Button,
-    DialogCancelVue,
+    DialogWarning,
     // views
     VoucherAssetList,
     BudgetDetail,
@@ -337,7 +341,7 @@ export default {
         }
         // Kiểm tra bảng detail có ít nhất 1 tài sản
         if (this.selectedAssetList.length === 0) {
-          console.log("error");
+          this.isShowDialog = true;
         }
       } catch (error) {
         console.log(error);
@@ -357,10 +361,19 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * @description Đóng dialog
+     * @author NVThinh 10/1/2023
+     */
+    closeDialog: function () {
+      this.isShowDialog = false;
+    },
   },
 
   data() {
     return {
+      warningMessage: "Chọn ít nhất 1 tài sản", // Thông tin cảnh báo
       isError: false, // Lỗi thiếu thông tin trường bắt buộc
       isShowDialog: false, // Hiển thị dialog cảnh báo
       isShowAssetList: false, // Hiển thị popup "chọn tài sản ghi tăng"

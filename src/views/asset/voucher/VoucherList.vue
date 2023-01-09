@@ -91,6 +91,12 @@
     :mode="mode"
     :voucher-prop="selectedVoucher"
   />
+  <!-- Dialog warning -->
+  <DialogWarning
+    v-if="isShowDialog"
+    :content="warningMessage"
+    @close-dialog="closeDialog"
+  />
 </template>
 
 <script>
@@ -98,6 +104,8 @@
 import Button from "@/components/base/buttons/ButtonIcon.vue";
 import SearchInput from "@/components/base/inputs/SearchInput.vue";
 import TableVue from "@/components/base/table/Table.vue";
+import DialogWarning from "@/components/base/dialogs/DialogWarning.vue";
+// Views
 import VoucherDetail from "@/views/asset/voucher/VoucherDetail.vue";
 // Resources
 import Resource from "@/js/resource/resource";
@@ -108,8 +116,8 @@ import { filterAndPaging } from "@/apis/voucher/voucher";
 
 export default {
   name: "VoucherList",
-  components: { Button, SearchInput, TableVue, VoucherDetail },
-  // =======================================
+  components: { Button, SearchInput, TableVue, VoucherDetail, DialogWarning },
+
   created() {
     this.filterAndPaging();
   },
@@ -120,7 +128,27 @@ export default {
     },
   },
 
+  computed: {
+    warningMessage: function () {
+      return (
+        "Bạn có muốn xóa chứng từ có mã " +
+        "<b>" +
+        this.selectedVoucher.voucher_code +
+        "</b>" +
+        "?"
+      );
+    },
+  },
+
   methods: {
+    /**
+     * @description Đóng dialog
+     * @author NVThinh 10/1/2023
+     */
+    closeDialog: function () {
+      this.isShowDialog = false;
+    },
+
     /**
      * @description Mở popup "Thêm chứng từ ghi tăng"
      * @author NVThinh 6/1/2023
@@ -164,9 +192,12 @@ export default {
       if (mode == Enum.Mode.Update) {
         this.popupTitle = Resource.PopupTitle.edit_increment_asset;
       }
-      // Hiển thị popup
       if (mode != Enum.Mode.Delete) {
+        // Hiển thị popup
         this.isShowPopup = true;
+      } else {
+        // Hiển thị dialog
+        this.isShowDialog = true;
       }
     },
 
@@ -230,6 +261,7 @@ export default {
   data() {
     return {
       // Variables
+      isShowDialog: false, // Hiển thị dialog cảnh báo
       isShowDeleteIcon: false, // Hiển thị icon delete nhiều chứng từ
       mode: 0, // Chế độ hiển thị popup
       isZoomIn: false, // Phóng to bảng chi tiết
