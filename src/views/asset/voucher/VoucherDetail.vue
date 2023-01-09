@@ -48,6 +48,7 @@
             <InputVue
               :label="Resource.InputLabel.description"
               :isRequired="false"
+              :value="voucherProp.description"
             />
           </div>
         </div>

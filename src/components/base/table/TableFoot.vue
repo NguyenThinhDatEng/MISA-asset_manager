@@ -4,7 +4,9 @@
     <!-- Footer 01 -->
     <tr v-if="page === pages.voucher" id="voucher">
       <td colspan="5" />
-      <td id="totalOfCost">{{ Function.formatMoney(10000000) }}</td>
+      <td id="totalOfCost">
+        {{ Function.formatMoney(footerData.totalOfCost) }}
+      </td>
       <td></td>
     </tr>
     <!-- Footer 02 -->
@@ -224,12 +226,11 @@
           </div>
         </div>
       </td>
-      <td v-if="page === pages.fixedAsset" class="value">
-        {{ Function.formatMoney(totalOfQuantities) }}
-      </td>
+      <!-- totals -->
       <td class="value" v-for="(val, key) of footerData" :key="key">
         {{ Function.formatMoney(val) }}
       </td>
+      <!-- empty table data -->
       <td v-if="page === pages.fixedAsset"></td>
     </tr>
   </tfoot>
@@ -249,9 +250,20 @@ export default {
   props: {
     footerData: Object, // Đối tượng chứa tổng của các cột tiền
     numberOfRecords: Number, // tổng số lượng bản ghi
-    totalOfQuantities: Number, // tổng của cột số lượng
     page: String, // loại trang giúp xác định kiểu footer
   },
+
+  created() {
+    try {
+      // Thêm thuộc tính isSelected vào mảng
+      for (let i = 0; i < 100; i++) this.numberState.push(false);
+      // Trang đầu tiên auto được lựa chọn
+      this.numberState[0] = true;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   watch: {
     // Cập nhật số trang khi tổng số bản ghi thay đổi
     numberOfRecords: function () {
@@ -272,16 +284,7 @@ export default {
       }
     },
   },
-  created() {
-    try {
-      // Thêm thuộc tính isSelected vào mảng
-      for (let i = 0; i < 100; i++) this.numberState.push(false);
-      // Trang đầu tiên auto được lựa chọn
-      this.numberState[0] = true;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+
   methods: {
     /**
      * trả về thông tin số bản ghi thu được render bằng v-html

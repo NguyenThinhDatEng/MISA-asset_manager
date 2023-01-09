@@ -22,10 +22,14 @@ const getNewCode = () => {
  * @returns res là 1 promise
  * @author NVThinh (9-1-2023)
  */
-const filterAndPaging = () => {
+const filterAndPaging = (keyword, limit, offset) => {
   try {
     console.log("Call API get vouchers by filter and paging");
-    const res = httpClient.get(END_POINT + `/filter`);
+    // Tạo chỗi truy vấn
+    let queryParams = "";
+    queryParams +=
+      "keyword=" + keyword + "&limit=" + limit + "&offset=" + offset;
+    const res = httpClient.get(END_POINT + `/filter?${queryParams}`);
     return res;
   } catch (error) {
     console.log(error);

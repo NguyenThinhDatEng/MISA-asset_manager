@@ -21,18 +21,28 @@
     </div>
     <!-- Table 01 -->
     <div class="master" v-show="!isZoomIn">
+      <!-- Function bar -->
       <div class="function-bar">
         <div class="function__left">
           <!-- Search  -->
           <SearchInput
             :placeholder="Resource.Placeholder.search_voucher"
             :width="'270px'"
+            :field="'keyword'"
+            @update-filter="updateFilter"
+            @handle-empty-input="handleEmptyInput"
           />
         </div>
         <div class="function__right">
+          <!-- Delete icon -->
+          <div class="icon-item_wrapper" v-show="isShowDeleteIcon">
+            <div class="icon icon--18px icon--delete center"></div>
+          </div>
+          <!-- Print icon -->
           <div class="icon-item_wrapper">
             <div class="icon icon--18px icon--print center"></div>
           </div>
+          <!-- Menu icon -->
           <div class="icon-item_wrapper">
             <div class="icon icon--option center"></div>
           </div>
@@ -46,7 +56,9 @@
         :is-show-feature="true"
         :page="TableResource.TableFoot.Page.voucher"
         :only-one-row="true"
+        ref="theTable"
         @update-voucher="updateVoucher"
+        @update-row="updateRow"
       />
     </div>
     <!-- Table 02 -->
@@ -100,6 +112,12 @@ export default {
   // =======================================
   created() {
     this.filterAndPaging();
+  },
+
+  watch: {
+    totalOfRecords: function () {
+      this.$refs.theTable.updateLimit(this.totalOfRecords);
+    },
   },
 
   methods: {
@@ -157,24 +175,73 @@ export default {
      * @author NVThinh 9/1/2023
      */
     filterAndPaging: async function () {
-      await filterAndPaging()
+      await filterAndPaging(
+        this.conditions.keyword,
+        this.conditions.limit,
+        this.conditions.offset
+      )
         .then((res) => {
           this.vouchers = res.data.data;
+          // Cập nhật tổng số bản ghi thu được
           this.totalOfRecords = res.data.totalOfRecords;
         })
         .catch((error) => console.log(error));
+    },
+
+    /**
+     * Cập nhật các điều kiện của filter
+     * @param {string} field trường của dữ liệu
+     * @param {string} value giá trị được cập nhật
+     * @author NVThinh 10/1/2023
+     */
+    updateFilter: function (field, value) {
+      try {
+        // Cập nhật các diều kiện lọc và phân trang
+        this.conditions[field] = value;
+        // Call lại API
+        this.filterAndPaging();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description xử lý sự kiện khi ô tìm kiếm trống
+     * @author NVThinh 7/1/2023
+     */
+    handleEmptyInput: function () {
+      this.conditions.keyword = "";
+      this.filterAndPaging();
+    },
+
+    /**
+     * @description Cập nhật mảng các dòng được chọn
+     * @author NVThinh 10/1/2023
+     */
+    updateRow: function (selectedRows) {
+      if (selectedRows.length > 1) {
+        this.isShowDeleteIcon = true;
+      } else {
+        this.isShowDeleteIcon = false;
+      }
     },
   },
 
   data() {
     return {
       // Variables
+      isShowDeleteIcon: false, // Hiển thị icon delete nhiều chứng từ
       mode: 0, // Chế độ hiển thị popup
       isZoomIn: false, // Phóng to bảng chi tiết
       isShowPopup: false, // Hiển thị popup "Thêm chứng từ ghi tăng"
       popupTitle: "", // Tiêu đề popup
       selectedVoucher: {}, // Đối tượng chứa thông tin chứng từ cần sửa
       totalOfRecords: 20, // Tổng số bản ghi lọc được
+      conditions: {
+        keyword: "",
+        limit: 20,
+        offset: 0,
+      }, // Đối tượng chứa các điều kiện để gọi API
       // Resource
       Resource,
       Dictionary,

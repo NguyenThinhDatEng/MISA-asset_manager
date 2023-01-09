@@ -57,7 +57,6 @@
         v-if="isShowFooter"
         :footerData="footerData"
         :number-of-records="numberOfRecords"
-        :totalOfQuantities="totalOfQuantities"
         :page="page"
         ref="tableFoot"
       />
@@ -271,29 +270,53 @@ export default {
     },
 
     /**
-     * Cập nhật dữ liệu tại table footer
+     * @description Cập nhật dữ liệu tại table footer
      * @author Nguyen Van Thinh 11/11/2022
      */
     updateFooterData: function () {
-      // Hiển thị Loader
-      this.isShowLoader = true;
-      // Khởi tạo lại các giá trị trên footer table
-      this.totalOfQuantities = 0;
-      for (const key in this.footerData) this.footerData[key] = 0;
-      // Cập nhật các dữ liệu trên table footer
-      for (const obj of this.data) {
-        this.totalOfQuantities += obj.quantity;
-        this.footerData.totalOfCost += obj.cost;
-        this.footerData.totalDepreciationValue += Function.accumulatedValue(
-          (obj.depreciation_rate * obj.cost) / 100,
-          obj.production_date,
-          obj.cost
-        );
+      try {
+        // Hiển thị Loader
+        this.isShowLoader = true;
+        // Khởi tạo lại các giá trị trên footer table
+        for (const key in this.footerData) this.footerData[key] = 0;
+        // Cập nhật các dữ liệu trên table footer
+        if (this.page == TableResource.TableFoot.Page.fixedAsset) {
+          this.footerData.totalOfQuantities = this.data.reduce(
+            (accumulator, obj) => {
+              return accumulator + obj.quantity;
+            },
+            0
+          );
+          this.footerData.totalOfCost = this.data.reduce((accumulator, obj) => {
+            return accumulator + obj.cost;
+          }, 0);
+          this.footerData.totalDepreciationValue = this.data.reduce(
+            (accumulator, obj) => {
+              return (
+                accumulator +
+                Function.accumulatedValue(
+                  (obj.depreciation_rate * obj.cost) / 100,
+                  obj.production_date,
+                  obj.cost
+                )
+              );
+            },
+            0
+          );
+          this.footerData.totalResidualValue =
+            this.footerData.totalOfCost -
+            this.footerData.totalDepreciationValue;
+        } else {
+          this.footerData.totalOfCost = this.data.reduce((accumulator, obj) => {
+            return accumulator + obj.total_of_cost;
+          }, 0);
+        }
+        // Ẩn Loader
+        this.isShowLoader = false;
+      } catch (error) {
+        this.isShowLoader = false;
+        console.log(error);
       }
-      this.footerData.totalResidualValue =
-        this.footerData.totalOfCost - this.footerData.totalDepreciationValue;
-      // Ẩn Loader
-      this.isShowLoader = false;
     },
 
     // Thực hiện updateFilter tại cha để tải lại danh sách
@@ -346,13 +369,8 @@ export default {
       isRefreshTable: false, // Trạng thái làm mới bảng khi tải lại trang
       checkedHeader: false, // Trạng thái check ô checkbox tại header table
       selectedRows: [], // Mảng chứa các dòng được chọn
-      totalOfQuantities: 0, // Tổng số lượng
       // Các dữ liệu tổng tại chân bảng
-      footerData: {
-        totalOfCost: 0, // Tổng nguyên giá
-        totalDepreciationValue: 0, // Tổng giá trị hao mòn
-        totalResidualValue: 0, // Tổng giá trị còn lại
-      },
+      footerData: {},
       // Resource
       Resource,
       TableResource,
