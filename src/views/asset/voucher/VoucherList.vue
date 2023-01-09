@@ -10,7 +10,7 @@
           :buttonContent="Dictionary.action.add.VN"
           :hasIcon="false"
           :title="Resource.Title.add_voucher"
-          @click="isShowPopup = true"
+          @click="openPopup(Enum.Mode.Add)"
         ></Button>
         <!-- Button: toggle between horizontal page and vertical page -->
         <button class="button page--state">
@@ -46,7 +46,7 @@
         :is-show-feature="true"
         :page="TableResource.TableFoot.Page.voucher"
         :only-one-row="true"
-        @update-voucher="openAssetList"
+        @update-voucher="updateVoucher"
       />
     </div>
     <!-- Table 02 -->
@@ -73,7 +73,12 @@
     </div>
   </div>
   <!-- Popup -->
-  <VoucherDetail v-if="isShowPopup" />
+  <VoucherDetail
+    v-if="isShowPopup"
+    :title="popupTitle"
+    :mode="mode"
+    :voucher-prop="selectedVoucher"
+  />
 </template>
 
 <script>
@@ -87,19 +92,30 @@ import Resource from "@/js/resource/resource";
 import Dictionary from "@/js/resource/dictionary";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
+import { filterAndPaging } from "@/apis/voucher/voucher";
 
 export default {
   name: "VoucherList",
   components: { Button, SearchInput, TableVue, VoucherDetail },
   // =======================================
+  created() {
+    this.filterAndPaging();
+  },
+
   methods: {
     /**
      * @description Mở popup "Thêm chứng từ ghi tăng"
      * @author NVThinh 6/1/2023
      */
-    openAssetList: function () {
-      this.isShowPopup = true;
+    updateVoucher: function (mode, voucher) {
+      try {
+        this.selectedVoucher = voucher;
+        this.openPopup(mode);
+      } catch (error) {
+        console.log(error);
+      }
     },
+
     /**
      * @description Phóng to/Thu nhỏ bảng chi tiết
      * @author NVT 3/1/2022
@@ -115,17 +131,55 @@ export default {
     closePopup: function () {
       this.isShowPopup = false;
     },
+
+    /**
+     * @description Mở popup
+     * @author NVThinh 9/1/2023
+     */
+    openPopup: function (mode) {
+      // Cập nhật chế độ hiển thị popup
+      this.mode = mode;
+      // Cập nhật tiêu đề popup
+      if (mode == Enum.Mode.Add) {
+        this.popupTitle = Resource.PopupTitle.add_voucher;
+      }
+      if (mode == Enum.Mode.Update) {
+        this.popupTitle = Resource.PopupTitle.edit_increment_asset;
+      }
+      // Hiển thị popup
+      if (mode != Enum.Mode.Delete) {
+        this.isShowPopup = true;
+      }
+    },
+
+    /**
+     * @description lọc và phân trang
+     * @author NVThinh 9/1/2023
+     */
+    filterAndPaging: async function () {
+      await filterAndPaging()
+        .then((res) => {
+          this.vouchers = res.data.data;
+          this.totalOfRecords = res.data.totalOfRecords;
+        })
+        .catch((error) => console.log(error));
+    },
   },
-  // ========================================================================
+
   data() {
     return {
       // Variables
+      mode: 0, // Chế độ hiển thị popup
       isZoomIn: false, // Phóng to bảng chi tiết
       isShowPopup: false, // Hiển thị popup "Thêm chứng từ ghi tăng"
+      popupTitle: "", // Tiêu đề popup
+      selectedVoucher: {}, // Đối tượng chứa thông tin chứng từ cần sửa
+      totalOfRecords: 20, // Tổng số bản ghi lọc được
       // Resource
       Resource,
       Dictionary,
       TableResource,
+      Enum,
       // Style
       tds_of_master: [
         {
@@ -148,13 +202,13 @@ export default {
         },
         {
           col: TableResource.TableRow.Voucher.voucher_date.ENG,
-          type: Enum.TableData.type.text,
+          type: Enum.TableData.type.date,
           width: "150px",
           align: "center",
         },
         {
           col: TableResource.TableRow.Voucher.increment_date.ENG,
-          type: Enum.TableData.type.text,
+          type: Enum.TableData.type.date,
           width: "150px",
           align: "center",
         },
@@ -220,50 +274,7 @@ export default {
         },
       ],
       // voucher
-      vouchers: [
-        {
-          voucher_code: "GT00001",
-          voucher_date: "03/01/2023",
-          increment_date: "03/01/2023",
-          total_of_cost: 234838248,
-          description: "Chứng từ đã được chứng nhận ",
-        },
-        {
-          voucher_code: "GT00001",
-          voucher_date: "03/01/2023",
-          increment_date: "03/01/2023",
-          total_of_cost: 234838248,
-          description: "Chứng từ đã được chứng nhận ",
-        },
-        {
-          voucher_code: "GT00001",
-          voucher_date: "03/01/2023",
-          increment_date: "03/01/2023",
-          total_of_cost: 234838248,
-          description: "Chứng từ đã được chứng nhận ",
-        },
-        {
-          voucher_code: "GT00001",
-          voucher_date: "03/01/2023",
-          increment_date: "03/01/2023",
-          total_of_cost: 234838248,
-          description: "Chứng từ đã được chứng nhận ",
-        },
-        {
-          voucher_code: "GT00001",
-          voucher_date: "03/01/2023",
-          increment_date: "03/01/2023",
-          total_of_cost: 234838248,
-          description: "Chứng từ đã được chứng nhận ",
-        },
-        {
-          voucher_code: "GT00001",
-          voucher_date: "03/01/2023",
-          increment_date: "03/01/2023",
-          total_of_cost: 234838248,
-          description: "Chứng từ đã được chứng nhận ",
-        },
-      ],
+      vouchers: [],
       // detail
       assetDetail: [
         {

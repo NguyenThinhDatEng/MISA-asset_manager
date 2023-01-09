@@ -183,7 +183,7 @@ ul {
   opacity: 1;
 }
 
-@media only screen and (max-width: 1500px) {
+@media only screen and (max-width: 1200px) {
   .item__content {
     display: none;
   }

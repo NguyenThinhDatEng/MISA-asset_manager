@@ -58,6 +58,7 @@ export default {
       text: 0, // nhận dữ liệu chuỗi
       number: 1, // nhận dữ liệu kiểu số
       checkbox: 2, // nhận checkbox
+      date: 3, // nhận dữ liệu thời gian
     },
   },
 };

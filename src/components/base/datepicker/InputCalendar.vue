@@ -36,7 +36,7 @@ export default {
   props: {
     field: String,
     mode: Number,
-    value: String,
+    value: String, // Giá trị đầu vào của ô input
   },
   emits: ["update-input"],
   watch: {

@@ -65,14 +65,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border: 1px solid var(--input--error);
 }
 
-.error-message {
-    position: absolute;
-    /* display: none; */
-    color: var(--input--error);
-    padding-top: 2px;
-    max-width: 240px;
-}
-
 .input--disabled:hover {
     border-color: #afafaf;
 }
@@ -125,4 +117,11 @@ input::placeholder {
 
 .input--icon {
     padding-right: 36px !important;
+}
+
+.error-message {
+    position: absolute;
+    color: var(--input--error);
+    max-width: 240px;
+    padding-top: 2px;
 }

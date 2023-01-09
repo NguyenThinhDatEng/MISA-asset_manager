@@ -295,7 +295,6 @@ import DialogValidate from "@/components/base/dialogs/DialogValidate.vue";
 
 export default {
   name: "AssetDetail",
-
   props: {
     // Chế độ của popup
     mode: {
@@ -329,7 +328,6 @@ export default {
       },
     },
   },
-
   components: {
     Input,
     InputNumber,
@@ -339,7 +337,6 @@ export default {
     DialogValidate,
     DialogCancelVue,
   },
-
   emits: [
     "close-popup",
     "show-toast",

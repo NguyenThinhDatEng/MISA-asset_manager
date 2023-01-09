@@ -180,7 +180,6 @@ export default {
 @import url(@/css/components/input.css);
 
 /* input */
-
 .input {
   width: 100%;
   height: 36px;
@@ -235,5 +234,9 @@ label + input {
 /* other */
 .password-login {
   position: relative;
+}
+
+.bottomError .error-message {
+  bottom: 0;
 }
 </style>

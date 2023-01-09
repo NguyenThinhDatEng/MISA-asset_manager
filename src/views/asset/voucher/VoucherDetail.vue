@@ -1,8 +1,9 @@
 <template>
   <Popup
     :isShow="isShow"
-    :title="Resource.PopupTitle.add_voucher"
+    :title="title"
     @close-popup="$parent.closePopup"
+    @on-save="validate"
   >
     <div class="popup__body__wrapper">
       <div class="voucher-info">
@@ -12,9 +13,12 @@
           <div class="row">
             <!-- Input: voucher code -->
             <InputVue
+              class="bottomError"
               :label="Resource.InputLabel.voucher_code"
               :value="voucher.voucher_code"
+              :is-error="isError"
               ref="voucherCode"
+              @update-input="updateInput"
             />
             <!-- Inputs: voucher date -->
             <div class="input--date">
@@ -22,7 +26,10 @@
                 >{{ Resource.InputLabel.voucher_date }}
                 <span style="color: red">*</span></label
               >
-              <InputCalendar />
+              <InputCalendar
+                :value="voucher.voucher_date"
+                :mode="Enum.Mode.Update"
+              />
             </div>
             <!-- Input: increment date -->
             <div class="input--date">
@@ -30,7 +37,10 @@
                 >{{ Resource.InputLabel.increment_date }}
                 <span style="color: red">*</span></label
               >
-              <InputCalendar />
+              <InputCalendar
+                :value="voucher.increment_date"
+                :mode="Enum.Mode.Update"
+              />
             </div>
           </div>
           <!-- Row -->
@@ -89,6 +99,8 @@
     :fixed-asset-name="fixedAsset.name"
     :department="fixedAsset.department"
   />
+  <!-- Dialog cancel -->
+  <DialogCancelVue v-if="isShowDialog" />
 </template>
 
 <script>
@@ -105,6 +117,7 @@ import InputCalendar from "@/components/base/datepicker/InputCalendar.vue";
 import TableVue from "@/components/base/table/Table.vue";
 import SearchInputVue from "@/components/base/inputs/SearchInput.vue";
 import Button from "@/components/base/buttons/ButtonOutline.vue";
+import DialogCancelVue from "@/components/base/dialogs/DialogCancel.vue";
 // Views
 import VoucherAssetList from "@/views/asset/voucher/VoucherAssetList.vue";
 import BudgetDetail from "@/views/asset/voucher/BudgetDetail.vue";
@@ -118,21 +131,34 @@ export default {
     TableVue,
     SearchInputVue,
     Button,
+    DialogCancelVue,
     // views
     VoucherAssetList,
     BudgetDetail,
   },
   props: {
-    // Hiển thị popup
     isShow: {
       type: Boolean,
       default: false,
-    },
+    }, // Hiển thị popup
+    title: {
+      type: String,
+      isRequired: true,
+    }, // Tiêu đề popup
+    mode: {
+      type: Number,
+      default: 0,
+    }, // Chế độ hiển thị popup
+    voucherProp: Object, // Thông tin chứng từ được chọn
   },
 
   created() {
-    this.getNewCode();
-    console.log(this.voucher);
+    // Chế độ thêm
+    if (this.mode == Enum.Mode.Add) this.getNewCode();
+    else {
+      // Chế độ sửa
+      this.voucher = this.voucherProp;
+    }
   },
 
   watch: {
@@ -145,6 +171,7 @@ export default {
   mounted() {
     // focus vào ô input đầu tiên
     this.$refs.voucherCode.focusInput();
+    console.log(this.voucher);
   },
 
   methods: {
@@ -290,17 +317,51 @@ export default {
         await getNewCode().then((res) => {
           // Gán vào đối tượng
           this.voucher.voucher_code = res.data;
-          console.log(this.voucher.voucher_code);
         });
       } catch (error) {
         console.log(error);
       }
-      console.log(this.voucher);
+    },
+
+    /**
+     * @description Kiểm tra tính hợp lệ của dữ liệu đầu vào
+     * @author NVThinh 9/1/2023
+     */
+    validate: function () {
+      try {
+        // Kiểm tra trường bắt buộc nhập
+        if (this.voucher.voucher_code === "") {
+          this.isError = true;
+          return;
+        }
+        // Kiểm tra bảng detail có ít nhất 1 tài sản
+        if (this.selectedAssetList.length === 0) {
+          console.log("error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Cập nhật dữ liệu khi giá trị ô input thay đổi
+     * @author NVThinh 9/1/2023
+     */
+    updateInput: function (value) {
+      try {
+        this.voucher.voucher_code = value;
+        // Cập nhật hiển thị lỗi
+        if (value) this.isError = false;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 
   data() {
     return {
+      isError: false, // Lỗi thiếu thông tin trường bắt buộc
+      isShowDialog: false, // Hiển thị dialog cảnh báo
       isShowAssetList: false, // Hiển thị popup "chọn tài sản ghi tăng"
       isShowBudgetDetail: false, // Hiển thị popup "Sửa tài sản"
       displayedAssetList: [], // Mảng chứa các tài sản đã được lọc
@@ -316,8 +377,8 @@ export default {
       }, // Đối tượng tài sản được chọn trong bảng detail
       voucher: {
         voucher_code: "",
-        voucher_date: new Date(),
-        increment_date: new Date(),
+        voucher_date: Function.getCurrentDate(),
+        increment_date: Function.getCurrentDate(),
         description: "",
       }, // Đối tượng chứng từ
       // Resources
@@ -392,7 +453,7 @@ export default {
 }
 
 .voucher-info__content {
-  padding: 16px;
+  padding: 16px 16px 0;
 }
 
 .voucher-info__content,
@@ -401,12 +462,10 @@ export default {
 }
 
 .row {
+  position: relative;
   display: flex;
   justify-content: space-between;
-}
-
-.row + .row {
-  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
 .voucher-info + .detail-info {

@@ -24,6 +24,8 @@
     <p v-else-if="isNumberData()">
       {{ Function.formatMoney(content) }}
     </p>
+    <!-- Date box -->
+    <p v-else-if="isDate()">{{ moment(content).format("DD-MM-YYYY") }}</p>
     <!-- other -->
     <div v-else class="feature center">
       <!-- edit button -->
@@ -47,6 +49,7 @@
 import Enum from "@/js/enum/enum";
 import Resource from "@/js/resource/resource";
 import Function from "@/js/common/function";
+import moment from "moment";
 
 export default {
   name: "TableData",
@@ -77,13 +80,26 @@ export default {
       this.$parent.carryOutFeature(mode);
     },
 
+    /**
+     * @return true nếu kiểu dữ liệu của td là kiểu số
+     * @author NVThinh 9/1/2023
+     */
     isNumberData: function () {
       return this.config.type === this.tdType.number;
+    },
+
+    /**
+     * @return true nếu kiểu dữ liệu của td là kiểu thời gian
+     * @author NVThinh 9/1/2023
+     */
+    isDate: function () {
+      return this.config.type === this.tdType.date;
     },
   },
 
   data() {
     return {
+      moment: moment,
       // Resources
       Enum,
       Function, // Hàm dùng chung

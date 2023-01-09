@@ -133,6 +133,7 @@ export default {
     duplicate: "Nhân bản tài sản",
     add_voucher: "Thêm chứng từ ghi tăng",
     select_increment_asset: "Chọn tài sản ghi tăng",
+    edit_increment_asset: "Sửa chứng từ ghi tăng",
   },
   // Nhãn các ô input trong popup
   PopupLabel: {

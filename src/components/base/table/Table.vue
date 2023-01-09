@@ -146,8 +146,10 @@ export default {
         console.log(error);
       }
     },
+
     // Mảng dữ liệu thay đổi
     data: function () {
+      console.log(this.data);
       // Cập nhật tổng các cột ở table footer
       this.updateFooterData();
       // Làm mới bảng dữ liệu
@@ -180,8 +182,8 @@ export default {
      * @description Phát tín hiệu đến lớp cha khi click vào nút sửa
      * @author NVThinh 6/1/2023
      */
-    updateVoucher: function (mode, fixedAsset, index) {
-      this.$emit("update-voucher", mode, fixedAsset, index);
+    updateVoucher: function (mode, dataObj, index) {
+      this.$emit("update-voucher", mode, dataObj, index);
     },
 
     /**
