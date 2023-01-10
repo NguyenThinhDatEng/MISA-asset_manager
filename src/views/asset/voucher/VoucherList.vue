@@ -395,7 +395,7 @@ export default {
     getVoucherDetail: async function (voucher_id) {
       try {
         await getVoucherDetail(voucher_id).then((res) => {
-          this.voucherDetail = res.data;
+          this.voucherDetail = res.data.fixedAssetList;
         });
       } catch (error) {
         console.log(error);
