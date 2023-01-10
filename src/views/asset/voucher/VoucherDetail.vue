@@ -93,7 +93,7 @@
     </div>
   </Popup>
   <!-- Voucher fixed asset list -->
-  <VoucherAssetList v-if="isShowAssetList" />
+  <VoucherAssetList v-if="isShowAssetList" :selectedIDs="selectedIDs" />
   <!-- Budget Detail -->
   <BudgetDetail
     v-if="isShowBudgetDetail"
@@ -155,6 +155,7 @@ export default {
       default: 0,
     }, // Chế độ hiển thị popup
     voucherProp: Object, // Thông tin chứng từ được chọn
+    voucherDetail: Array, // Mảng danh sách các tài sản trong chứng từ
   },
 
   created() {
@@ -163,6 +164,7 @@ export default {
     else {
       // Chế độ sửa
       this.voucher = this.voucherProp;
+      this.displayedAssetList = this.voucherDetail;
     }
   },
 
@@ -173,10 +175,17 @@ export default {
     },
   },
 
+  computed: {
+    selectedIDs: function () {
+      return this.selectedAssetList.map((obj) => {
+        return obj.fixed_asset_id;
+      });
+    },
+  },
+
   mounted() {
     // focus vào ô input đầu tiên
     this.$refs.voucherCode.focusInput();
-    console.log(this.voucher);
   },
 
   methods: {

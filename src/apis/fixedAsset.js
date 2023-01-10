@@ -18,7 +18,8 @@ const getFixedAssetByFilterAndPaging = (
   departmentID = constants.GUID.EMPTY,
   fixedAssetCategoryID = constants.GUID.EMPTY,
   limit = 20,
-  offset = 0
+  offset = 0,
+  isIncrement = false
 ) => {
   try {
     console.log("Call API get fixed assets by filter and paging");
@@ -34,7 +35,9 @@ const getFixedAssetByFilterAndPaging = (
       "&limit=" +
       limit +
       "&offset=" +
-      offset;
+      offset +
+      "&isIncrement=" +
+      isIncrement;
     const res = httpClient.get(END_POINT + `/filter?${queryParams}`);
     return res;
   } catch (error) {
@@ -151,9 +154,7 @@ const deleteMultipleFixedAssets = (listID) => {
     console.log(error);
   }
 };
-// // maybe more than one..
-// const createUser = (username, password) =>
-//   httpClient.post(END_POINT, { username, password });
+
 export {
   getAllFixedAssets,
   getFixedAssetByID,

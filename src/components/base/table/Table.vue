@@ -220,6 +220,10 @@ export default {
           }
           this.selectedRows.push(obj);
         } else {
+          if (this.onlyOneRow && this.selectedRows.length == 1) {
+            this.$refs.tableRow[numericalOrder - 1].onActive();
+            return;
+          }
           // Xóa tài sản khỏi mảng
           const length = this.selectedRows.length;
           for (let i = 0; i < length; i++) {

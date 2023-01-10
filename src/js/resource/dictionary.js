@@ -6,5 +6,8 @@ export default {
     search: {
       VN: "Tìm kiếm",
     },
+    delete: {
+      VN: "Xóa",
+    },
   },
 };

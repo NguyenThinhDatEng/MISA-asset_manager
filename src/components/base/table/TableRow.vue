@@ -92,6 +92,15 @@ export default {
     // Cập nhật trạng thái active của dòng
     isCheckAll: function () {
       this.isActive = this.isCheckAll;
+      if (
+        this.isOnly &&
+        this.numerical_order == 1 &&
+        this.isCheckAll == false
+      ) {
+        this.isActive = true;
+        // Gửi dữ liệu đến table
+        this.$emit("update-row", true, this.data, 1);
+      }
     },
 
     // Cập nhật giá trị khi reload dữ liệu
@@ -179,7 +188,7 @@ export default {
           if (this.isCheckAll == true) {
             this.$emit("update-checked-header", false);
           }
-          this.$emit("update-row", !isNew, this.data); // isNew == false
+          this.$emit("update-row", !isNew, this.data, this.numerical_order); // isNew == false
         }
       } catch (error) {
         console.log(error);

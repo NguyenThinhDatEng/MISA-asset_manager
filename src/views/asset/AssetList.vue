@@ -264,15 +264,12 @@ export default {
             });
         } else {
           // Thực hiện xóa nhiều bản ghi
-          let listID = {};
           let fixedAssetIDs = [];
           for (const obj of this.selectedRows) {
             fixedAssetIDs.push(obj.fixed_asset_id);
           }
-          listID["fixedAssetIDs"] = fixedAssetIDs;
-          this.numberOfDeletedRecords = fixedAssetIDs.length;
           // Gọi API xóa nhiều bản ghi
-          await deleteMultipleFixedAssets(listID)
+          await deleteMultipleFixedAssets(fixedAssetIDs)
             .then(() => {
               this.reloadContent();
               this.showToast(
@@ -420,7 +417,6 @@ export default {
       dialogInfo: "", // nội dung hiển thị dialog xác nhận xóa
       mode: 0, // Chế độ popup
       popupObj: {}, // Đối tượng popup
-      numberOfDeletedRecords: 1, // sổ lượng bản ghi được chọn khi xóa
       isShowLoader: false, // trạng thái ẩn hiện của loader
       isDisabledButton: true, // Trạng thái disabled của các nút chức năng
       isShowPopup: false, // trạng thái hiển thị / ẩn popup

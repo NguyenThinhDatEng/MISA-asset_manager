@@ -57,7 +57,12 @@ export default {
     Loader,
     ToastVue,
   },
-  props: {},
+  props: {
+    selectedIDs: {
+      type: Array,
+      default: () => [],
+    },
+  },
 
   created() {
     // Gọi API lấy danh sách tài sản cố định theo tìm kiếm, lọc và giới hạn bản ghi
@@ -70,6 +75,26 @@ export default {
       this.$nextTick(() => {
         this.$refs.theTable.updateLimit(this.totalOfRecords);
       });
+    },
+    // Lọc dữ liệu
+    fixedAssets: function () {
+      // Gán dữ liệu để có thể thay đổi
+      let IDs = this.selectedIDs;
+      // Lọc dữ liệu (loại bỏ các tài sản đã được chọn)
+      let i = 0;
+      while (IDs.length > 0 && i < this.fixedAssets.length) {
+        for (let j = 0; j < IDs.length; j++) {
+          if (this.fixedAssets[i].fixed_asset_id === IDs[j]) {
+            IDs.splice(j, 1);
+            this.fixedAssets.splice(i, 1);
+            i--;
+            break;
+          }
+        }
+        i++;
+      }
+      // Cập nhật số lượng bản ghi
+      this.totalOfRecords = this.fixedAssets.length;
     },
   },
 
@@ -118,7 +143,8 @@ export default {
         null,
         null,
         this.conditions.limit,
-        this.conditions.offset
+        this.conditions.offset,
+        true
       )
         .then((res) => {
           this.fixedAssets = res.data.data;

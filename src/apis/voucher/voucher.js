@@ -44,11 +44,47 @@ const filterAndPaging = (keyword, limit, offset) => {
 const getVoucherDetail = (voucher_id) => {
   try {
     console.log("Call API get voucher detail");
-    const res = httpClient.get(END_POINT + `/detail/${voucher_id}`);
+    const res = httpClient.get(END_POINT + `/${voucher_id}/detail`);
     return res;
   } catch (error) {
     console.log(error);
   }
 };
 
-export { getNewCode, filterAndPaging, getVoucherDetail };
+/**
+ * API xóa 1 voucher
+ * @returns res là 1 promise
+ * @author NVThinh (10-1-2023)
+ */
+const deleteById = (voucher_id) => {
+  try {
+    console.log("Call API delete voucher");
+    const res = httpClient.delete(END_POINT + `/${voucher_id}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
+ * API xóa nhiều bản ghi
+ * @param {Array} listID mảng các ID của tài sản muốn xóa
+ * @author NVThinh 10-1-2023
+ */
+const deleteMultipleRecords = (listID) => {
+  try {
+    console.log("Call API Delete multiple records");
+    const res = httpClient.post(END_POINT + "/DeleteBatch", listID);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {
+  getNewCode,
+  filterAndPaging,
+  getVoucherDetail,
+  deleteById,
+  deleteMultipleRecords,
+};

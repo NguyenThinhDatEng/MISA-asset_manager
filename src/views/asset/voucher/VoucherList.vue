@@ -35,7 +35,11 @@
         </div>
         <div class="function__right">
           <!-- Delete icon -->
-          <div class="icon-item_wrapper" v-show="isShowDeleteMultiIcon">
+          <div
+            class="icon-item_wrapper"
+            v-show="isShowDeleteMultiIcon"
+            @click="handleOnClickDeleteMany"
+          >
             <div class="icon icon--18px icon--delete center"></div>
           </div>
           <!-- Print icon -->
@@ -92,12 +96,23 @@
     :title="popupTitle"
     :mode="mode"
     :voucher-prop="selectedVoucher"
+    :voucher-detail="voucherDetail"
   />
   <!-- Dialog warning -->
   <DialogWarning
     v-if="isShowDialog"
+    :mode="mode"
     :content="warningMessage"
+    :has-outline-button="true"
+    :main-button-content="Dictionary.action.delete.VN"
     @close-dialog="closeDialog"
+    @confirm="confirm"
+  />
+  <!-- Toast -->
+  <ToastVue
+    v-if="isShowToast"
+    :action-status="toastObj.actionStatus"
+    :content="toastObj.content"
   />
 </template>
 
@@ -108,6 +123,7 @@ import SearchInput from "@/components/base/inputs/SearchInput.vue";
 import TableVue from "@/components/base/table/Table.vue";
 import DialogWarning from "@/components/base/dialogs/DialogWarning.vue";
 import TablePaging from "@/components/base/table/TablePaging.vue";
+import ToastVue from "@/components/base/toast/ToastVue.vue";
 // Views
 import VoucherDetail from "@/views/asset/voucher/VoucherDetail.vue";
 // Resources
@@ -115,7 +131,12 @@ import Resource from "@/js/resource/resource";
 import Dictionary from "@/js/resource/dictionary";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
-import { filterAndPaging, getVoucherDetail } from "@/apis/voucher/voucher";
+import {
+  filterAndPaging,
+  getVoucherDetail,
+  deleteById,
+  deleteMultipleRecords,
+} from "@/apis/voucher/voucher";
 
 export default {
   name: "VoucherList",
@@ -126,6 +147,132 @@ export default {
     VoucherDetail,
     DialogWarning,
     TablePaging,
+    ToastVue,
+  },
+
+  data() {
+    return {
+      // Variables
+      mode: 0, // Chế độ hiển thị popup
+      totalOfRecords: 0, // Tổng số bản ghi thu được
+      isShowToast: false, // Hiển thị toast thông báo
+      isShowDialog: false, // Hiển thị dialog cảnh báo
+      isShowDeleteMultiIcon: false, // Hiển thị icon delete nhiều chứng từ
+      isZoomIn: false, // Phóng to bảng chi tiết
+      isShowPopup: false, // Hiển thị popup "Thêm chứng từ ghi tăng"
+      popupTitle: "", // Tiêu đề popup
+      selectedVoucher: {}, // Đối tượng chứa thông tin chứng từ cần sửa
+      conditions: {
+        keyword: "",
+        limit: 20,
+        offset: 0,
+      }, // Đối tượng chứa các điều kiện để gọi API
+      toastObj: {
+        actionStatus: 0,
+        content: "",
+      }, // Các thông tin yêu cầu từ toast component
+      vouchers: [], // Mảng chứa các chứng từ
+      voucherDetail: [], // Mảng chứa các tài sản đăng ký chứng từ được chọn
+      selectedRows: [], // Mảng chứa các tài sản được chọn
+      // Resource
+      Resource,
+      Dictionary,
+      TableResource,
+      Enum,
+      // Style cho master table
+      tds_of_master: [
+        {
+          col: TableResource.TableRow.Voucher.checkbox?.ENG,
+          type: Enum.TableData.type.checkbox,
+          width: "50px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.Voucher.numerical_order.ENG,
+          type: Enum.TableData.type.text,
+          width: "50px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.Voucher.voucher_code.ENG,
+          type: Enum.TableData.type.text,
+          width: "150px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.Voucher.voucher_date.ENG,
+          type: Enum.TableData.type.date,
+          width: "150px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.Voucher.increment_date.ENG,
+          type: Enum.TableData.type.date,
+          width: "150px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.Voucher.total_of_cost.ENG,
+          type: Enum.TableData.type.number,
+          width: "200px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.Voucher.description.ENG,
+          type: Enum.TableData.type.text,
+          align: "left",
+        },
+      ],
+      // Style cho detail table
+      tds_of_detail: [
+        {
+          col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "40px",
+          align: "center",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "70px",
+          maxWidth: "110px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "90px",
+          maxWidth: "180px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.department_name.ENG,
+          type: Enum.TableData.type.text,
+          minWidth: "100px",
+          maxWidth: "120px",
+          align: "left",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.cost.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "50px",
+          maxWidth: "60px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "90px",
+          align: "right",
+        },
+        {
+          col: TableResource.TableRow.FixedAsset.residual_value.ENG,
+          type: Enum.TableData.type.number,
+          minWidth: "80px",
+          align: "right",
+        },
+      ],
+    };
   },
 
   created() {
@@ -141,17 +288,25 @@ export default {
 
   computed: {
     warningMessage: function () {
-      return (
-        "Bạn có muốn xóa chứng từ có mã " +
-        "<b>" +
-        this.selectedVoucher.voucher_code +
-        "</b>" +
-        "?"
-      );
+      let output = "";
+      if (this.mode === Enum.Mode.Delete) {
+        output = `Bạn có muốn xóa chứng từ có mã <b>${this.selectedVoucher.voucher_code}</b>?`;
+      } else {
+        output = `<b>${this.selectedRows.length}</b> chứng từ đã được chọn. Bạn có muốn xóa các chứng từ này khỏi danh sách?`;
+      }
+      return output;
     },
   },
 
   methods: {
+    /**
+     * @description Ẩn toast
+     * @author NVThinh 10/1/2023
+     */
+    closeToast: function () {
+      this.isShowToast = false;
+    },
+
     /**
      * @description Đóng dialog
      * @author NVThinh 10/1/2023
@@ -166,7 +321,9 @@ export default {
      */
     updateVoucher: function (mode, voucher) {
       try {
+        // Cập nhật đối tượng voucher được chọn
         this.selectedVoucher = voucher;
+        // Mở popup voucher detail
         this.openPopup(mode);
       } catch (error) {
         console.log(error);
@@ -269,6 +426,7 @@ export default {
     handleEmptyInput: function () {
       this.conditions.keyword = "";
       this.filterAndPaging();
+      this.voucherDetail = [];
     },
 
     /**
@@ -277,168 +435,98 @@ export default {
      */
     updateRow: function (selectedRows) {
       if (selectedRows.length > 1) {
+        // Cập nhật mảng các dòng được chọn
+        this.selectedRows = selectedRows;
+        // Hiển thị nút xóa nhiều
         this.isShowDeleteMultiIcon = true;
       } else {
         // Cập nhật mảng chi tiết chứng từ
-        this.getVoucherDetail(selectedRows[0].voucher_id);
+        this.getVoucherDetail(selectedRows[0]?.voucher_id);
         // Không hiển thị icon xóa nhiều
         this.isShowDeleteMultiIcon = false;
       }
     },
-  },
 
-  data() {
-    return {
-      // Variables
-      mode: 0, // Chế độ hiển thị popup
-      isShowDialog: false, // Hiển thị dialog cảnh báo
-      isShowDeleteMultiIcon: false, // Hiển thị icon delete nhiều chứng từ
-      isZoomIn: false, // Phóng to bảng chi tiết
-      isShowPopup: false, // Hiển thị popup "Thêm chứng từ ghi tăng"
-      popupTitle: "", // Tiêu đề popup
-      selectedVoucher: {}, // Đối tượng chứa thông tin chứng từ cần sửa
-      totalOfRecords: 0, // Tổng số bản ghi thu được
-      conditions: {
-        keyword: "",
-        limit: 20,
-        offset: 0,
-      }, // Đối tượng chứa các điều kiện để gọi API
-      vouchers: [], // Mảng chứa các chứng từ
-      voucherDetail: [], // Mảng chứa các tài sản đăng ký chứng từ được chọn
-      // Resource
-      Resource,
-      Dictionary,
-      TableResource,
-      Enum,
-      // Style
-      tds_of_master: [
-        {
-          col: TableResource.TableRow.Voucher.checkbox?.ENG,
-          type: Enum.TableData.type.checkbox,
-          width: "50px",
-          align: "center",
-        },
-        {
-          col: TableResource.TableRow.Voucher.numerical_order.ENG,
-          type: Enum.TableData.type.text,
-          width: "50px",
-          align: "center",
-        },
-        {
-          col: TableResource.TableRow.Voucher.voucher_code.ENG,
-          type: Enum.TableData.type.text,
-          width: "150px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.Voucher.voucher_date.ENG,
-          type: Enum.TableData.type.date,
-          width: "150px",
-          align: "center",
-        },
-        {
-          col: TableResource.TableRow.Voucher.increment_date.ENG,
-          type: Enum.TableData.type.date,
-          width: "150px",
-          align: "center",
-        },
-        {
-          col: TableResource.TableRow.Voucher.total_of_cost.ENG,
-          type: Enum.TableData.type.number,
-          width: "200px",
-          align: "right",
-        },
-        {
-          col: TableResource.TableRow.Voucher.description.ENG,
-          type: Enum.TableData.type.text,
-          align: "left",
-        },
-      ],
-      // Style cho detail table
-      tds_of_detail: [
-        {
-          col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "40px",
-          align: "center",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "70px",
-          maxWidth: "110px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "90px",
-          maxWidth: "180px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.department_name.ENG,
-          type: Enum.TableData.type.text,
-          minWidth: "100px",
-          maxWidth: "120px",
-          align: "left",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.cost.ENG,
-          type: Enum.TableData.type.number,
-          minWidth: "50px",
-          maxWidth: "60px",
-          align: "right",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
-          type: Enum.TableData.type.number,
-          minWidth: "90px",
-          align: "right",
-        },
-        {
-          col: TableResource.TableRow.FixedAsset.residual_value.ENG,
-          type: Enum.TableData.type.number,
-          minWidth: "80px",
-          align: "right",
-        },
-      ],
-      // detail
-      assetDetail: [
-        {
-          fixed_asset_code: "TTTTTT124TT00000000001",
-          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
-          department_name: "Phòng kỹ thuật",
-          cost: 15516810,
-          accumulated_value: 100000,
-          residual_value: 156515615,
-        },
-        {
-          fixed_asset_code: "TTTT000000001",
-          fixed_asset_name: "Máy bay Ansi (XGA)",
-          department_name: "Phòng kỹ thuật",
-          cost: 155,
-          accumulated_value: 10000,
-          residual_value: 1562225615,
-        },
-        {
-          fixed_asset_code: "TTTTTT124TT00000000001",
-          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
-          department_name: "Phòng kỹ thuật",
-          cost: 15516810,
-          accumulated_value: 100000,
-          residual_value: 156515615,
-        },
-        {
-          fixed_asset_code: "TTTTTT124TT00000000001",
-          fixed_asset_name: "Máy chiếu Panasonic PT-LB386 3800 Ansi (XGA)",
-          department_name: "Phòng kỹ thuật",
-          cost: 15516810,
-          accumulated_value: 100000,
-          residual_value: 156515615,
-        },
-      ],
-    };
+    /**
+     * @description xử lý sự kiện khi ấn nút chính trong dialog
+     * @param {Number} mode chế độ hiển thị của dialog
+     * @author NVThinh 10/1/2023
+     */
+    confirm: async function (mode) {
+      if (mode === Enum.Mode.Delete) {
+        // Call API xóa 1
+        await deleteById(this.selectedVoucher.voucher_id)
+          .then(() => {
+            // Hiển thị thông báo
+            this.showToast(
+              Enum.ActionStatus.Success,
+              Resource.ToastContent.Delete.Success
+            );
+          })
+          .catch(() => {
+            // Hiển thị thông báo
+            this.showToast(
+              Enum.ActionStatus.Error,
+              Resource.ToastContent.Delete.Fail
+            );
+          });
+      } else {
+        // Tạo mảng các ids
+        let recordIDs = this.selectedRows.map((obj) => {
+          return obj.voucher_id;
+        });
+        // Call API xóa nhiều
+        await deleteMultipleRecords(recordIDs)
+          .then(() => {
+            // Hiển thị thông báo thành công
+            this.showToast(
+              Enum.ActionStatus.Success,
+              this.selectedRows.length +
+                Resource.ToastContent.DeleteMultiSuccess
+            );
+          })
+          .catch(() => {
+            // Hiển thị thông báo thất bại
+            this.showToast(
+              Enum.ActionStatus.Error,
+              Resource.ToastContent.DeleteMulti.Fail
+            );
+          });
+      }
+      // Đóng dialog
+      this.closeDialog();
+    },
+
+    /**
+     * Hiển thị toast
+     * @param {Number} actionStatus trạng thái toast
+     * @param {String} content nội dung hiển thị
+     * @author NVThinh 10/1/2023
+     */
+    showToast: function (actionStatus, content) {
+      // Cập nhật đối tượng toast
+      this.toastObj.actionStatus = actionStatus;
+      this.toastObj.content = content;
+      // Hiển thị toast
+      this.isShowToast = true;
+      // refresh table
+      this.filterAndPaging();
+    },
+
+    /**
+     * @description xử lý sự kiện khi ấn vào nút xóa nhiều
+     * @author NVThinh 10/1/2023
+     */
+    handleOnClickDeleteMany: async function () {
+      try {
+        // Cập nhật chế độ
+        this.mode = Enum.Mode.DeleteMulti;
+        // Mở dialog
+        this.isShowDialog = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>

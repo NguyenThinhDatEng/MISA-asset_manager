@@ -18,7 +18,7 @@
           :button-content="mainButtonContent"
           :title="Resource.Title.cancel"
           :type="Enum.Type.Main"
-          @click="this.$emit('close-dialog')"
+          @click="this.$emit('confirm', mode)"
         ></ButtonMainVue>
         <!-- Outline Button -->
         <ButtonOutlineVue
@@ -38,12 +38,12 @@ import Enum from "@/js/enum/enum";
 import Resource from "@/js/resource/resource";
 // Components
 import ButtonMainVue from "@/components/base/buttons/ButtonMain.vue";
-// import ButtonOutlineVue from "@/components/base/buttons/ButtonOutline.vue";
+import ButtonOutlineVue from "@/components/base/buttons/ButtonOutline.vue";
 // import SubButton from "@/components/base/buttons/ButtonSub.vue";
 
 export default {
   name: "DialogWarning",
-  components: { ButtonMainVue },
+  components: { ButtonMainVue, ButtonOutlineVue },
   props: {
     hasOutlineButton: {
       type: Boolean,
@@ -56,13 +56,17 @@ export default {
     mainButtonContent: {
       type: String,
       default: "Đóng",
-    },
+    }, // Nội dung nút chính
     content: {
       type: String,
       isRequired: true,
     }, // Nội dung hiển thị
+    mode: {
+      type: Number,
+      default: 0,
+    }, // Chế độ hiển thị của dialog
   },
-  emits: ["close-dialog"],
+  emits: ["close-dialog", "confirm"],
 
   created() {},
   methods: {},
