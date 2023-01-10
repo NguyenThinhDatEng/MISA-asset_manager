@@ -10,14 +10,14 @@
       <td></td>
     </tr>
     <!-- Footer 02 -->
-    <tr v-if="page === pages.voucher || page === pages.assetList">
+    <tr v-if="page === pages.assetList">
       <td colspan="100">
         <div class="footer__left">
           <div class="total-of-records__wrapper">
             <p class="total-of-records" v-html="records()"></p>
           </div>
           <!-- Combobox: Limit of records  -->
-          <ComboboxPagingVue :title="Resource.Title.limit"></ComboboxPagingVue>
+          <ComboboxPagingVue :title="Resource.Title.limit" />
           <!-- Paging  -->
           <div class="paging">
             <div class="paging__icon--wrapper" @click="backPreviousPage()">

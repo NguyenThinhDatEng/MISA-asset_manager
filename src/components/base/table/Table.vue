@@ -148,7 +148,6 @@ export default {
 
     // Mảng dữ liệu thay đổi
     data: function () {
-      console.log(this.data);
       // Cập nhật tổng các cột ở table footer
       this.updateFooterData();
       // Làm mới bảng dữ liệu

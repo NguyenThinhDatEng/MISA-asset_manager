@@ -52,7 +52,10 @@ export default {
       required: true,
     },
     // Chỉ 1 dòng được active trong bảng
-    isOnly: Boolean,
+    isOnly: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   components: {
@@ -74,6 +77,12 @@ export default {
       this.data = Object.assign(this.tableRowObj);
       this.updateRow();
       this.updateData();
+      // Nếu bảng chỉ cho chọn 1 dòng mỗi lần click => active dòng đầu tiên
+      if (this.isOnly && this.numerical_order == 1) {
+        this.isActive = true;
+        // Gửi dữ liệu đến table
+        this.$emit("update-row", true, this.data, 1);
+      }
     } catch (error) {
       console.log(error);
     }

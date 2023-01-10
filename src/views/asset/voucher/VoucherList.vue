@@ -35,7 +35,7 @@
         </div>
         <div class="function__right">
           <!-- Delete icon -->
-          <div class="icon-item_wrapper" v-show="isShowDeleteIcon">
+          <div class="icon-item_wrapper" v-show="isShowDeleteMultiIcon">
             <div class="icon icon--18px icon--delete center"></div>
           </div>
           <!-- Print icon -->
@@ -60,6 +60,8 @@
         @update-voucher="updateVoucher"
         @update-row="updateRow"
       />
+      <!-- Paging Row -->
+      <TablePaging :number-of-records="totalOfRecords" />
     </div>
     <!-- Table 02 -->
     <div class="detail">
@@ -78,7 +80,7 @@
       <TableVue
         :cols="TableResource.TableRow.FixedAssetDetail"
         :tds="tds_of_detail"
-        :data="assetDetail"
+        :data="voucherDetail"
         :isShowFooter="false"
         :isShowCheckbox="false"
       />
@@ -105,6 +107,7 @@ import Button from "@/components/base/buttons/ButtonIcon.vue";
 import SearchInput from "@/components/base/inputs/SearchInput.vue";
 import TableVue from "@/components/base/table/Table.vue";
 import DialogWarning from "@/components/base/dialogs/DialogWarning.vue";
+import TablePaging from "@/components/base/table/TablePaging.vue";
 // Views
 import VoucherDetail from "@/views/asset/voucher/VoucherDetail.vue";
 // Resources
@@ -112,17 +115,25 @@ import Resource from "@/js/resource/resource";
 import Dictionary from "@/js/resource/dictionary";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
-import { filterAndPaging } from "@/apis/voucher/voucher";
+import { filterAndPaging, getVoucherDetail } from "@/apis/voucher/voucher";
 
 export default {
   name: "VoucherList",
-  components: { Button, SearchInput, TableVue, VoucherDetail, DialogWarning },
+  components: {
+    Button,
+    SearchInput,
+    TableVue,
+    VoucherDetail,
+    DialogWarning,
+    TablePaging,
+  },
 
   created() {
     this.filterAndPaging();
   },
 
   watch: {
+    // Thực hiện cập nhật giới hạn bản ghi khi tổng số bản ghi thay đổi
     totalOfRecords: function () {
       this.$refs.theTable.updateLimit(this.totalOfRecords);
     },
@@ -220,6 +231,21 @@ export default {
     },
 
     /**
+     * @description API lấy chi tiết chứng từ (danh sách tài sản)
+     * @param {string} voucher_id là id của chứng từ
+     * @author NVThinh 10/1/2023
+     */
+    getVoucherDetail: async function (voucher_id) {
+      try {
+        await getVoucherDetail(voucher_id).then((res) => {
+          this.voucherDetail = res.data;
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
      * Cập nhật các điều kiện của filter
      * @param {string} field trường của dữ liệu
      * @param {string} value giá trị được cập nhật
@@ -251,9 +277,12 @@ export default {
      */
     updateRow: function (selectedRows) {
       if (selectedRows.length > 1) {
-        this.isShowDeleteIcon = true;
+        this.isShowDeleteMultiIcon = true;
       } else {
-        this.isShowDeleteIcon = false;
+        // Cập nhật mảng chi tiết chứng từ
+        this.getVoucherDetail(selectedRows[0].voucher_id);
+        // Không hiển thị icon xóa nhiều
+        this.isShowDeleteMultiIcon = false;
       }
     },
   },
@@ -261,19 +290,21 @@ export default {
   data() {
     return {
       // Variables
-      isShowDialog: false, // Hiển thị dialog cảnh báo
-      isShowDeleteIcon: false, // Hiển thị icon delete nhiều chứng từ
       mode: 0, // Chế độ hiển thị popup
+      isShowDialog: false, // Hiển thị dialog cảnh báo
+      isShowDeleteMultiIcon: false, // Hiển thị icon delete nhiều chứng từ
       isZoomIn: false, // Phóng to bảng chi tiết
       isShowPopup: false, // Hiển thị popup "Thêm chứng từ ghi tăng"
       popupTitle: "", // Tiêu đề popup
       selectedVoucher: {}, // Đối tượng chứa thông tin chứng từ cần sửa
-      totalOfRecords: 20, // Tổng số bản ghi lọc được
+      totalOfRecords: 0, // Tổng số bản ghi thu được
       conditions: {
         keyword: "",
         limit: 20,
         offset: 0,
       }, // Đối tượng chứa các điều kiện để gọi API
+      vouchers: [], // Mảng chứa các chứng từ
+      voucherDetail: [], // Mảng chứa các tài sản đăng ký chứng từ được chọn
       // Resource
       Resource,
       Dictionary,
@@ -372,8 +403,6 @@ export default {
           align: "right",
         },
       ],
-      // voucher
-      vouchers: [],
       // detail
       assetDetail: [
         {

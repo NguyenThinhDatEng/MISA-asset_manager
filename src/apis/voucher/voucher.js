@@ -36,4 +36,19 @@ const filterAndPaging = (keyword, limit, offset) => {
   }
 };
 
-export { getNewCode, filterAndPaging };
+/**
+ * API lấy thông tin chi tiết của voucher (danh sách tài sản được chứng từ)
+ * @returns res là 1 promise
+ * @author NVThinh (10-1-2023)
+ */
+const getVoucherDetail = (voucher_id) => {
+  try {
+    console.log("Call API get voucher detail");
+    const res = httpClient.get(END_POINT + `/detail/${voucher_id}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { getNewCode, filterAndPaging, getVoucherDetail };
