@@ -158,13 +158,6 @@ export default {
     voucherDetail: Array, // Mảng danh sách các tài sản trong chứng từ
   },
 
-  watch: {
-    // Cập nhật Tổng số bản ghi
-    assetList: function () {
-      this.paging();
-    },
-  },
-
   computed: {
     selectedIDs: function () {
       return this.assetList.map((obj) => {
@@ -246,7 +239,15 @@ export default {
     updateRow: function (selectedRows) {
       try {
         // Cập nhật mảng các dòng được chọn
-        this.assetList = selectedRows;
+        if (this.assetList.length == 0) {
+          this.assetList = selectedRows;
+        } else {
+          this.assetList.push(...selectedRows);
+        }
+        if (selectedRows.length > 0) {
+          // Phân trang
+          this.paging();
+        }
       } catch (error) {
         console.log(error);
       }
@@ -303,24 +304,11 @@ export default {
         offset: 0,
       };
       // Cập nhật mảng các dòng được hiển thị
+      console.log("Im Here");
       this.displayedAssetList = this.assetList.slice(
         this.conditions.offset,
         this.conditions.limit
       );
-      // Cập nhật tổng số bản ghi
-      this.updateTotalOfRecords();
-    },
-
-    /**
-     * @description Cập nhật tổng số bản ghi
-     * @author NVThinh 9/1/2023
-     */
-    updateTotalOfRecords: function () {
-      try {
-        this.$refs.theTable.updateLimit(this.assetList.length);
-      } catch (error) {
-        console.log(error);
-      }
     },
 
     /**
