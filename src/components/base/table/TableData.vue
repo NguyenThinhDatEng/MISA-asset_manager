@@ -7,6 +7,7 @@
       { 'text-align': config.align },
       { width: config.width },
       { padding: config.padding },
+      { color: config.color },
     ]"
   >
     <!-- check box -->
@@ -25,7 +26,7 @@
       {{ Function.formatMoney(content) }}
     </p>
     <!-- Date box -->
-    <p v-else-if="isDate()">{{ moment(content).format("DD-MM-YYYY") }}</p>
+    <p v-else-if="isDate()">{{ moment(content).format("DD/MM/YYYY") }}</p>
     <!-- other -->
     <div v-else class="feature center">
       <!-- edit button -->

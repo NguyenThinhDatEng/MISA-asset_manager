@@ -95,16 +95,12 @@
   <!-- Voucher fixed asset list -->
   <VoucherAssetList v-if="isShowAssetList" :selectedIDs="selectedIDs" />
   <!-- Budget Detail -->
-  <BudgetDetail
-    v-if="isShowBudgetDetail"
-    :fixed-asset-name="fixedAsset.name"
-    :department="fixedAsset.department"
-  />
+  <BudgetDetail v-if="isShowBudgetDetail" :fixedAsset="selectedFixedAsset" />
   <!-- Dialog warning -->
   <DialogWarning
     v-if="isShowDialog"
     :content="warningMessage"
-    @close-dialog="closeDialog"
+    @confirm="closeDialog"
   />
 </template>
 
@@ -158,26 +154,16 @@ export default {
     voucherDetail: Array, // Mảng danh sách các tài sản trong chứng từ
   },
 
-  created() {
-    // Chế độ thêm
-    if (this.mode == Enum.Mode.Add) this.getNewCode();
-    else {
-      // Chế độ sửa
-      this.voucher = this.voucherProp;
-      this.displayedAssetList = this.voucherDetail;
-    }
-  },
-
   watch: {
     // Cập nhật Tổng số bản ghi
-    selectedAssetList: function () {
+    assetList: function () {
       this.paging();
     },
   },
 
   computed: {
     selectedIDs: function () {
-      return this.selectedAssetList.map((obj) => {
+      return this.assetList.map((obj) => {
         return obj.fixed_asset_id;
       });
     },
@@ -186,6 +172,18 @@ export default {
   mounted() {
     // focus vào ô input đầu tiên
     this.$refs.voucherCode.focusInput();
+    // Chế độ thêm
+    if (this.mode == Enum.Mode.Add) this.getNewCode();
+    else {
+      /**
+       * Chế độ sửa
+       */
+      // Cập nhật dữ liệu
+      this.voucher = this.voucherProp;
+      this.assetList = this.voucherDetail;
+    }
+    // Phân trang
+    this.paging();
   },
 
   methods: {
@@ -195,9 +193,9 @@ export default {
      */
     handleEmptyInput: function () {
       try {
-        this.displayedAssetList = this.selectedAssetList;
+        this.displayedAssetList = this.assetList;
         // Cập nhật tổng số bản ghi thu được
-        this.$refs.theTable.updateLimit(this.selectedAssetList.length);
+        this.$refs.theTable.updateLimit(this.assetList.length);
       } catch (error) {
         console.log(error);
       }
@@ -209,13 +207,12 @@ export default {
      */
     updateVoucher: function (mode, fixedAsset, index) {
       if (mode == Enum.Mode.Delete) {
-        this.selectedAssetList.splice(index, 1);
+        this.assetList.splice(index, 1);
         this.paging();
         return;
       }
       // Cập nhật thông tin tài sản
-      this.fixedAsset.name = fixedAsset.fixed_asset_name;
-      this.fixedAsset.department = fixedAsset.department_name;
+      this.selectedFixedAsset = this.assetList[index];
       // Mở popup
       this.isShowBudgetDetail = true;
     },
@@ -245,7 +242,7 @@ export default {
     updateRow: function (selectedRows) {
       try {
         // Cập nhật mảng các dòng được chọn
-        this.selectedAssetList = selectedRows;
+        this.assetList = selectedRows;
       } catch (error) {
         console.log(error);
       }
@@ -262,7 +259,7 @@ export default {
       this.conditions[field] = value;
       // Cập nhật mảng các tài sản hiển thị
       if (field !== "keyword") {
-        this.displayedAssetList = this.selectedAssetList.slice(
+        this.displayedAssetList = this.assetList.slice(
           this.conditions.offset,
           this.conditions.offset + this.conditions.limit
         );
@@ -281,7 +278,7 @@ export default {
         // Cập nhật dữ liệu hiển thị
         this.displayedAssetList = Function.autoComplete(
           keyword,
-          this.selectedAssetList,
+          this.assetList,
           "fixed_asset_code",
           "fixed_asset_name"
         );
@@ -302,7 +299,7 @@ export default {
         offset: 0,
       };
       // Cập nhật mảng các dòng được hiển thị
-      this.displayedAssetList = this.selectedAssetList.slice(
+      this.displayedAssetList = this.assetList.slice(
         this.conditions.offset,
         this.conditions.limit
       );
@@ -316,7 +313,7 @@ export default {
      */
     updateTotalOfRecords: function () {
       try {
-        this.$refs.theTable.updateLimit(this.selectedAssetList.length);
+        this.$refs.theTable.updateLimit(this.assetList.length);
       } catch (error) {
         console.log(error);
       }
@@ -349,7 +346,7 @@ export default {
           return;
         }
         // Kiểm tra bảng detail có ít nhất 1 tài sản
-        if (this.selectedAssetList.length === 0) {
+        if (this.assetList.length === 0) {
           this.isShowDialog = true;
         }
       } catch (error) {
@@ -388,22 +385,19 @@ export default {
       isShowAssetList: false, // Hiển thị popup "chọn tài sản ghi tăng"
       isShowBudgetDetail: false, // Hiển thị popup "Sửa tài sản"
       displayedAssetList: [], // Mảng chứa các tài sản đã được lọc
-      selectedAssetList: [], // Mảng chứa các tài sản được chọn
+      assetList: [], // Mảng chứa các tài sản được chọn
       conditions: {
         keyword: "",
         limit: 20,
         offset: 0,
       }, // Đối tượng chứa các điều kiện để gọi API
-      fixedAsset: {
-        name: "",
-        department: "",
-      }, // Đối tượng tài sản được chọn trong bảng detail
       voucher: {
         voucher_code: "",
         voucher_date: Function.getCurrentDate(),
         increment_date: Function.getCurrentDate(),
         description: "",
       }, // Đối tượng chứng từ
+      selectedFixedAsset: {}, // Đối tượng tài sản được chọn để chỉnh sửa
       // Resources
       Resource,
       TableResource,

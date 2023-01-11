@@ -51,8 +51,8 @@
   <p
     v-show="isError"
     class="error-message"
-    v-html="labelContent + ' ' + Resource.ErrorMessage.blank"
-  ></p>
+    v-html="errorMessage || labelContent + ' ' + Resource.ErrorMessage.blank"
+  />
 </template>
 
 <script>
@@ -91,18 +91,26 @@ export default {
     isDisable: {
       type: Boolean,
       default: false,
-    },
+    }, // Input không được nhập
     inputClass: {
       type: String,
       default: "",
-    },
-    field: String,
-    maxLength: Number,
-    labelContent: String,
+    }, // lớp dùng để css input
+    index: {
+      type: Number,
+      default: 0,
+    }, // Chỉ số ô input
     isError: {
       type: Boolean,
       default: false,
-    },
+    }, // Có lỗi nếu ô input không được điền
+    errorMessage: {
+      type: String,
+      default: "",
+    }, // Nội dung lỗi
+    field: String,
+    maxLength: Number,
+    labelContent: String,
   },
 
   emits: ["update-input"],
@@ -126,7 +134,7 @@ export default {
           this.amount = amountStr.replace(",", ".");
       }
       // Update dữ liệu cho control
-      this.$emit("update-input", Number(this.amount), this.field);
+      this.$emit("update-input", Number(this.amount), this.field, this.index);
       // Format cho giá trị hiển thị
       if (this.type == Enum.DataType.Rate) {
         if (amountStr.length > 5) this.amount = Number(this.amount).toFixed(2);

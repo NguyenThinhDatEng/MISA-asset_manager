@@ -1,22 +1,23 @@
 <template>
   <Datepicker
+    v-model="date"
+    text-input
+    showNowButton
+    hideInputIcon
+    vertical
+    auto-apply
     name="myDate"
     class="datepicker"
-    v-model="date"
     placeholder="dd/mm/yyyy"
-    :format="format"
     monthNameFormat="long"
     locale="vi"
-    selectText="Chọn"
-    cancelText="Đóng"
-    showNowButton
     nowButtonLabel="Ngày hiện tại"
+    :format="format"
     :previewFormat="format"
-    :dayNames="['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']"
+    :text-input-options="textInputOptions"
+    :dayNames="dayNames"
     :clearable="false"
     :enableTimePicker="false"
-    hideInputIcon
-    modeHeight="true"
   ></Datepicker>
   <div class="input--date__icon__wrapper">
     <div class="icon icon-item center icon--calendar"></div>
@@ -42,6 +43,9 @@ export default {
   watch: {
     date: function () {
       try {
+        if (!this.date) {
+          this.date = new Date();
+        }
         this.$emit("update-input", this.date.toISOString(), this.field); // "2020-05-25T07:01:14",
       } catch (error) {
         console.log(error);
@@ -59,10 +63,16 @@ export default {
         month
       )}/${year}`;
     };
+    const textInputOptions = ref({
+      format: "dd/MM/yyyy",
+    });
+    const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     return {
       date,
       format,
       Function,
+      textInputOptions,
+      dayNames,
     };
   },
   mounted() {

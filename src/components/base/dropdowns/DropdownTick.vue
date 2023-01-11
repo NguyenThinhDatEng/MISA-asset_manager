@@ -45,29 +45,30 @@ export default {
   // =========================== Declaration =========================
   name: "DropdownTick",
   props: {
-    // Các options của dropdown
     dropdownData: {
       type: Array,
       default: () => {
         return [];
       },
-    },
-    // Có icon
+    }, // Các options của dropdown
     hasIcon: {
       type: Boolean,
       default: true,
-    },
-    // Giá trị đầu vào
+    }, // Có icon
     value: {
       type: String,
       default: "",
+    }, // Giá trị đầu vào
+    index: {
+      type: Number,
+      default: 0,
     },
     parentClass: String,
     placeholder: String,
     field: String,
   },
   components: { Data },
-  emits: ["update-filter"],
+  emits: ["update-filter", "update-dropdown"],
   // ================================ Methods ==========================
   created() {
     // Ẩn dropdown khi click ra ngoài
@@ -81,6 +82,7 @@ export default {
     // Cập nhật mảng dữ liệu
     this.data = this.dropdownData;
   },
+
   watch: {
     // Nếu prop dropdownData được cập nhật
     dropdownData: function () {
@@ -111,6 +113,11 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    // Cập nhật giá trị hiển thị khi giá trị đầu vào thay đổi
+    value: function () {
+      this.selectedValue = this.value;
     },
   },
   methods: {
@@ -144,6 +151,7 @@ export default {
               this.selectedValue = "";
               this.$emit("update-filter", idField, Constants.GUID.EMPTY);
             }
+            this.$emit("update-dropdown", this.selectedValue, this.index);
             // Gửi giá trị cập nhật đến cha
           } else {
             obj.isActive = false;

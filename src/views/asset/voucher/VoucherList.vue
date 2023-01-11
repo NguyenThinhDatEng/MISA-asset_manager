@@ -198,6 +198,7 @@ export default {
           type: Enum.TableData.type.text,
           width: "150px",
           align: "left",
+          color: "#0993EA",
         },
         {
           col: TableResource.TableRow.Voucher.voucher_date.ENG,
@@ -228,7 +229,7 @@ export default {
         {
           col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "40px",
+          width: "40px",
           align: "center",
         },
         {
@@ -287,6 +288,7 @@ export default {
   },
 
   computed: {
+    // Nội dung dialog
     warningMessage: function () {
       let output = "";
       if (this.mode === Enum.Mode.Delete) {
@@ -395,7 +397,7 @@ export default {
     getVoucherDetail: async function (voucher_id) {
       try {
         await getVoucherDetail(voucher_id).then((res) => {
-          this.voucherDetail = res.data.fixedAssetList;
+          this.voucherDetail = res.data;
         });
       } catch (error) {
         console.log(error);
