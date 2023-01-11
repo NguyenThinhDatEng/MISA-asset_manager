@@ -17,14 +17,19 @@
         @handle-empty-input="handleEmptyInput"
       />
     </div>
-    <!-- Table -->
+    <!-- Detail Table -->
     <TableVue
       :cols="TableResource.TableRow.FixedAssetDetail"
       :data="fixedAssets"
       :tds="tds_of_detail"
-      :page="TableResource.TableFoot.Page.assetList"
+      :is-show-footer="false"
       @update-row="updateRow"
       ref="theTable"
+    />
+    <!-- Paging -->
+    <TablePaging
+      :number-of-records="totalOfRecords"
+      @update-filter="updateFilter"
     />
   </Popup>
   <!-- Toast -->
@@ -42,6 +47,7 @@ import TableVue from "@/components/base/table/Table.vue";
 import SearchInputVue from "@/components/base/inputs/SearchInput.vue";
 import Loader from "@/components/base/more/Loader.vue";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
+import TablePaging from "@/components/base/table/TablePaging.vue";
 // Resources
 import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
@@ -56,6 +62,7 @@ export default {
     SearchInputVue,
     Loader,
     ToastVue,
+    TablePaging,
   },
   props: {
     selectedIDs: {
@@ -67,35 +74,6 @@ export default {
   created() {
     // Gọi API lấy danh sách tài sản cố định theo tìm kiếm, lọc và giới hạn bản ghi
     this.searchAndFilter();
-  },
-
-  watch: {
-    // Cập nhật Tổng số bản ghi
-    totalOfRecords: function () {
-      this.$nextTick(() => {
-        this.$refs.theTable.updateLimit(this.totalOfRecords);
-      });
-    },
-    // Lọc dữ liệu
-    fixedAssets: function () {
-      // Gán dữ liệu để có thể thay đổi
-      let IDs = this.selectedIDs;
-      // Lọc dữ liệu (loại bỏ các tài sản đã được chọn)
-      let i = 0;
-      while (IDs.length > 0 && i < this.fixedAssets.length) {
-        for (let j = 0; j < IDs.length; j++) {
-          if (this.fixedAssets[i].fixed_asset_id === IDs[j]) {
-            IDs.splice(j, 1);
-            this.fixedAssets.splice(i, 1);
-            i--;
-            break;
-          }
-        }
-        i++;
-      }
-      // Cập nhật số lượng bản ghi
-      this.totalOfRecords = this.fixedAssets.length;
-    },
   },
 
   methods: {
@@ -144,7 +122,8 @@ export default {
         null,
         this.conditions.limit,
         this.conditions.offset,
-        true
+        true,
+        this.selectedIDs
       )
         .then((res) => {
           this.fixedAssets = res.data.data;
@@ -171,21 +150,6 @@ export default {
     },
 
     /**
-     * Cập nhật các điều kiện của filter
-     * @param {string} field trường của dữ liệu
-     * @param {string} value giá trị được cập nhật
-     * @author NVThinh 7/1/2023
-     */
-    updateFilter: async function (field, value) {
-      try {
-        this.conditions[field] = value;
-        this.searchAndFilter();
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    /**
      * Lấy thông tin các tài sản được chọn
      * @param {Array} selectedRows mảng các dòng được chọn
      * @author Nguyen Van Thinh 7/1/2023
@@ -194,6 +158,23 @@ export default {
       try {
         // Cập nhật mảng các dòng được chọn
         this.selectedRows = selectedRows;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Cập nhật các điều kiện của filter
+     * @param {string} field trường của dữ liệu
+     * @param {string} value giá trị được cập nhật
+     * @author NVThinh 11/1/2023
+     */
+    updateFilter: function (field, value) {
+      try {
+        // Cập nhật các diều kiện lọc và phân trang
+        this.conditions[field] = value;
+        // Call lại API
+        this.searchAndFilter();
       } catch (error) {
         console.log(error);
       }
@@ -292,5 +273,10 @@ export default {
   height: 450px;
   box-shadow: none;
   border: none;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  margin-bottom: unset;
 }
 </style>

@@ -124,6 +124,7 @@ export default {
       default: 0,
     }, // Số lượng bản ghi
   },
+  emits: ["update-filter"],
 
   created() {
     try {
@@ -147,7 +148,8 @@ export default {
     // Gửi dữ liệu để call API filter khi trang được chọn thay đổi
     selectedNumber: function () {
       try {
-        this.$parent.updateFilter(
+        this.$emit(
+          "update-filter",
           Resource.Filter.offset,
           (this.selectedNumber - 1) * this.pageSize
         );
@@ -346,7 +348,7 @@ export default {
         // Cập nhật giá trị và style trang được chọn
         this.updatePageNumberState();
         // Thực hiện hàm updateFilter tại lớp cha
-        this.$parent.updateFilter(Resource.Filter.limit, value);
+        this.$emit("update-filter", Resource.Filter.limit, value);
       } catch (error) {
         console.log(error);
       }

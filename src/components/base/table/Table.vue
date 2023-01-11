@@ -44,6 +44,7 @@
           @update-voucher="updateVoucher"
           @update-checked-header="updateCheckedHeader"
           @show-popup="showPopup"
+          @click-checkbox="clickCheckbox"
           ref="tableRow"
         ></Row>
         <tr class="ignoreRow">
@@ -205,12 +206,16 @@ export default {
      * @param {Number} numericalOrder là số thứ tự của dòng
      * @author Nguyen Van Thinh 05/11/2022
      */
-    updateRow: function (isNewRow, obj, numericalOrder) {
+    updateRow: function (isNewRow, obj, numericalOrder, isClickedCheckbox) {
       try {
         // Thêm dòng mới vào mảng
         if (isNewRow) {
           // Nếu Bảng chỉ cho chọn 1 dòng và đã có ít nhất 1 dòng được chọn
-          if (this.onlyOneRow && this.selectedRows.length > 0) {
+          if (
+            this.onlyOneRow &&
+            this.selectedRows.length > 0 &&
+            !isClickedCheckbox
+          ) {
             // Làm mới bảng (xóa tất cả các dòng được active)
             this.toggle();
             // Bỏ dòng cũ

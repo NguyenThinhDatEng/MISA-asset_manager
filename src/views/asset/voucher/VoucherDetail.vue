@@ -82,13 +82,15 @@
           :cols="TableResource.TableRow.FixedAssetDetail"
           :tds="tds_of_detail"
           :data="displayedAssetList"
-          :page="TableResource.TableFoot.Page.fixedAssetDetail"
+          :page="TableResource.TableFoot.Page.voucher"
           :is-show-feature="true"
           :isShowCheckbox="false"
           :onlyOneRow="true"
           ref="theTable"
           @update-voucher="updateVoucher"
         />
+        <!-- Paging Row -->
+        <TablePaging :number-of-records="this.assetList.length" />
       </div>
     </div>
   </Popup>
@@ -119,6 +121,7 @@ import TableVue from "@/components/base/table/Table.vue";
 import SearchInputVue from "@/components/base/inputs/SearchInput.vue";
 import Button from "@/components/base/buttons/ButtonOutline.vue";
 import DialogWarning from "@/components/base/dialogs/DialogWarning.vue";
+import TablePaging from "@/components/base/table/TablePaging.vue";
 // Views
 import VoucherAssetList from "@/views/asset/voucher/VoucherAssetList.vue";
 import BudgetDetail from "@/views/asset/voucher/BudgetDetail.vue";
@@ -133,6 +136,7 @@ export default {
     SearchInputVue,
     Button,
     DialogWarning,
+    TablePaging,
     // views
     VoucherAssetList,
     BudgetDetail,

@@ -15,7 +15,12 @@
       v-if="config.type === tdType.checkbox"
       class="checkbox__wrapper col--checkbox"
     >
-      <input type="checkbox" class="checkbox" :checked="isActive" />
+      <input
+        type="checkbox"
+        class="checkbox"
+        :checked="isActive"
+        @click.self="$emit('click-checkbox')"
+      />
     </div>
     <!-- text box -->
     <p v-else-if="config.type === tdType.text">
@@ -70,6 +75,7 @@ export default {
       required: true,
     },
   },
+  emits: ["click-checkbox"],
 
   methods: {
     /**
@@ -95,6 +101,10 @@ export default {
      */
     isDate: function () {
       return this.config.type === this.tdType.date;
+    },
+
+    onChange: function () {
+      console.log("on change!");
     },
   },
 

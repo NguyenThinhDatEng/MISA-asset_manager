@@ -19,7 +19,8 @@ const getFixedAssetByFilterAndPaging = (
   fixedAssetCategoryID = constants.GUID.EMPTY,
   limit = 20,
   offset = 0,
-  isIncrement = false
+  isIncrement = false,
+  selectedIDs = null
 ) => {
   try {
     console.log("Call API get fixed assets by filter and paging");
@@ -38,7 +39,11 @@ const getFixedAssetByFilterAndPaging = (
       offset +
       "&isIncrement=" +
       isIncrement;
-    const res = httpClient.get(END_POINT + `/filter?${queryParams}`);
+    // Call API
+    const res = httpClient.post(
+      END_POINT + `/filter?${queryParams}`,
+      selectedIDs
+    );
     return res;
   } catch (error) {
     console.log(error);

@@ -11,6 +11,7 @@
       :config="td"
       :content="getTdContent(td.col)"
       :isActive="isActive"
+      @click-checkbox="onClickCheckBox = true"
       ref="td"
     />
     <div class="feature" v-show="isShowFeature">
@@ -43,19 +44,17 @@ export default {
   props: {
     numerical_order: Number, // Số thứ tự
     isShowFeature: Boolean, // Ẩn/hiện các tính năng
-    tableRowObj: Object,
-    isCheckAll: Boolean,
-    isRefreshTable: Boolean,
-    // Style các ô dữ liệu trong bảng
+    tableRowObj: Object, // Đối tượng chứa dữ liệu hiển thị
+    isCheckAll: Boolean, // true nếu ô checkbox all được tick
+    isRefreshTable: Boolean, // làm mới bảng => bỏ active tất cả các dòng
     tds: {
       type: Array,
       required: true,
-    },
-    // Chỉ 1 dòng được active trong bảng
+    }, // Style các ô dữ liệu trong bảng
     isOnly: {
       type: Boolean,
       default: false,
-    },
+    }, // Chỉ 1 dòng được active trong bảng
   },
 
   components: {
@@ -69,6 +68,7 @@ export default {
     "update-voucher",
     "reload-content",
     "show-popup",
+    "click-checkbox",
   ],
 
   created() {
@@ -183,13 +183,21 @@ export default {
         this.isActive = !this.isActive;
         // Nếu dòng được active, bắn đối tượng đến Table
         if (this.isActive == isNew) {
-          this.$emit("update-row", isNew, this.data, this.numerical_order);
+          this.$emit(
+            "update-row",
+            isNew,
+            this.data,
+            this.numerical_order,
+            this.onClickCheckBox
+          );
         } else {
           if (this.isCheckAll == true) {
             this.$emit("update-checked-header", false);
           }
           this.$emit("update-row", !isNew, this.data, this.numerical_order); // isNew == false
         }
+        // refresh trạng thái tick checkbox
+        this.onClickCheckBox = false;
       } catch (error) {
         console.log(error);
       }
@@ -237,6 +245,7 @@ export default {
       accumulated_value: 0, // tỉ lệ khấu hao
       residual_value: 0, // giá trị còn lại
       fields: Resource.PopupField, // các trường input trong popup
+      onClickCheckBox: false, // true nếu click vào ô checkbox
       // Resources
       Resource,
       Function,
