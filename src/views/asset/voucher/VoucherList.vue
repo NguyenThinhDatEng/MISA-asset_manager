@@ -60,6 +60,7 @@
         :is-show-feature="true"
         :page="TableResource.TableFoot.Page.voucher"
         :only-one-row="true"
+        :offset="conditions.offset"
         ref="theTable"
         @update-voucher="updateVoucher"
         @update-row="updateRow"
@@ -100,6 +101,7 @@
     :mode="mode"
     :voucher-prop="selectedVoucher"
     :voucher-detail="voucherDetail"
+    @reload-content="filterAndPaging"
   />
   <!-- Dialog warning -->
   <DialogWarning

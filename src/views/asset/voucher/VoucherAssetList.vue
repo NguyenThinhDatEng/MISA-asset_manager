@@ -23,6 +23,7 @@
       :data="fixedAssets"
       :tds="tds_of_detail"
       :is-show-footer="false"
+      :offset="conditions.offset"
       @update-row="updateRow"
       ref="theTable"
     />

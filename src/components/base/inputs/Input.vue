@@ -72,7 +72,10 @@ export default {
       type: String,
       required: "true",
     },
-    maxLength: Number,
+    maxLength: {
+      type: Number,
+      default: 50,
+    }, // Chiều dài lớn nhất của chuỗi
     type: {
       type: [Number, String],
       default: 0,
@@ -84,7 +87,7 @@ export default {
     isError: {
       type: Boolean,
       default: false,
-    },
+    }, // true nếu thiếu dữ liệu yêu cầu
     placeholder: {
       type: String,
       default: "",

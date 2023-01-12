@@ -1,6 +1,9 @@
 <template>
   <div :class="parentClass ? parentClass : ''">
-    <div class="dropdown" :style="[{ 'padding-left: 14px': !hasIcon }]">
+    <div
+      :class="['dropdown', { 'dropdown--error': isError }]"
+      :style="[{ 'padding-left: 14px': !hasIcon }]"
+    >
       <!-- Icon -->
       <div v-if="hasIcon" class="dropdown__icon">
         <div class="icon center icon--18px icon--filter"></div>
@@ -33,6 +36,8 @@
         ></Data>
       </div>
     </div>
+    <!-- error message -->
+    <p v-show="isError" class="error-message" v-html="errorMessage" />
   </div>
 </template>
 
@@ -63,6 +68,14 @@ export default {
       type: Number,
       default: 0,
     },
+    isError: {
+      type: Boolean,
+      default: false,
+    }, // true nếu thiếu dữ liệu yêu cầu
+    errorMessage: {
+      type: String,
+      default: "",
+    }, // Nội dung lỗi
     parentClass: String,
     placeholder: String,
     field: String,
@@ -267,5 +280,16 @@ export default {
 
 .input {
   border: none;
+}
+
+.dropdown--error {
+  border: 1px solid var(--input--error);
+}
+
+.error-message {
+  position: absolute;
+  color: var(--input--error);
+  max-width: 240px;
+  padding-top: 2px;
 }
 </style>

@@ -119,6 +119,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    offset: {
+      type: Number,
+      default: 0,
+    },
   },
   components: { Row, TableFoot },
   emits: ["update-row", "reload-content", "show-popup", "update-voucher"],
@@ -157,6 +161,11 @@ export default {
       this.isCheckAll = false;
       // Làm mới mảng được chọn
       this.selectedRows = [];
+    },
+
+    // Cập nhật chỉ số bắt đầu của số thứ tự khi có offset truyền từ ngoài vào
+    offset: function () {
+      this.startIndex = this.offset;
     },
   },
 
@@ -336,7 +345,6 @@ export default {
         // Cập nhật startIndex
         if (field == Resource.Filter.offset) this.startIndex = value;
         // Thực hiện hàm updateFilter tại Vue cha
-        console.log(this.$parent);
         this.$parent.updateFilter(field, value);
       } catch (error) {
         console.log(error);
@@ -415,5 +423,11 @@ export default {
 /* th ----------------------- */
 th {
   padding: 0 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  margin-top: 39px;
+  margin-bottom: 39px;
 }
 </style>

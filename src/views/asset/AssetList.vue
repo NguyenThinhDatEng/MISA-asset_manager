@@ -95,7 +95,6 @@
     :fixed-categories="fixedAssetCategories"
     @close-popup="isShowPopup = false"
     @show-toast="isShowToast = true"
-    @show-error-toast="showErrorToast"
     @reload-content="reloadContent"
   ></Popup>
   <!-- Toast -->

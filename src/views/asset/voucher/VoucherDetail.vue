@@ -2,7 +2,7 @@
   <Popup
     :isShow="isShow"
     :title="title"
-    @close-popup="$parent.closePopup"
+    @close-popup="close"
     @on-save="validate"
   >
     <div class="popup__body__wrapper">
@@ -17,6 +17,7 @@
               :label="Resource.InputLabel.voucher_code"
               :value="voucher.voucher_code"
               :is-error="isError"
+              :field="'voucher_code'"
               ref="voucherCode"
               @update-input="updateInput"
             />
@@ -49,6 +50,8 @@
               :label="Resource.InputLabel.description"
               :isRequired="false"
               :value="voucherProp.description"
+              :field="'description'"
+              @update-input="updateInput"
             />
           </div>
         </div>
@@ -116,7 +119,7 @@ import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import { getNewCode } from "@/apis/voucher/voucher";
+import { getNewCode, createVoucher } from "@/apis/voucher/voucher";
 // Components
 import Popup from "@/components/base/popup/VPopup.vue";
 import InputVue from "@/components/base/inputs/Input.vue";
@@ -161,6 +164,7 @@ export default {
     voucherProp: Object, // Thông tin chứng từ được chọn
     voucherDetail: Array, // Mảng danh sách các tài sản trong chứng từ
   },
+  emits: ["reload-content"],
 
   computed: {
     selectedIDs: function () {
@@ -233,6 +237,18 @@ export default {
     closePopup: function () {
       this.isShowAssetList = false;
       this.isShowBudgetDetail = false;
+    },
+
+    /**
+     * @description đóng component này
+     * @author NVThinh 13/1/2023
+     */
+    close: function () {
+      try {
+        this.$parent.closePopup();
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     /**
@@ -330,11 +346,46 @@ export default {
     },
 
     /**
+     * @description Gọi API tạo mới chứng từ
+     * @author NVThinh 13/1/2023
+     */
+    createNewVoucher: async function () {
+      try {
+        // Dữ liệu đầu vào của API thêm mới
+        let input = { voucher: {}, voucherDetailList: [] };
+        this.assetList.forEach((obj) => {
+          // Khởi tạo mảng các voucher detail
+          input.voucherDetailList.push({
+            ...this.baseFields,
+            fixed_asset_id: obj.fixed_asset_id,
+          });
+          // Cập nhật tổng nguyên giá
+          this.voucher.total_of_cost += obj.cost;
+        });
+        // Cập nhật voucher
+        input.voucher = this.voucher;
+        // Gọi API
+        await createVoucher(input)
+          .then(() => {
+            this.handleSuccessAPI();
+            // Đóng popup
+            this.close();
+          })
+          .catch((res) => {
+            this.handleErrorAPI(res);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
      * @description Kiểm tra tính hợp lệ của dữ liệu đầu vào
      * @author NVThinh 9/1/2023
      */
     validate: function () {
       try {
+        console.log("validate", this.voucher);
         // Kiểm tra trường bắt buộc nhập
         if (this.voucher.voucher_code === "") {
           this.isError = true;
@@ -343,7 +394,9 @@ export default {
         // Kiểm tra bảng detail có ít nhất 1 tài sản
         if (this.assetList.length === 0) {
           this.isShowDialog = true;
+          return;
         }
+        this.createNewVoucher();
       } catch (error) {
         console.log(error);
       }
@@ -353,9 +406,9 @@ export default {
      * @description Cập nhật dữ liệu khi giá trị ô input thay đổi
      * @author NVThinh 9/1/2023
      */
-    updateInput: function (value) {
+    updateInput: function (value, field) {
       try {
-        this.voucher.voucher_code = value;
+        this.voucher[field] = value;
         // Cập nhật hiển thị lỗi
         if (value) this.isError = false;
       } catch (error) {
@@ -371,8 +424,60 @@ export default {
       this.isShowDialog = false;
     },
 
+    /**
+     * @description Hiển thị footer chứa các tổng tiền của các cột
+     * @author NVThinh 13/1/2023
+     */
     isShowFooter: function () {
       return this.assetList.length > 0;
+    },
+
+    /**
+     * @description Xử lý sự kiện khi gọi API thành công
+     * @author NVThinh 13/1/2023
+     */
+    handleSuccessAPI: function () {
+      try {
+        // reload lại trang
+        this.$emit("reload-content");
+        // Thiết lập toast thông báo
+        let toastContent = "";
+        switch (this.mode) {
+          case Enum.Mode.Add:
+            toastContent = Resource.ToastContent.Add.Success;
+            break;
+          case Enum.Mode.Update:
+            toastContent = Resource.ToastContent.Update.Success;
+            break;
+          default:
+            // Mặc định là nhân bản thông tin
+            toastContent = "No Add no update";
+            break;
+        }
+        // Gọi đến hàm hiển thị toast tại parent component (Content)
+        this.$parent.showToast(Enum.ActionStatus.Success, toastContent);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Xử lý khi có lỗi gửi về từ serve
+     * @param {Object} res là res là response trả về từ client
+     * @author NVThinh 13/1/2023
+     */
+    handleErrorAPI: function (res) {
+      if (res.response.data.errorCode == Enum.ErrorCode.BadRequest) {
+        // Cập nhật nội dung cảnh báo
+        this.warningMessage = res.response.data.moreInfo;
+        // Hiển thị dialog cảnh báo
+        this.isShowDialog = true;
+      } else {
+        this.$parent.showToast(
+          Enum.ActionStatus.Error,
+          res.response.data.moreInfo
+        );
+      }
     },
   },
 
@@ -395,12 +500,23 @@ export default {
         voucher_date: Function.getCurrentDate(),
         increment_date: Function.getCurrentDate(),
         description: "",
+        total_of_cost: 0,
+        created_date: new Date(),
+        created_by: "Nguyen Van Thinh",
+        modified_date: new Date(),
+        modified_by: "",
       }, // Đối tượng chứng từ
       selectedFixedAsset: {}, // Đối tượng tài sản được chọn để chỉnh sửa
       // Resources
       Resource,
       TableResource,
       Enum,
+      baseFields: {
+        created_date: new Date(),
+        created_by: "Nguyen Van Thinh",
+        modified_date: new Date(),
+        modified_by: "",
+      },
       // Style cho detail table
       tds_of_detail: [
         {

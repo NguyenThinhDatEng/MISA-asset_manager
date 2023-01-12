@@ -52,6 +52,21 @@ const getVoucherDetail = (voucher_id) => {
 };
 
 /**
+ * API thêm mới voucher
+ * @returns res là 1 promise
+ * @author NVThinh (13-1-2023)
+ */
+const createVoucher = (voucherAndVoucherDetail) => {
+  try {
+    console.log("Call API create voucher");
+    const res = httpClient.post(END_POINT, voucherAndVoucherDetail);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
  * API xóa 1 voucher
  * @returns res là 1 promise
  * @author NVThinh (10-1-2023)
@@ -85,6 +100,7 @@ export {
   getNewCode,
   filterAndPaging,
   getVoucherDetail,
+  createVoucher,
   deleteById,
   deleteMultipleRecords,
 };

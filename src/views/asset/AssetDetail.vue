@@ -632,10 +632,14 @@ export default {
         }
         this.showDialogValidate = true;
       } else {
-        this.$emit("show-error-toast");
+        this.$parent.showToast(Enum.ActionStatus.Error, res.response.data.moreInfo);
       }
     },
 
+    /**
+     * @description Xử lý sự kiện khi gọi API thành công
+     * @author NVThinh 13/1/2023
+     */
     handleSuccessAPI: function () {
       try {
         // reload lại trang
@@ -665,7 +669,6 @@ export default {
     return {
       data: {}, // the data of popup which contain pair field:key
       originalData: {}, // Được sinh ra để so sánh với data khi nhấn phím hủy => kiểm tra xem người dùng có tương tác với popup không
-      fields: Resource.PopupField, // Các trường trong popup
       currentYear: Function.getCurrentYear(), // Năm hiện tại
       showDialogValidate: false, /// Hiển thị validate dialog
       isShowDlgCancel: false, // Trạng thái ẩn hiện Cancel dialog
@@ -676,6 +679,7 @@ export default {
       requiredData: [], // Mảng chứa những dữ liệu yêu cầu
       // Resources
       Resource,
+      fields: Resource.PopupField, // Các trường trong popup
       Title: Resource.Title, // tooltip
       Label: Resource.PopupLabel, // the label of inputs
       Placeholder: Resource.Placeholder, // placeholder of inputs

@@ -37,6 +37,9 @@
                 :value="obj.budget_name"
                 :dropdown-data="budgets"
                 :index="index"
+                :isError="obj.dropdownError"
+                :errorMessage="obj.dropdownMessageError"
+                ref="dropdown"
                 @update-dropdown="updateDropdown"
               />
               <!-- Number Input -->
@@ -47,7 +50,7 @@
                   :value="obj.value"
                   :index="index"
                   :isError="obj.inputError"
-                  :errorMessage="'Không được bỏ trống ô này!'"
+                  :errorMessage="errorMessage.isRequired"
                   @update-input="updateInput"
                 />
               </div>
@@ -109,25 +112,22 @@ import { getAllBudgets } from "@/apis/voucher/budget";
 export default {
   name: "BudgetDetail",
   created() {
-    // Khởi tạo dữ liệu
-    const budgetList = this.fixedAsset.budgets;
-    this.data = budgetList
-      ? budgetList.map((obj) => {
-          return {
-            budget_name: obj.budget_name,
-            value: obj.value,
-            inputError: false,
-            dropdownError: false,
-          };
-        })
-      : [
-          {
-            budget_name: "",
-            value: 0,
-            inputError: false,
-            dropdownError: false,
-          },
-        ];
+    try {
+      // Khởi tạo dữ liệu
+      const budgetList = JSON.parse(this.fixedAsset.budgets);
+      this.data = budgetList?.map((obj) => {
+        console.log(obj, this.fixedAsset.cost);
+        return {
+          budget_name: obj.budget_name,
+          value: obj.value == 0 ? this.fixedAsset.cost : obj.value,
+          inputError: false,
+          dropdownError: false,
+          dropdownMessageError: this.errorMessage.isRequired,
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
   },
   components: {
     Popup,
@@ -163,13 +163,16 @@ export default {
      * @author NVThinh 6/1/2023
      */
     addNewSource: function () {
+      // Thêm dữ liệu mặc định
       this.data.push({
         budget_name: "",
         value: 0,
         inputError: false,
         dropdownError: false,
+        dropdownMessageError: this.errorMessage.isRequired,
       });
-      console.log(this.data);
+      // refresh dropdown
+      for (const obj of this.$refs.dropdown) obj.clear();
     },
 
     /**
@@ -200,9 +203,10 @@ export default {
      */
     updateInput: function (value, field, index) {
       // Cập nhật dữ liệu
-      console.log("value", value);
-      if (value != 0) this.data[index].inputError = true;
-      console.log(this.defaultBudget);
+      if (value != 0) {
+        this.data[index].inputError = false;
+      }
+      this.data[index].value = value;
       // Cập nhật tổng
       this.total = this.data.reduce((accumulator, obj) => {
         return accumulator + Number(obj.value);
@@ -212,11 +216,15 @@ export default {
     /**
      * @description Cập nhật giá trị khi dropdown nhận giá trị mới
      * @param {String} value Giá trị được chọn
+     * @param {Number} index Chỉ số của dropdown
      * @author NVThinh 11/1/2023
      */
     updateDropdown: function (value, index) {
       try {
         this.data[index].budget_name = value;
+        this.data[index].dropdownError = false;
+        // refresh dropdown
+        for (const obj of this.$refs.dropdown) obj.clear();
       } catch (error) {
         console.log(error);
       }
@@ -228,12 +236,37 @@ export default {
      */
     validate: function () {
       try {
-        for (let obj of this.data) {
-          obj.inputError = obj.value ? false : true;
+        for (let i = 1; i < this.data.length; i++) {
+          this.data[i].inputError = this.data[i].value ? false : true;
+          if (this.data[i].budget_name == "") {
+            this.data[i].dropdownError = true;
+            this.data[i].dropdownMessageError = this.errorMessage.isRequired;
+          } else {
+            if (this.checkDuplicate(this.data[i].budget_name, i)) {
+              this.data[i].dropdownError = true;
+              this.data[i].dropdownMessageError =
+                this.errorMessage.isDuplicated;
+            } else {
+              this.data[i].dropdownError = false;
+            }
+          }
         }
       } catch (error) {
         console.log(error);
       }
+    },
+
+    checkDuplicate: function (budgetName, index) {
+      for (let i = 0; i < index; i++) {
+        if (
+          budgetName
+            .toLowerCase()
+            .includes(this.data[i].budget_name.toLowerCase())
+        ) {
+          return true;
+        }
+      }
+      return false;
     },
   },
   data() {
@@ -241,6 +274,10 @@ export default {
       data: [], // Mảng chứa thông tin các nguồn và giá trị
       budgets: [], // Mảng chứa các nguồn hình thành
       total: 0, // Tổng nguyên giá
+      errorMessage: {
+        isRequired: "Không được bỏ trống ô này!",
+        isDuplicated: "Nguồn chi phí đã tồn tại",
+      },
       // Resources
       Resource,
       TableResource,
@@ -279,6 +316,7 @@ export default {
 }
 
 .row__left {
+  position: relative;
   display: flex;
   width: 70%;
 }
