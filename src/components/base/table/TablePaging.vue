@@ -349,6 +349,7 @@ export default {
         this.updatePageNumberState();
         // Thực hiện hàm updateFilter tại lớp cha
         this.$emit("update-filter", Resource.Filter.limit, value);
+        console.log(value);
       } catch (error) {
         console.log(error);
       }

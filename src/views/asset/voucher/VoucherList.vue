@@ -20,7 +20,7 @@
       </div>
     </div>
     <!-- Table 01 -->
-    <div class="master" v-show="!isZoomIn">
+    <div class="master">
       <!-- Function bar -->
       <div class="function-bar">
         <div class="function__left">
@@ -64,8 +64,11 @@
         @update-voucher="updateVoucher"
         @update-row="updateRow"
       />
-      <!-- Paging Row -->
-      <TablePaging :number-of-records="totalOfRecords" />
+      <!-- Paging -->
+      <TablePaging
+        :number-of-records="totalOfRecords"
+        @update-filter="updateFilter"
+      />
     </div>
     <!-- Table 02 -->
     <div class="detail">
@@ -158,7 +161,6 @@ export default {
       isShowToast: false, // Hiển thị toast thông báo
       isShowDialog: false, // Hiển thị dialog cảnh báo
       isShowDeleteMultiIcon: false, // Hiển thị icon delete nhiều chứng từ
-      isZoomIn: false, // Phóng to bảng chi tiết
       isShowPopup: false, // Hiển thị popup "Thêm chứng từ ghi tăng"
       popupTitle: "", // Tiêu đề popup
       selectedVoucher: {}, // Đối tượng chứa thông tin chứng từ cần sửa

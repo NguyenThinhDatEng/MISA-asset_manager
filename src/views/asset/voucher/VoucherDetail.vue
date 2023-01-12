@@ -90,8 +90,11 @@
           ref="theTable"
           @update-voucher="updateVoucher"
         />
-        <!-- Paging Row -->
-        <TablePaging :number-of-records="this.assetList.length" />
+        <!-- Paging -->
+        <TablePaging
+          :number-of-records="this.assetList.length"
+          @update-filter="updateFilter"
+        />
       </div>
     </div>
   </Popup>
@@ -258,7 +261,7 @@ export default {
      * Cập nhật các điều kiện của filter và paging
      * @param {string} field trường của dữ liệu
      * @param {string} value giá trị được cập nhật
-     * @author NVThinh 8/1/2023
+     * @author NVThinh 12/1/2023
      */
     updateFilter: function (field, value) {
       // Cập nhật các điều kiện filter và paging
@@ -305,7 +308,6 @@ export default {
         offset: 0,
       };
       // Cập nhật mảng các dòng được hiển thị
-      console.log("Im Here");
       this.displayedAssetList = this.assetList.slice(
         this.conditions.offset,
         this.conditions.limit
