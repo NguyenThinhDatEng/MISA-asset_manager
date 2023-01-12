@@ -5,6 +5,7 @@
       { 'min-width': config.minWidth },
       { 'max-width': config.maxWidth },
       { 'text-align': config.align },
+      { 'margin-left': config.marginLeft },
       { width: config.width },
       { padding: config.padding },
       { color: config.color },
@@ -138,8 +139,7 @@ td p {
 }
 
 .col--checkbox {
-  min-width: 30px;
-  text-align: center;
+  margin-left: 1px;
 }
 
 .checkbox {

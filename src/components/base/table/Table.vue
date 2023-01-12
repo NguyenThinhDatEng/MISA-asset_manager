@@ -409,6 +409,7 @@ export default {
 .checkbox__wrapper {
   position: relative;
   width: 50px;
+  text-align: center;
 }
 
 /* th ----------------------- */
