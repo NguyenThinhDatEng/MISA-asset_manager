@@ -288,10 +288,11 @@ export default {
         // Khởi tạo lại các giá trị trên footer table
         for (const key in this.footerData) this.footerData[key] = 0;
         // Cập nhật các dữ liệu trên table footer
-        if (
-          this.page == this.pages.fixedAsset ||
-          this.page == this.pages.fixedAssetDetail
-        ) {
+        if (this.page == this.pages.voucher) {
+          this.footerData.totalOfCost = this.data.reduce((accumulator, obj) => {
+            return accumulator + obj.total_of_cost;
+          }, 0);
+        } else {
           if (this.page == this.pages.fixedAsset) {
             // Cập nhật tổng số lượng
             this.footerData.totalOfQuantities = this.data.reduce(
@@ -320,10 +321,6 @@ export default {
           this.footerData.totalResidualValue =
             this.footerData.totalOfCost -
             this.footerData.totalDepreciationValue;
-        } else {
-          this.footerData.totalOfCost = this.data.reduce((accumulator, obj) => {
-            return accumulator + obj.total_of_cost;
-          }, 0);
         }
         // Ẩn Loader
         this.isShowLoader = false;

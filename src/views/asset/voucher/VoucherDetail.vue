@@ -77,15 +77,16 @@
             />
           </div>
         </div>
-        <!--  Table  -->
+        <!--  Detail Table  -->
         <TableVue
           :cols="TableResource.TableRow.FixedAssetDetail"
           :tds="tds_of_detail"
           :data="displayedAssetList"
-          :page="TableResource.TableFoot.Page.voucher"
+          :page="TableResource.TableFoot.Page.voucher_detail"
           :is-show-feature="true"
           :isShowCheckbox="false"
           :onlyOneRow="true"
+          :is-show-footer="isShowFooter()"
           ref="theTable"
           @update-voucher="updateVoucher"
         />
@@ -366,6 +367,10 @@ export default {
      */
     closeDialog: function () {
       this.isShowDialog = false;
+    },
+
+    isShowFooter: function () {
+      return this.assetList.length > 0;
     },
   },
 

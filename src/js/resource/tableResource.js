@@ -44,6 +44,7 @@ export default {
     Page: {
       fixedAsset: "fixedAsset",
       voucher: "voucher",
+      voucher_detail: "voucher_detail",
       fixedAssetDetail: "fixedAssetDetail",
       assetList: "assetList",
     },
