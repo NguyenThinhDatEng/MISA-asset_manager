@@ -15,7 +15,7 @@
             <InputVue
               class="bottomError"
               :label="Resource.InputLabel.voucher_code"
-              :value="voucher.voucher_code"
+              :value="voucher?.voucher_code"
               :is-error="isError"
               :field="'voucher_code'"
               ref="voucherCode"
@@ -28,7 +28,7 @@
                 <span style="color: red">*</span></label
               >
               <InputCalendar
-                :value="voucher.voucher_date"
+                :value="voucher?.voucher_date"
                 :mode="Enum.Mode.Update"
               />
             </div>
@@ -39,7 +39,7 @@
                 <span style="color: red">*</span></label
               >
               <InputCalendar
-                :value="voucher.increment_date"
+                :value="voucher?.increment_date"
                 :mode="Enum.Mode.Update"
               />
             </div>
@@ -49,7 +49,7 @@
             <InputVue
               :label="Resource.InputLabel.description"
               :isRequired="false"
-              :value="voucher.description"
+              :value="voucher?.description"
               :field="'description'"
               @update-input="updateInput"
             />
@@ -123,7 +123,11 @@ import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
-import { getNewCode, createVoucher } from "@/apis/voucher/voucher";
+import {
+  getNewCode,
+  createVoucher,
+  updateVoucher,
+} from "@/apis/voucher/voucher";
 import { editFixedAsset } from "@/apis/fixedAsset";
 // Components
 import Popup from "@/components/base/popup/VPopup.vue";
@@ -171,6 +175,22 @@ export default {
   },
   emits: ["reload-content"],
 
+  created() {
+    try {
+      // Chế độ thêm
+      if (this.mode == Enum.Mode.Add) {
+        // Lấy mã mới
+        this.getNewCode();
+      } else {
+        // Cập nhật dữ liệu
+        this.voucher = this.voucherProp;
+        this.assetList = this.voucherDetail;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   computed: {
     selectedIDs: function () {
       return this.assetList.map((obj) => {
@@ -182,18 +202,6 @@ export default {
   mounted() {
     // focus vào ô input đầu tiên
     this.$refs.voucherCode.focusInput();
-    // Chế độ thêm
-    if (this.mode == Enum.Mode.Add) {
-      // Lấy mã mới
-      this.getNewCode();
-    } else {
-      /**
-       * Chế độ sửa
-       */
-      // Cập nhật dữ liệu
-      this.voucher = this.voucherProp;
-      this.assetList = this.voucherDetail;
-    }
     // Phân trang
     this.paging();
   },
@@ -353,10 +361,10 @@ export default {
     },
 
     /**
-     * @description Gọi API tạo mới chứng từ
+     * @description Gọi API tạo mới hoặc cập nhật chứng từ
      * @author NVThinh 13/1/2023
      */
-    createNewVoucher: async function () {
+    handleVoucher: async function () {
       try {
         // Dữ liệu đầu vào của API thêm mới
         let input = { voucher: {}, voucherDetailList: [] };
@@ -366,21 +374,33 @@ export default {
             ...this.baseFields,
             fixed_asset_id: obj.fixed_asset_id,
           });
-          // Cập nhật tổng nguyên giá
-          this.voucher.total_of_cost += obj.cost;
         });
+        // Cập nhật tổng nguyên giá của voucher
+        this.voucher.total_of_cost = this.updateTotalOfCost();
         // Cập nhật voucher
         input.voucher = this.voucher;
         // Gọi API
-        await createVoucher(input)
-          .then(() => {
-            this.handleSuccessAPI();
-            // Đóng popup
-            this.close();
-          })
-          .catch((res) => {
-            this.handleErrorAPI(res);
-          });
+        if (this.mode == Enum.Mode.Add) {
+          await createVoucher(input)
+            .then(() => {
+              this.handleSuccessAPI();
+              // Đóng popup
+              this.close();
+            })
+            .catch((res) => {
+              this.handleErrorAPI(res);
+            });
+        } else {
+          await updateVoucher(input)
+            .then(() => {
+              this.handleSuccessAPI();
+              // Đóng popup
+              this.close();
+            })
+            .catch((res) => {
+              this.handleErrorAPI(res);
+            });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -402,8 +422,8 @@ export default {
           this.showDialog(this.dialogMessage.isRequired);
           return;
         }
-        // Tạo mới chứng từ
-        this.createNewVoucher();
+        // Gọi API
+        this.handleVoucher();
         // Cập nhật tổng nguyên giá các tài sản
         for (const obj of this.assetList) {
           this.updateFixedAsset(obj.fixed_asset_id, obj);
@@ -526,6 +546,17 @@ export default {
     showDialog: function (message) {
       this.warningMessage = message;
       this.isShowDialog = true;
+    },
+
+    /**
+     * @description Cập nhật tổng của tất cả các nguyên giá
+     * @author NVThinh 13/1/2023
+     */
+    updateTotalOfCost: function () {
+      // Cập nhật tổng
+      return this.assetList.reduce((accumulator, obj) => {
+        return accumulator + obj.cost;
+      }, 0);
     },
   },
 
