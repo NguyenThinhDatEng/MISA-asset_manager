@@ -445,6 +445,11 @@ export default {
   cursor: pointer;
 }
 
+.icon--disable {
+  opacity: 0.5;
+  cursor: context-menu;
+}
+
 /* Combobox */
 .combobox {
   justify-content: space-between;

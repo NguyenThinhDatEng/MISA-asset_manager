@@ -42,11 +42,14 @@ import TableData from "./TableData.vue";
 export default {
   name: "TableRow",
   props: {
-    numerical_order: Number, // Số thứ tự
-    isShowFeature: Boolean, // Ẩn/hiện các tính năng
-    tableRowObj: Object, // Đối tượng chứa dữ liệu hiển thị
-    isCheckAll: Boolean, // true nếu ô checkbox all được tick
-    isRefreshTable: Boolean, // làm mới bảng => bỏ active tất cả các dòng
+    index: {
+      type: Number,
+      isRequired: true,
+    }, // Chỉ số của dòng
+    numerical_order: {
+      type: Number,
+      isRequired: true,
+    }, // Số thứ tự
     tds: {
       type: Array,
       required: true,
@@ -55,6 +58,10 @@ export default {
       type: Boolean,
       default: false,
     }, // Chỉ 1 dòng được active trong bảng
+    isShowFeature: Boolean, // Ẩn/hiện các tính năng
+    tableRowObj: Object, // Đối tượng chứa dữ liệu hiển thị
+    isCheckAll: Boolean, // true nếu ô checkbox all được tick
+    isRefreshTable: Boolean, // làm mới bảng => bỏ active tất cả các dòng
   },
 
   components: {
@@ -77,12 +84,6 @@ export default {
       this.data = Object.assign(this.tableRowObj);
       this.updateRow();
       this.updateData();
-      // Nếu bảng chỉ cho chọn 1 dòng mỗi lần click => active dòng đầu tiên
-      if (this.isOnly && this.numerical_order == 1) {
-        this.isActive = true;
-        // Gửi dữ liệu đến table
-        this.$emit("update-row", true, this.data, 1);
-      }
     } catch (error) {
       console.log(error);
     }
@@ -129,6 +130,7 @@ export default {
         this.numerical_order - 1
       );
     },
+
     /**
      * @description active dòng
      * @author NVThinh 5/1/2023
@@ -183,14 +185,14 @@ export default {
             "update-row",
             isNew,
             this.data,
-            this.numerical_order,
+            this.index,
             this.onClickCheckBox
           );
         } else {
           if (this.isCheckAll == true) {
             this.$emit("update-checked-header", false);
           }
-          this.$emit("update-row", !isNew, this.data, this.numerical_order); // isNew == false
+          this.$emit("update-row", !isNew, this.data, this.index); // isNew == false
         }
         // refresh trạng thái tick checkbox
         this.onClickCheckBox = false;

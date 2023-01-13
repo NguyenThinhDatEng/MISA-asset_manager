@@ -90,6 +90,7 @@
           :isShowCheckbox="false"
           :onlyOneRow="true"
           :is-show-footer="isShowFooter()"
+          :offset="conditions.offset"
           ref="theTable"
           @update-voucher="updateVoucher"
         />
@@ -225,14 +226,14 @@ export default {
      * @description Mở popup "Sửa tài sản"
      * @author NVThinh 6/1/2023
      */
-    updateVoucher: function (mode, fixedAsset, index) {
+    updateVoucher: function (mode, fixedAsset, indexOfArray) {
       if (mode == Enum.Mode.Delete) {
-        this.assetList.splice(index, 1);
+        this.assetList.splice(indexOfArray, 1);
         this.paging();
         return;
       }
       // Cập nhật thông tin tài sản
-      this.selectedFixedAsset = this.assetList[index];
+      this.selectedFixedAsset = this.assetList[indexOfArray];
       // Mở popup
       this.isShowBudgetDetail = true;
     },

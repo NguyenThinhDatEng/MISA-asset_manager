@@ -32,8 +32,9 @@
         <Row
           v-for="(obj, index) in data"
           :key="index"
-          :tableRowObj="obj"
+          :index="index"
           :numerical_order="index + startIndex + 1"
+          :tableRowObj="obj"
           :is-check-all="isCheckAll"
           :is-refresh-table="isRefreshTable"
           :tds="tds"
@@ -190,8 +191,8 @@ export default {
      * @description Phát tín hiệu đến lớp cha khi click vào nút sửa
      * @author NVThinh 6/1/2023
      */
-    updateVoucher: function (mode, dataObj, index) {
-      this.$emit("update-voucher", mode, dataObj, index);
+    updateVoucher: function (mode, dataObj, indexOfArray) {
+      this.$emit("update-voucher", mode, dataObj, indexOfArray);
     },
 
     /**
@@ -215,11 +216,11 @@ export default {
      * @param {Number} numericalOrder là số thứ tự của dòng
      * @author Nguyen Van Thinh 05/11/2022
      */
-    updateRow: function (isNewRow, obj, numericalOrder, isClickedCheckbox) {
+    updateRow: function (isNewRow, obj, index, isClickedCheckbox) {
       try {
         // Thêm dòng mới vào mảng
         if (isNewRow) {
-          // Nếu Bảng chỉ cho chọn 1 dòng và đã có ít nhất 1 dòng được chọn
+          // Nếu Bảng chỉ cho chọn 1 dòng và đã có ít nhất 1 dòng được chọn và không phải click vào checkbox
           if (
             this.onlyOneRow &&
             this.selectedRows.length > 0 &&
@@ -228,14 +229,14 @@ export default {
             // Làm mới bảng (xóa tất cả các dòng được active)
             this.toggle();
             // Bỏ dòng cũ
-            this.selectedRows.pop();
+            this.selectedRows = [];
             // Active dòng theo số thứ tự
-            this.$refs.tableRow[numericalOrder - 1].onActive();
+            this.$refs.tableRow[index].onActive();
           }
           this.selectedRows.push(obj);
         } else {
           if (this.onlyOneRow && this.selectedRows.length == 1) {
-            this.$refs.tableRow[numericalOrder - 1].onActive();
+            this.$refs.tableRow[index].onActive();
             return;
           }
           // Xóa tài sản khỏi mảng
@@ -249,7 +250,6 @@ export default {
         }
         // Truyền mảng các dòng được chọn lên component cha
         this.$emit("update-row", this.selectedRows);
-        // console.log(this.selectedRows);
       } catch (error) {
         console.log(error);
       }
@@ -375,6 +375,19 @@ export default {
      */
     toggle: function () {
       this.isRefreshTable = !this.isRefreshTable;
+    },
+
+    /**
+     * @description focus vào dòng đầu tiên của bảng
+     * @author NVThinh 13/1/2023
+     */
+    focusFirstRow: function () {
+      // highlight trên giao diện
+      this.$refs.tableRow[0].onActive();
+      // Thêm vào mảng các dòng được chọn
+      this.selectedRows.push(this.data[0]);
+      // Truyền mảng các dòng được chọn lên component cha
+      this.$emit("update-row", this.selectedRows);
     },
   },
 

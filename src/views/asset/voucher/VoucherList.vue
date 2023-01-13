@@ -244,7 +244,7 @@ export default {
         {
           col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
           type: Enum.TableData.type.text,
-          width: "100px",
+          minWidth: "100px",
           maxWidth: "100px",
           align: "left",
         },
@@ -386,7 +386,9 @@ export default {
      * @author NVThinh 9/1/2023
      */
     filterAndPaging: async function () {
+      // Hiển thị loader
       this.isShowLoader = true;
+      // Call API
       await filterAndPaging(
         this.conditions.keyword,
         this.conditions.limit,
@@ -399,6 +401,8 @@ export default {
           this.isShowLoader = false;
         })
         .catch((error) => console.log(error));
+      // focus vào dòng đầu tiên của bảng
+      this.$refs.theTable.focusFirstRow();
     },
 
     /**
