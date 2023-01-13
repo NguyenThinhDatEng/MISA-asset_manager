@@ -617,26 +617,27 @@ export default {
         {
           col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
           type: Enum.TableData.type.text,
-          width: "160px",
-          maxWidth: "160px",
+          width: "190px",
+          maxWidth: "190px",
           align: "left",
         },
         {
           col: TableResource.TableRow.FixedAsset.department_name.ENG,
           type: Enum.TableData.type.text,
-          maxWidth: "120px",
+          width: "160px",
+          maxWidth: "160px",
           align: "left",
         },
         {
           col: TableResource.TableRow.FixedAsset.cost.ENG,
           type: Enum.TableData.type.number,
-          width: "70px",
+          width: "120px",
           align: "right",
         },
         {
           col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
           type: Enum.TableData.type.number,
-          minWidth: "90px",
+          width: "120px",
           align: "right",
         },
         {

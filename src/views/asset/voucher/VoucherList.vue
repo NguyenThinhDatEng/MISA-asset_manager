@@ -65,6 +65,7 @@
         ref="theTable"
         @update-voucher="updateVoucher"
         @update-row="updateRow"
+        @show-popup="showPopup"
       />
       <!-- Paging -->
       <TablePaging
@@ -163,12 +164,12 @@ export default {
       // Variables
       mode: 0, // Chế độ hiển thị popup
       totalOfRecords: 0, // Tổng số bản ghi thu được
+      popupTitle: "", // Tiêu đề popup
       isShowLoader: false, // Hiển thị Loader
       isShowToast: false, // Hiển thị toast thông báo
       isShowDialog: false, // Hiển thị dialog cảnh báo
       isShowDeleteMultiIcon: false, // Hiển thị icon delete nhiều chứng từ
       isShowPopup: false, // Hiển thị popup "Thêm chứng từ ghi tăng"
-      popupTitle: "", // Tiêu đề popup
       selectedVoucher: {}, // Đối tượng chứa thông tin chứng từ cần sửa
       conditions: {
         keyword: "",
@@ -250,8 +251,8 @@ export default {
         {
           col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
           type: Enum.TableData.type.text,
-          width: "250px",
-          maxWidth: "250px",
+          width: "300px",
+          maxWidth: "300px",
           align: "left",
         },
         {
@@ -536,6 +537,25 @@ export default {
         this.mode = Enum.Mode.DeleteMulti;
         // Mở dialog
         this.isShowDialog = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Bind dữ liệu và hiển thị popup
+     * @param {Number} mode chế độ popup
+     * @param {Object} obj đối tượng bản ghi
+     * @author NVThinh 13/1/2023
+     */
+    showPopup: function (mode, obj) {
+      try {
+        // update the title of popup
+        this.popupTitle = Resource.PopupTitle.edit_increment_asset;
+        // update the data of popup
+        this.selectedVoucher = obj;
+        // Hiển thị popup
+        this.openPopup(mode);
       } catch (error) {
         console.log(error);
       }

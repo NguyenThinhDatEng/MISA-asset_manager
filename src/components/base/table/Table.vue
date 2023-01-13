@@ -30,9 +30,9 @@
       <!-- Table body  -->
       <tbody>
         <Row
-          v-for="(asset, index) in data"
+          v-for="(obj, index) in data"
           :key="index"
-          :tableRowObj="asset"
+          :tableRowObj="obj"
           :numerical_order="index + startIndex + 1"
           :is-check-all="isCheckAll"
           :is-refresh-table="isRefreshTable"
@@ -122,7 +122,7 @@ export default {
     offset: {
       type: Number,
       default: 0,
-    },
+    }, // Vị trí bắt đầu của
   },
   components: { Row, TableFoot },
   emits: ["update-row", "reload-content", "show-popup", "update-voucher"],
@@ -135,8 +135,8 @@ export default {
         if (this.isCheckAll == true) {
           // Thêm tất cả các dòng vào mảng
           this.selectedRows = [];
-          for (const asset of this.data) {
-            this.selectedRows.push(asset);
+          for (const obj of this.data) {
+            this.selectedRows.push(obj);
           }
         } else {
           // Bỏ chọn tất cả

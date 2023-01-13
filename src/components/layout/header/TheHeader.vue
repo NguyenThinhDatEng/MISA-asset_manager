@@ -7,6 +7,7 @@
       <!-- User info -->
       <div class="user-options" v-show="isShowOptions" ref="options">
         <div class="option">Thông tin tài khoản</div>
+        <div class="option" @click="backToLogin">Quay lại trang đăng nhập</div>
         <div class="option" @click="logOut">Đăng xuất</div>
       </div>
       <!-- Title -->
@@ -83,6 +84,7 @@ export default {
     toggle: function () {
       this.isShowOptions = !this.isShowOptions;
     },
+
     // Thiết lập tên icon
     setIconName(key) {
       try {
@@ -91,6 +93,7 @@ export default {
         console.log(error);
       }
     },
+
     /**
      * @description Ẩn options
      * @author NVThinh 4/1/2023
@@ -98,6 +101,7 @@ export default {
     close: function () {
       this.isShowOptions = false;
     },
+
     /**
      * @description call API log out
      * @author NVThinh 4/1/2023
@@ -110,6 +114,10 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    backToLogin: function () {
+      this.$router.push("login");
     },
   },
   data() {
@@ -148,10 +156,10 @@ export default {
   line-height: 25px;
   text-align: center;
   background: #fff;
-  z-index: 1;
   border: 1px solid #afafaf;
   border-radius: 3px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+  z-index: 2;
 }
 
 .option {

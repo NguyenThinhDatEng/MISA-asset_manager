@@ -332,10 +332,10 @@ export default {
     },
 
     /**
-     * Show popup
-     * @param {Number} mode
-     * @param {Object} popupObj
-     * @author NVThinh 09/11/2022
+     * @description Bind dữ liệu và hiển thị popup
+     * @param {Number} mode chế độ popup 
+     * @param {Object} obj đối tượng bản ghi
+     * @author NVThinh 13/1/2023
      */
     showPopup: function (mode, popupObj) {
       try {

@@ -161,12 +161,8 @@ export default {
      */
     carryOutFeature: function (mode) {
       try {
-        // Bind dữ liệu vào đối tượng Popup
-        for (const field in this.fields) {
-          this.popupObj[field] = this.tableRowObj[field];
-        }
         // Gửi dữ liệu lên table
-        this.$emit("show-popup", mode, this.popupObj);
+        this.$emit("show-popup", mode, this.tableRowObj);
       } catch (error) {
         console.log(error);
       }
@@ -239,7 +235,6 @@ export default {
       data: {}, // Đối tượng table row chứa các dữ liệu hiển thị trong file excel
       isActive: false, // trạng thái của table row
       popupMode: 0, // chế độ popup
-      popupObj: {}, // đối tượng popup
       isShowPopup: false, // trạng thái ẩn hiện popup
       isShowToast: false, // trạng thái ẩn hiện toast
       accumulated_value: 0, // tỉ lệ khấu hao

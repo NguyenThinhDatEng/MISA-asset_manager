@@ -1,6 +1,6 @@
 <template>
   <td
-    :title="content"
+    :title="getTitle()"
     :style="[
       { 'min-width': config.minWidth },
       { 'max-width': config.maxWidth },
@@ -104,8 +104,12 @@ export default {
       return this.config.type === this.tdType.date;
     },
 
-    onChange: function () {
-      console.log("on change!");
+    /**
+     * @description Lấy tooltip cho td
+     * @author NVThinh 13/1/2023
+     */
+    getTitle: function () {
+      if (this.config.type == this.tdType.text) return this.content;
     },
   },
 
