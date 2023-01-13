@@ -1,9 +1,5 @@
 <template>
-  <Popup
-    :title="getTitle()"
-    @close-popup="$parent.closePopup"
-    @on-save="validate"
-  >
+  <Popup :title="getTitle()" @close-popup="close" @on-save="validate">
     <div class="popup__body__wrapper">
       <div class="row">
         <div class="row__left">
@@ -13,6 +9,7 @@
             :value="fixedAsset.department_name"
             :isRequired="false"
             :isDisabled="true"
+            :field="'department'"
           />
         </div>
       </div>
@@ -108,18 +105,30 @@ import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
 import { getAllBudgets } from "@/apis/voucher/budget";
+import { editFixedAsset } from "@/apis/fixedAsset";
 
 export default {
   name: "BudgetDetail",
   created() {
     try {
-      // Khởi tạo dữ liệu
-      const budgetList = JSON.parse(this.fixedAsset.budgets);
-      this.data = budgetList?.map((obj) => {
-        console.log(obj, this.fixedAsset.cost);
+      // Khởi tạo dữ liệu ngân sách
+      let budgetList = JSON.parse(this.fixedAsset.budgets);
+      // Nếu giá trị = 0 => Cập nhật đối tượng
+      if (budgetList[0]?.value == 0) {
+        // Cập nhật lại giá trị
+        budgetList[0].value = this.fixedAsset.cost;
+        // Tạo đối tượng tạm thời để thay đổi dữ liệu
+        let tmpAsset = this.fixedAsset;
+        // Chuyển đổi sang JSON
+        tmpAsset.budgets = JSON.stringify(budgetList);
+        // Gọi API
+        this.updateFixedAsset(tmpAsset);
+      }
+      // Cập nhật mảng các dòng dữ liệu
+      this.data = budgetList.map((obj) => {
         return {
           budget_name: obj.budget_name,
-          value: obj.value == 0 ? this.fixedAsset.cost : obj.value,
+          value: obj.value,
           inputError: false,
           dropdownError: false,
           dropdownMessageError: this.errorMessage.isRequired,
@@ -141,6 +150,7 @@ export default {
       isRequired: true,
     },
   },
+  emits: ["update-budget"],
 
   mounted() {
     getAllBudgets()
@@ -172,7 +182,7 @@ export default {
         dropdownMessageError: this.errorMessage.isRequired,
       });
       // refresh dropdown
-      for (const obj of this.$refs.dropdown) obj.clear();
+      this.refreshDropdown();
     },
 
     /**
@@ -181,9 +191,10 @@ export default {
      * @author NVThinh 6/1/2023
      */
     removeSource: function (index) {
+      // Tính lại tổng giá trị
+      this.total -= this.data[index].value;
       // xóa tại vị trí index, 1 phần tử
       this.data.splice(index, 1);
-      console.log(this.data);
     },
 
     /**
@@ -207,10 +218,7 @@ export default {
         this.data[index].inputError = false;
       }
       this.data[index].value = value;
-      // Cập nhật tổng
-      this.total = this.data.reduce((accumulator, obj) => {
-        return accumulator + Number(obj.value);
-      }, 0);
+      this.updateTotal();
     },
 
     /**
@@ -223,8 +231,7 @@ export default {
       try {
         this.data[index].budget_name = value;
         this.data[index].dropdownError = false;
-        // refresh dropdown
-        for (const obj of this.$refs.dropdown) obj.clear();
+        this.refreshDropdown();
       } catch (error) {
         console.log(error);
       }
@@ -236,6 +243,52 @@ export default {
      */
     validate: function () {
       try {
+        if (!this.hasError()) {
+          // Cập nhật ngân sách
+          let tmpArr = this.data.map((obj) => {
+            return { budget_name: obj.budget_name, value: obj.value };
+          });
+          this.newBudgets = JSON.stringify(tmpArr);
+          // Gửi dữ liệu đến component cha (id tài sản, tổng nguyên giá, ngân sách)
+          this.$emit(
+            "update-budget",
+            this.fixedAsset.fixed_asset_id,
+            this.total,
+            this.newBudgets
+          );
+          // Đóng component này
+          this.close();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Kiểm tra xem nguồn hình thành có bị trùng không
+     * @author NVThinh 13/1/2023
+     */
+    checkDuplicate: function (budgetName, index) {
+      for (let i = 0; i < index; i++) {
+        if (
+          budgetName
+            .toLowerCase()
+            .includes(this.data[i].budget_name.toLowerCase())
+        ) {
+          return true;
+        }
+      }
+      return false;
+    },
+
+    /**
+     * @description Cập nhật lỗi
+     * @return {Boolean} true nếu có lỗi trên giao diện
+     * @author NVThinh 13/1/2023
+     */
+    hasError: function () {
+      try {
+        // Cập nhật lỗi
         for (let i = 1; i < this.data.length; i++) {
           this.data[i].inputError = this.data[i].value ? false : true;
           if (this.data[i].budget_name == "") {
@@ -251,22 +304,66 @@ export default {
             }
           }
         }
+        // Trả về
+        for (const obj of this.data) {
+          if (obj.inputError == true || obj.dropdownError == true) {
+            return true;
+          }
+        }
+        return false;
       } catch (error) {
         console.log(error);
       }
     },
 
-    checkDuplicate: function (budgetName, index) {
-      for (let i = 0; i < index; i++) {
-        if (
-          budgetName
-            .toLowerCase()
-            .includes(this.data[i].budget_name.toLowerCase())
-        ) {
-          return true;
+    /**
+     * @description Bỏ tất cả active trong dropdown data
+     * @author NVThinh 13/1/2023
+     */
+    refreshDropdown: function () {
+      try {
+        // refresh dropdown
+        for (const obj of this.$refs.dropdown) {
+          if (!obj.selectedValue) obj.clear();
         }
+      } catch (error) {
+        console.log(error);
       }
-      return false;
+    },
+
+    /**
+     * @description đóng popup hiện tại
+     * @author NVThinh 13/1/2023
+     */
+    close: function () {
+      try {
+        this.$parent.closePopup();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Cập nhật tổng của tất cả các nguồn hình thành
+     * @author NVThinh 13/1/2023
+     */
+    updateTotal: function () {
+      // Cập nhật tổng
+      this.total = this.data.reduce((accumulator, obj) => {
+        return accumulator + Number(obj.value);
+      }, 0);
+    },
+
+    /**
+     * @description Gọi API cập nhật tài sản cố định
+     * @author NVThinh 13/1/2023
+     */
+    updateFixedAsset: async function (fixedAsset) {
+      try {
+        await editFixedAsset(this.fixedAsset.fixed_asset_id, fixedAsset);
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   data() {
@@ -274,10 +371,7 @@ export default {
       data: [], // Mảng chứa thông tin các nguồn và giá trị
       budgets: [], // Mảng chứa các nguồn hình thành
       total: 0, // Tổng nguyên giá
-      errorMessage: {
-        isRequired: "Không được bỏ trống ô này!",
-        isDuplicated: "Nguồn chi phí đã tồn tại",
-      },
+      newBudgets: "", // Ngân sách của tài sản
       // Resources
       Resource,
       TableResource,
@@ -288,6 +382,10 @@ export default {
         inputError: false,
         dropdownError: false,
       }, // đối tượng ngân sách mặc định
+      errorMessage: {
+        isRequired: "Không được bỏ trống ô này!",
+        isDuplicated: "Nguồn chi phí đã tồn tại",
+      }, // Các thông báo lỗi có thể hiển thị
     };
   },
 };

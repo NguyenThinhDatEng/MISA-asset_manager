@@ -494,6 +494,10 @@ export default {
       }
     },
 
+    /**
+     * @description Cập nhật dữ liệu khi combobox thay đổi
+     * @author NVThinh 13/1/2023
+     */
     updateCombobox: function (data, field) {
       try {
         this.errorMessages[field] = false;
@@ -509,6 +513,7 @@ export default {
         console.log(error);
       }
     },
+
     /**
      * Validate dữ liệu khi nhấn vào nút lưu
      * @author Nguyen Van Thinh 09/11/2022
@@ -632,7 +637,10 @@ export default {
         }
         this.showDialogValidate = true;
       } else {
-        this.$parent.showToast(Enum.ActionStatus.Error, res.response.data.moreInfo);
+        this.$parent.showToast(
+          Enum.ActionStatus.Error,
+          res.response.data.moreInfo
+        );
       }
     },
 

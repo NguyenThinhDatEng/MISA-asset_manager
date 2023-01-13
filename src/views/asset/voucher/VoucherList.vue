@@ -21,6 +21,7 @@
     </div>
     <!-- Table 01 -->
     <div class="master">
+      <Loader :isShow="isShowLoader"></Loader>
       <!-- Function bar -->
       <div class="function-bar">
         <div class="function__left">
@@ -129,6 +130,7 @@ import TableVue from "@/components/base/table/Table.vue";
 import DialogWarning from "@/components/base/dialogs/DialogWarning.vue";
 import TablePaging from "@/components/base/table/TablePaging.vue";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
+import Loader from "@/components/base/more/Loader.vue";
 // Views
 import VoucherDetail from "@/views/asset/voucher/VoucherDetail.vue";
 // Resources
@@ -153,6 +155,7 @@ export default {
     DialogWarning,
     TablePaging,
     ToastVue,
+    Loader,
   },
 
   data() {
@@ -160,6 +163,7 @@ export default {
       // Variables
       mode: 0, // Chế độ hiển thị popup
       totalOfRecords: 0, // Tổng số bản ghi thu được
+      isShowLoader: false, // Hiển thị Loader
       isShowToast: false, // Hiển thị toast thông báo
       isShowDialog: false, // Hiển thị dialog cảnh báo
       isShowDeleteMultiIcon: false, // Hiển thị icon delete nhiều chứng từ
@@ -261,20 +265,20 @@ export default {
           col: TableResource.TableRow.FixedAsset.cost.ENG,
           type: Enum.TableData.type.number,
           minWidth: "50px",
-          width: "150px",
+          width: "200px",
           align: "right",
         },
         {
           col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
           type: Enum.TableData.type.number,
           minWidth: "90px",
-          width: "150px",
+          width: "200px",
           align: "right",
         },
         {
           col: TableResource.TableRow.FixedAsset.residual_value.ENG,
           type: Enum.TableData.type.number,
-          minWidth: "80px",
+          minWidth: "100px",
           align: "right",
         },
       ],
@@ -381,6 +385,7 @@ export default {
      * @author NVThinh 9/1/2023
      */
     filterAndPaging: async function () {
+      this.isShowLoader = true;
       await filterAndPaging(
         this.conditions.keyword,
         this.conditions.limit,
@@ -390,6 +395,7 @@ export default {
           this.vouchers = res.data.data;
           // Cập nhật tổng số bản ghi thu được
           this.totalOfRecords = res.data.totalOfRecords;
+          this.isShowLoader = false;
         })
         .catch((error) => console.log(error));
     },

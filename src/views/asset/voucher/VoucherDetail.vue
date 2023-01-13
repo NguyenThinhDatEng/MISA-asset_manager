@@ -49,7 +49,7 @@
             <InputVue
               :label="Resource.InputLabel.description"
               :isRequired="false"
-              :value="voucherProp.description"
+              :value="voucher.description"
               :field="'description'"
               @update-input="updateInput"
             />
@@ -104,7 +104,11 @@
   <!-- Voucher fixed asset list -->
   <VoucherAssetList v-if="isShowAssetList" :selectedIDs="selectedIDs" />
   <!-- Budget Detail -->
-  <BudgetDetail v-if="isShowBudgetDetail" :fixedAsset="selectedFixedAsset" />
+  <BudgetDetail
+    v-if="isShowBudgetDetail"
+    :fixedAsset="selectedFixedAsset"
+    @update-budget="updateBudget"
+  />
   <!-- Dialog warning -->
   <DialogWarning
     v-if="isShowDialog"
@@ -120,6 +124,7 @@ import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import { getNewCode, createVoucher } from "@/apis/voucher/voucher";
+import { editFixedAsset } from "@/apis/fixedAsset";
 // Components
 import Popup from "@/components/base/popup/VPopup.vue";
 import InputVue from "@/components/base/inputs/Input.vue";
@@ -178,8 +183,10 @@ export default {
     // focus vào ô input đầu tiên
     this.$refs.voucherCode.focusInput();
     // Chế độ thêm
-    if (this.mode == Enum.Mode.Add) this.getNewCode();
-    else {
+    if (this.mode == Enum.Mode.Add) {
+      // Lấy mã mới
+      this.getNewCode();
+    } else {
       /**
        * Chế độ sửa
        */
@@ -385,7 +392,6 @@ export default {
      */
     validate: function () {
       try {
-        console.log("validate", this.voucher);
         // Kiểm tra trường bắt buộc nhập
         if (this.voucher.voucher_code === "") {
           this.isError = true;
@@ -393,10 +399,15 @@ export default {
         }
         // Kiểm tra bảng detail có ít nhất 1 tài sản
         if (this.assetList.length === 0) {
-          this.isShowDialog = true;
+          this.showDialog(this.dialogMessage.isRequired);
           return;
         }
+        // Tạo mới chứng từ
         this.createNewVoucher();
+        // Cập nhật tổng nguyên giá các tài sản
+        for (const obj of this.assetList) {
+          this.updateFixedAsset(obj.fixed_asset_id, obj);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -468,10 +479,8 @@ export default {
      */
     handleErrorAPI: function (res) {
       if (res.response.data.errorCode == Enum.ErrorCode.BadRequest) {
-        // Cập nhật nội dung cảnh báo
-        this.warningMessage = res.response.data.moreInfo;
         // Hiển thị dialog cảnh báo
-        this.isShowDialog = true;
+        this.showDialog(res.response.data.moreInfo);
       } else {
         this.$parent.showToast(
           Enum.ActionStatus.Error,
@@ -479,11 +488,50 @@ export default {
         );
       }
     },
+
+    /**
+     * @description Cập nhật tổng nguyên giá và ngân sách sau khi chỉnh sửa tài sản
+     * @author NVThinh 13/1/2023
+     */
+    updateBudget: function (assetID, totalOfCost, budgets) {
+      try {
+        for (let obj of this.assetList) {
+          if (obj.fixed_asset_id === assetID) {
+            obj.cost = totalOfCost;
+            obj.budgets = budgets;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Gọi API cập nhật tài sản cố định
+     * @author NVThinh 13/1/2023
+     */
+    updateFixedAsset: async function (fixedAssetID, fixedAsset) {
+      try {
+        await editFixedAsset(fixedAssetID, fixedAsset);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Hiển thị dialog
+     * @param {String} message Thông tin hiển thị trong popup
+     * @author NVThinh 13/1/2023
+     */
+    showDialog: function (message) {
+      this.warningMessage = message;
+      this.isShowDialog = true;
+    },
   },
 
   data() {
     return {
-      warningMessage: "Chọn ít nhất 1 tài sản", // Thông tin cảnh báo
+      warningMessage: "", // Thông tin cảnh báo
       isError: false, // Lỗi thiếu thông tin trường bắt buộc
       isShowDialog: false, // Hiển thị dialog cảnh báo
       isShowAssetList: false, // Hiển thị popup "chọn tài sản ghi tăng"
@@ -507,6 +555,9 @@ export default {
         modified_by: "",
       }, // Đối tượng chứng từ
       selectedFixedAsset: {}, // Đối tượng tài sản được chọn để chỉnh sửa
+      dialogMessage: {
+        isRequired: "Chọn ít nhất 1 tài sản",
+      },
       // Resources
       Resource,
       TableResource,
@@ -522,27 +573,26 @@ export default {
         {
           col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "40px",
+          width: "40px",
           align: "center",
         },
         {
           col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "70px",
+          width: "80px",
           maxWidth: "80px",
           align: "left",
         },
         {
           col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "90px",
-          maxWidth: "180px",
+          width: "160px",
+          maxWidth: "160px",
           align: "left",
         },
         {
           col: TableResource.TableRow.FixedAsset.department_name.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "100px",
           maxWidth: "120px",
           align: "left",
         },
