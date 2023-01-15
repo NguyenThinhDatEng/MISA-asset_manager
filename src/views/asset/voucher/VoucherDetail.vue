@@ -107,7 +107,7 @@
   <!-- Budget Detail -->
   <BudgetDetail
     v-if="isShowBudgetDetail"
-    :fixedAsset="selectedFixedAsset"
+    :voucherAsset="selectedFixedAsset"
     @update-budget="updateBudget"
   />
   <!-- Dialog warning -->
@@ -368,18 +368,30 @@ export default {
     handleVoucher: async function () {
       try {
         // Dữ liệu đầu vào của API thêm mới
-        let input = { voucher: {}, voucherDetailList: [] };
+        let input = { voucher: {}, voucherDetailList: [], costList: [] };
+
+        // Khởi tạo danh sách voucher detail
         this.assetList.forEach((obj) => {
           // Khởi tạo mảng các voucher detail
           input.voucherDetailList.push({
             ...this.baseFields,
             fixed_asset_id: obj.fixed_asset_id,
+            budgets: obj.budgets,
           });
         });
-        // Cập nhật tổng nguyên giá của voucher
+
+        // Khởi tạo chứng từ
         this.voucher.total_of_cost = this.updateTotalOfCost();
-        // Cập nhật voucher
         input.voucher = this.voucher;
+
+        // Khởi tạo danh sách nguyên giá cần cập nhật
+        input.costList = this.costList.filter((obj) => {
+          const isExisted = this.assetList.find((assetObj) => {
+            return assetObj.fixed_asset_id == obj.fixed_asset_id;
+          });
+          return isExisted == undefined ? false : true;
+        });
+
         // Gọi API
         if (this.mode == Enum.Mode.Add) {
           await createVoucher(input)
@@ -425,10 +437,6 @@ export default {
         }
         // Gọi API
         this.handleVoucher();
-        // Cập nhật tổng nguyên giá các tài sản
-        for (const obj of this.assetList) {
-          this.updateFixedAsset(obj.fixed_asset_id, obj);
-        }
       } catch (error) {
         console.log(error);
       }
@@ -514,12 +522,18 @@ export default {
      * @description Cập nhật tổng nguyên giá và ngân sách sau khi chỉnh sửa tài sản
      * @author NVThinh 13/1/2023
      */
-    updateBudget: function (assetID, totalOfCost, budgets) {
+    updateBudget: function (assetID, totalOfCost, budgets, isChanged) {
       try {
+        // Nếu tài sản được sửa ngân sách
+        if (isChanged) {
+          this.costList.push({ fixed_asset_id: assetID, cost: totalOfCost });
+        }
+        // Cập nhật tổng nguyên giá
         for (let obj of this.assetList) {
-          if (obj.fixed_asset_id === assetID) {
+          if (obj.fixed_asset_id == assetID) {
             obj.cost = totalOfCost;
             obj.budgets = budgets;
+            break;
           }
         }
       } catch (error) {
@@ -570,6 +584,7 @@ export default {
       isShowBudgetDetail: false, // Hiển thị popup "Sửa tài sản"
       displayedAssetList: [], // Mảng chứa các tài sản đã được lọc
       assetList: [], // Mảng chứa các tài sản được chọn
+      costList: [], // Mảng chứa các tài sản được chỉnh sửa
       conditions: {
         keyword: "",
         limit: 20,

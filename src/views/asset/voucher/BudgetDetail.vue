@@ -6,7 +6,7 @@
           <InputVue
             :style="['margin-bottom: 16px', 'width: 100%']"
             :label="Resource.InputLabel.department"
-            :value="fixedAsset.department_name"
+            :value="voucherAsset.department_name"
             :isRequired="false"
             :isDisabled="true"
             :field="'department'"
@@ -105,25 +105,39 @@ import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
 import { getAllBudgets } from "@/apis/voucher/budget";
-import { editFixedAsset } from "@/apis/fixedAsset";
 
 export default {
   name: "BudgetDetail",
+  components: {
+    Popup,
+    InputNumber,
+    InputVue,
+    DropdownTickVue,
+  },
+  props: {
+    voucherAsset: {
+      type: Object,
+      isRequired: true,
+    },
+  },
+  emits: ["update-budget"],
+
   created() {
     try {
-      // Khởi tạo dữ liệu ngân sách
-      let budgetList = JSON.parse(this.fixedAsset.budgets);
-      // Nếu giá trị = 0 => Cập nhật đối tượng
-      if (budgetList[0]?.value == 0) {
-        // Cập nhật lại giá trị
-        budgetList[0].value = this.fixedAsset.cost;
-        // Tạo đối tượng tạm thời để thay đổi dữ liệu
-        let tmpAsset = this.fixedAsset;
-        // Chuyển đổi sang JSON
-        tmpAsset.budgets = JSON.stringify(budgetList);
-        // Gọi API
-        this.updateFixedAsset(tmpAsset);
+      console.log(this.voucherAsset);
+      // Khởi tạo mảng dữ liệu
+      if (this.voucherAsset.budgets == null) {
+        this.data = [
+          {
+            ...this.defaultBudget,
+            value: this.voucherAsset.cost,
+            dropdownMessageError: this.errorMessage.isRequired,
+          },
+        ];
+        return;
       }
+      // Khởi tạo dữ liệu ngân sách
+      const budgetList = JSON.parse(this.voucherAsset.budgets);
       // Cập nhật mảng các dòng dữ liệu
       this.data = budgetList.map((obj) => {
         return {
@@ -138,24 +152,17 @@ export default {
       console.log(error);
     }
   },
-  components: {
-    Popup,
-    InputNumber,
-    InputVue,
-    DropdownTickVue,
-  },
-  props: {
-    fixedAsset: {
-      type: Object,
-      isRequired: true,
-    },
-  },
-  emits: ["update-budget"],
 
   mounted() {
     getAllBudgets()
       .then((res) => (this.budgets = res.data))
       .catch((error) => console.log(error));
+  },
+
+  watch: {
+    isChanged: function () {
+      // console.log(this.isChanged);
+    },
   },
 
   methods: {
@@ -165,7 +172,9 @@ export default {
      * @author NVThinh 8/1/2023
      */
     getTitle: function () {
-      return Resource.PopupTitle.edit + " " + this.fixedAsset.fixed_asset_name;
+      return (
+        Resource.PopupTitle.edit + " " + this.voucherAsset.fixed_asset_name
+      );
     },
 
     /**
@@ -213,6 +222,8 @@ export default {
      * @author NVThinh 11/1/2023
      */
     updateInput: function (value, field, index) {
+      // Đánh dấu dữ liệu đã được cập nhật
+      this.isChanged = true;
       // Cập nhật dữ liệu
       if (value != 0) {
         this.data[index].inputError = false;
@@ -229,8 +240,10 @@ export default {
      */
     updateDropdown: function (value, index) {
       try {
+        // Cập nhật dữ liệu
         this.data[index].budget_name = value;
         this.data[index].dropdownError = false;
+        // Làm mới các options được chọn của dropdown
         this.refreshDropdown();
       } catch (error) {
         console.log(error);
@@ -252,9 +265,10 @@ export default {
           // Gửi dữ liệu đến component cha (id tài sản, tổng nguyên giá, ngân sách)
           this.$emit(
             "update-budget",
-            this.fixedAsset.fixed_asset_id,
+            this.voucherAsset.fixed_asset_id,
             this.total,
-            this.newBudgets
+            this.newBudgets,
+            this.isChanged
           );
           // Đóng component này
           this.close();
@@ -270,10 +284,10 @@ export default {
      */
     checkDuplicate: function (budgetName, index) {
       for (let i = 0; i < index; i++) {
+        const budget_name = this.data[i].budget_name;
         if (
-          budgetName
-            .toLowerCase()
-            .includes(this.data[i].budget_name.toLowerCase())
+          budget_name != "" &&
+          budgetName.toLowerCase().includes(budget_name.toLowerCase())
         ) {
           return true;
         }
@@ -289,12 +303,13 @@ export default {
     hasError: function () {
       try {
         // Cập nhật lỗi
-        for (let i = 1; i < this.data.length; i++) {
+        for (let i = 0; i < this.data.length; i++) {
           this.data[i].inputError = this.data[i].value ? false : true;
           if (this.data[i].budget_name == "") {
             this.data[i].dropdownError = true;
             this.data[i].dropdownMessageError = this.errorMessage.isRequired;
           } else {
+            // Kiểm tra trùng nguồn hình thành
             if (this.checkDuplicate(this.data[i].budget_name, i)) {
               this.data[i].dropdownError = true;
               this.data[i].dropdownMessageError =
@@ -353,25 +368,15 @@ export default {
         return accumulator + Number(obj.value);
       }, 0);
     },
-
-    /**
-     * @description Gọi API cập nhật tài sản cố định
-     * @author NVThinh 13/1/2023
-     */
-    updateFixedAsset: async function (fixedAsset) {
-      try {
-        await editFixedAsset(this.fixedAsset.fixed_asset_id, fixedAsset);
-      } catch (error) {
-        console.log(error);
-      }
-    },
   },
+
   data() {
     return {
       data: [], // Mảng chứa thông tin các nguồn và giá trị
       budgets: [], // Mảng chứa các nguồn hình thành
       total: 0, // Tổng nguyên giá
       newBudgets: "", // Ngân sách của tài sản
+      isChanged: false, // true nếu người dùng có tương tác với dữ liệu
       // Resources
       Resource,
       TableResource,

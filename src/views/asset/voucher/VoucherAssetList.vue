@@ -17,7 +17,7 @@
         @handle-empty-input="handleEmptyInput"
       />
     </div>
-    <!-- Detail Table -->
+    <!-- Table -->
     <TableVue
       :cols="TableResource.TableRow.FixedAssetDetail"
       :data="fixedAssets"
@@ -115,8 +115,9 @@ export default {
      * @author NVThinh 7/1/2023
      */
     searchAndFilter: async function () {
-      // Gọi API lấy danh sách tài sản cố định theo lọc và phân trang
+      // Hiển thị loader
       this.isShowLoader = true;
+      // Gọi API lấy danh sách tài sản cố định theo lọc và phân trang
       await getFixedAssetByFilterAndPaging(
         this.conditions.keyword,
         null,
@@ -134,6 +135,8 @@ export default {
         .catch(() => {
           this.showToast(Enum.ActionStatus.Error, Resource.ToastContent.Error);
         });
+      // focus vào dòng đầu tiên của bảng
+      this.$refs.theTable.focusFirstRow();
     },
 
     /**
@@ -207,47 +210,47 @@ export default {
         {
           col: TableResource.TableRow.FixedAsset.checkbox?.ENG,
           type: Enum.TableData.type.checkbox,
-          minWidth: "40px",
-          maxWidth: "50px",
+          width: "50px",
           align: "center",
         },
         {
           col: TableResource.TableRow.FixedAsset.numerical_order.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "40px",
+          width: "50px",
           align: "center",
         },
         {
           col: TableResource.TableRow.FixedAsset.fixed_asset_code.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "70px",
-          maxWidth: "80px",
+          width: "80px",
           align: "left",
         },
         {
           col: TableResource.TableRow.FixedAsset.fixed_asset_name.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "90px",
-          maxWidth: "180px",
+          width: "200px",
+          maxWidth: "200px",
           align: "left",
         },
         {
           col: TableResource.TableRow.FixedAsset.department_name.ENG,
           type: Enum.TableData.type.text,
-          minWidth: "100px",
-          maxWidth: "120px",
+          width: "130px",
+          maxWidth: "130px",
           align: "left",
         },
         {
           col: TableResource.TableRow.FixedAsset.cost.ENG,
           type: Enum.TableData.type.number,
-          width: "70px",
+          width: "120px",
+          maxWidth: "120px",
           align: "right",
         },
         {
           col: TableResource.TableRow.FixedAsset.accumulated_value.ENG,
           type: Enum.TableData.type.number,
-          minWidth: "90px",
+          width: "120px",
+          maxWidth: "120px",
           align: "right",
         },
         {

@@ -4,6 +4,7 @@
     :class="{ 'row--active': isActive }"
     @click="handleOnClickRow"
     @dblclick="carryOutFeature(Enum.Mode.Update)"
+    tabindex="1"
   >
     <TableData
       v-for="td in tds"
