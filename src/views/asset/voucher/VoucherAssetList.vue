@@ -3,6 +3,8 @@
     :title="Resource.PopupTitle.select_increment_asset"
     @close-popup="close"
     @on-save="onSave"
+    @keydown.esc="close"
+    @keyup.ctrl.q.stop="onSave"
   >
     <!-- Loader  -->
     <Loader :isShow="isShowLoader"></Loader>
@@ -13,6 +15,7 @@
         :field="'keyword'"
         :placeholder="Resource.Placeholder.search_asset_code_name"
         :width="'270px'"
+        ref="search_input"
         @update-filter="updateFilter"
         @handle-empty-input="handleEmptyInput"
       />
@@ -20,8 +23,8 @@
     <!-- Table -->
     <TableVue
       :cols="TableResource.TableRow.FixedAssetDetail"
-      :data="fixedAssets"
       :tds="tds_of_detail"
+      :data="fixedAssets"
       :is-show-footer="false"
       :offset="conditions.offset"
       @update-row="updateRow"
@@ -69,12 +72,17 @@ export default {
     selectedIDs: {
       type: Array,
       default: () => [],
-    },
+    }, // Danh sách các IDs đã được chọn
   },
 
   created() {
     // Gọi API lấy danh sách tài sản cố định theo tìm kiếm, lọc và giới hạn bản ghi
     this.searchAndFilter();
+  },
+
+  mounted() {
+    // focus vào ô tìm kiếm
+    this.$refs.search_input.focusInput();
   },
 
   methods: {
@@ -135,8 +143,6 @@ export default {
         .catch(() => {
           this.showToast(Enum.ActionStatus.Error, Resource.ToastContent.Error);
         });
-      // focus vào dòng đầu tiên của bảng
-      this.$refs.theTable.focusFirstRow();
     },
 
     /**
@@ -179,6 +185,18 @@ export default {
         this.conditions[field] = value;
         // Call lại API
         this.searchAndFilter();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description focus vào dòng đầu tiên của bảng
+     * @author NVThinh 16/1/2023
+     */
+    focusFirstRow: function () {
+      try {
+        this.$refs.theTable.focusFirstRow();
       } catch (error) {
         console.log(error);
       }

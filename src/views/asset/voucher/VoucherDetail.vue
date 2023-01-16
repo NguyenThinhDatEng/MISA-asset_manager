@@ -4,6 +4,9 @@
     :title="title"
     @close-popup="close"
     @on-save="validate"
+    @keydown.esc="close"
+    @keyup.ctrl.q.stop="validate"
+    @keyup.ctrl.insert="showAssetList"
   >
     <div class="popup__body__wrapper">
       <div class="voucher-info">
@@ -67,6 +70,7 @@
               :field="'keyword'"
               :placeholder="Resource.Placeholder.search_asset_code_name"
               :width="'270px'"
+              :tabindex="'none'"
               @update-filter="updateFilter"
               @handle-empty-input="handleEmptyInput"
             />
@@ -202,12 +206,24 @@ export default {
 
   mounted() {
     // focus vào ô input đầu tiên
-    this.$refs.voucherCode.focusInput();
+    this.focusFirstInput();
     // Phân trang
     this.paging();
   },
 
   methods: {
+    /**
+     * @description focus vào ô mã chứng từ
+     * @author NVThinh 16/1/2023
+     */
+    focusFirstInput: function () {
+      try {
+        this.$refs.voucherCode.focusInput();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     /**
      * @description xử lý sự kiện khi ô tìm kiếm trống
      * @author NVThinh 7/1/2023
@@ -253,6 +269,8 @@ export default {
     closePopup: function () {
       this.isShowAssetList = false;
       this.isShowBudgetDetail = false;
+      // focus vào ô input đầu tiên
+      this.focusFirstInput();
     },
 
     /**
@@ -284,6 +302,8 @@ export default {
           // Phân trang
           this.paging();
         }
+        // focus vào ô input đầu tiên
+        this.focusFirstInput();
       } catch (error) {
         console.log(error);
       }

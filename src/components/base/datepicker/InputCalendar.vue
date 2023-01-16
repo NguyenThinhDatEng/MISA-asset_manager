@@ -38,6 +38,10 @@ export default {
     field: String,
     mode: Number,
     value: String, // Giá trị đầu vào của ô input
+    tabindex: {
+      type: [Number, String],
+      default: 1,
+    }, // tabindex
   },
   emits: ["update-input"],
   watch: {

@@ -42,7 +42,9 @@ import ButtonMain from "@/components/base/buttons/ButtonMain.vue";
 
 export default {
   name: "AssetDetail",
-
+  components: {
+    ButtonMain,
+  },
   props: {
     // Tiêu đề của popup
     title: {
@@ -63,17 +65,12 @@ export default {
     },
   },
 
-  components: {
-    ButtonMain,
-  },
-
   emits: ["close-popup", "on-save"],
 
-  created() {},
-
-  mounted() {},
-
   methods: {
+    onCtrl: function (e) {
+      console.log(e);
+    },
     /**
      * @description Đóng popup
      * @author NVThinh 5/1/2023

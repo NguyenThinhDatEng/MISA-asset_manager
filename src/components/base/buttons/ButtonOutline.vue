@@ -9,14 +9,16 @@ import Resource from "@/js/resource/resource";
 export default {
   name: "ButtonOutline",
   props: {
-    title: String,
+    title: String, // Tiêu đề popup
     buttonContent: {
       type: String,
       default: Resource.ButtonContent.no,
-    },
+    }, // Nội dung button
+    tabindex: {
+      type: [Number, String],
+      default: 1,
+    }, // tabindex
   },
-  emits: [],
-  methods: {},
   data() {
     return { Resource };
   },

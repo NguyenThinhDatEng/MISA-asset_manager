@@ -7,8 +7,11 @@
       :placeholder="placeholder"
       :maxlength="maxLength"
       :title="Resource.Title['search-input']"
+      :tabindex="tabindex"
       v-model="value"
+      ref="input"
       @keyup.enter="updateFilter"
+      @keydown.tab="handleOnTab"
     />
     <div class="icon-function_wrapper">
       <div class="icon center icon--18px icon--search-input"></div>
@@ -27,13 +30,17 @@ export default {
     placeholder: {
       type: String,
       default: Dictionary.action.search,
-    },
+    }, // placeholder
     width: {
       type: String,
       default: "179px",
-    },
+    }, // Độ dài input
+    tabindex: {
+      type: [Number, String],
+      default: 1,
+    }, // tabindex
   },
-  emits: ["update-filter", "handle-empty-input"],
+  emits: ["update-filter", "handle-empty-input", "handle-on-tab"],
 
   watch: {
     // Nếu giá trị input cập nhật
@@ -52,6 +59,22 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    /**
+     * @description focus vào ô input
+     * @author NVThinh 16/1/2023
+     */
+    focusInput: function () {
+      this.$refs.input.focus();
+    },
+
+    /**
+     * @description bắn sự kiện bắt keydown tab lên cha
+     * @author NVThinh 16/1/2023
+     */
+    handleOnTab: function () {
+      this.$emit("handle-on-tab");
     },
   },
 

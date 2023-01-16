@@ -102,7 +102,13 @@
     v-if="isShowToast"
     :action-status="toastObj.actionStatus"
     :content="toastObj.content"
-  ></ToastVue>
+  />
+  <!-- Warning dialog -->
+  <DialogWarning
+    v-if="isShowWarningDialog"
+    :content="warningMessage"
+    @confirm="isShowWarningDialog = false"
+  />
 </template>
   
   <script>
@@ -116,6 +122,7 @@ import {
   getFixedAssetByFilterAndPaging,
   deleteFixedAsset,
   deleteMultipleFixedAssets,
+  checkVoucher,
 } from "@/apis/fixedAsset";
 import { getAllDepartments } from "@/apis/department";
 import { getAllFixedAssetCategories } from "@/apis/fixedAssetCategory";
@@ -129,6 +136,7 @@ import Popup from "@/views/asset/AssetDetail.vue";
 import DialogDeleteVue from "@/components/base/dialogs/DialogDelete.vue";
 import Loader from "@/components/base/more/Loader.vue";
 import ToastVue from "@/components/base/toast/ToastVue.vue";
+import DialogWarning from "@/components/base/dialogs/DialogWarning.vue";
 
 export default {
   name: "AssetList",
@@ -142,6 +150,7 @@ export default {
     ToastVue,
     Loader,
     DropdownTick,
+    DialogWarning,
   },
 
   /**
@@ -151,7 +160,6 @@ export default {
   created() {
     // Gọi API lấy danh sách tài sản cố định theo tìm kiếm, lọc và giới hạn bản ghi
     this.searchAndFilter();
-
     // Gọi API lấy tất cả bộ phận sử dụng
     getAllDepartments()
       .then((res) => {
@@ -178,6 +186,22 @@ export default {
     },
   },
 
+  computed: {
+    warningMessage: function () {
+      // Số lượng tài sản được chọn
+      const numberOfAssets = this.selectedRows.length;
+      // Mã tài sản
+      const fixedAssetCode = this.selectedRows[0].fixed_asset_code;
+      // Cập nhật nội dung cảnh báo
+      if (numberOfAssets == 1) {
+        return `Tài sản có mã <b>${fixedAssetCode}</b> đã phát sinh chứng từ ghi tăng có mã <b>${this.voucherCode}</b>`;
+      }
+      return `<b>${Function.formatNumber(
+        numberOfAssets
+      )}</b> tài sản đã được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.`;
+    },
+  },
+
   methods: {
     /**
      * @description Ẩn toast
@@ -186,13 +210,31 @@ export default {
     closeToast: function () {
       this.isShowToast = false;
     },
+
     /**
      * @description xử lý sự kiện khi nhấn vào nút xóa
      * @author NVThinh 28/12/2022
      */
-    handleOnClickDeleteButton: function () {
+    handleOnClickDeleteButton: async function () {
       try {
-        this.isShowDialogDelete = this.selectedRows.length > 0 ? true : false;
+        // Tạo mảng các ID
+        const fixedAssetIDs = this.selectedRows.map((obj) => {
+          return obj.fixed_asset_id;
+        });
+
+        // Gọi API kiểm tra chứng từ
+        await checkVoucher(fixedAssetIDs).then((res) => {
+          this.voucherCode = res.data;
+          // Cảnh báo khi tài sản được chọn phát sinh chứng từ
+          if (this.voucherCode) {
+            // Hiển thị dialog cảnh báo
+            this.isShowWarningDialog = true;
+          } else {
+            // Cảnh báo khi tài sản không phát sinh chứng từ
+            this.isShowDialogDelete =
+              this.selectedRows.length > 0 ? true : false;
+          }
+        });
       } catch (error) {
         console.log(error);
       }
@@ -314,7 +356,6 @@ export default {
       try {
         // Cập nhật mảng các dòng được chọn
         this.selectedRows = selectedRows;
-        console.log("selected rows", this.selectedRows);
         // Cập nhật trang thái disabled của các nút chức năng
         if (selectedRows.length == 0) {
           this.isDisabledButton = true;
@@ -333,7 +374,7 @@ export default {
 
     /**
      * @description Bind dữ liệu và hiển thị popup
-     * @param {Number} mode chế độ popup 
+     * @param {Number} mode chế độ popup
      * @param {Object} obj đối tượng bản ghi
      * @author NVThinh 13/1/2023
      */
@@ -407,21 +448,22 @@ export default {
   data() {
     return {
       popupTitle: "", // the title of control
-      // Các thông tin yêu cầu từ toast component
-      toastObj: {
-        actionStatus: 0,
-        content: "",
-      },
-      totalOfRecords: 0, // Số lượng bản ghi lọc được
       dialogInfo: "", // nội dung hiển thị dialog xác nhận xóa
+      voucherCode: "", // Mã chứng từ
+      totalOfRecords: 0, // Số lượng bản ghi lọc được
       mode: 0, // Chế độ popup
-      popupObj: {}, // Đối tượng popup
+      toastMode: 0, // chế độ toast
       isShowLoader: false, // trạng thái ẩn hiện của loader
       isDisabledButton: true, // Trạng thái disabled của các nút chức năng
       isShowPopup: false, // trạng thái hiển thị / ẩn popup
       isShowDialogDelete: false, // Trạng thái ẩn hiện dialog xác nhận xóa
+      isShowWarningDialog: false, // Ẩn / hiện dialog cảnh báo
       isShowToast: false, // Trạng thái hiển thị toast báo thành công
-      toastMode: 0, // chế độ toast
+      toastObj: {
+        actionStatus: 0,
+        content: "",
+      }, // Các thông tin yêu cầu từ toast component
+      popupObj: {}, // Đối tượng popup
       selectedRows: [], // Mảng chứa các dòng trong bảng được chọn
       fixedAssets: [], // Mảng chứa các tài sản cố định sau khi gọi API
       departments: [], // Mảng chứa các bộ phận sử dụng sau khi gọi API

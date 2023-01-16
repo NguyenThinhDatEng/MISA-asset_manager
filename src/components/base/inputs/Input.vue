@@ -102,6 +102,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    tabindex: {
+      type: [Number, String],
+      default: 1,
+    },
   },
   emits: ["update-input"],
 

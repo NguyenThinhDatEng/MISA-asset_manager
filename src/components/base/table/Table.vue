@@ -250,6 +250,7 @@ export default {
         }
         // Truyền mảng các dòng được chọn lên component cha
         this.$emit("update-row", this.selectedRows);
+        // console.log(this.selectedRows);
       } catch (error) {
         console.log(error);
       }

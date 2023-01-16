@@ -2,9 +2,10 @@
   <!-- Table row  -->
   <tr
     :class="{ 'row--active': isActive }"
-    @click="handleOnClickRow"
-    @dblclick="carryOutFeature(Enum.Mode.Update)"
     tabindex="1"
+    @click="handleOnClickRow"
+    @keydown.enter="handleOnClickRow"
+    @dblclick="carryOutFeature(Enum.Mode.Update)"
   >
     <TableData
       v-for="td in tds"

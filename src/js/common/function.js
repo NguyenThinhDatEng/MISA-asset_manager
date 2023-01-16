@@ -11,16 +11,19 @@ export default {
       console.log(error);
     }
   },
+
   // Lấy ngày tháng năm hiện tại
   getCurrentDate: function () {
     const date = new Date();
     return date.toISOString();
   },
+
   // Lấy năm hiện tại
   getCurrentYear: function () {
     let date = new Date();
     return date.getFullYear();
   },
+
   // Format dữ liệu số
   formatNumber: function (num) {
     try {

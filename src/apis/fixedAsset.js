@@ -96,6 +96,22 @@ const getNewCode = () => {
 };
 
 /**
+ * @description API kiểm tra chứng từ tài sản
+ * @param {Array} fixedAssetIDs 1 mảng chứa các id tài sản được chọn
+ * @returns res là 1 promise
+ * @author NVThinh (16-1-2023)
+ */
+const checkVoucher = (fixedAssetIDs) => {
+  try {
+    console.log("Call API get voucher code");
+    const res = httpClient.post(END_POINT + `/checkVoucher`, fixedAssetIDs);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
  * API thêm mới tài sản cố định
  * @param {Object} fixedAsset tài sản cố định
  * @returns res is a promise
@@ -163,6 +179,7 @@ export {
   getFixedAssetByID,
   getNewCode,
   getFixedAssetByFilterAndPaging,
+  checkVoucher,
   createFixedAsset,
   editFixedAsset,
   deleteFixedAsset,

@@ -1,5 +1,5 @@
 <template>
-  <div id="write_increase">
+  <div id="write_increase" @keydown.ctrl.prevent="handleOnCtrl">
     <!-- Function bar -->
     <div class="function-bar">
       <div class="function__left">Ghi tăng tài sản</div>
@@ -30,8 +30,10 @@
             :placeholder="Resource.Placeholder.search_voucher"
             :width="'270px'"
             :field="'keyword'"
+            ref="search_input"
             @update-filter="updateFilter"
             @handle-empty-input="handleEmptyInput"
+            @handle-on-tab="focusFirstRow"
           />
         </div>
         <div class="function__right">
@@ -139,6 +141,7 @@ import Resource from "@/js/resource/resource";
 import Dictionary from "@/js/resource/dictionary";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
+import Function from "@/js/common/function";
 import {
   filterAndPaging,
   getVoucherDetail,
@@ -157,6 +160,330 @@ export default {
     TablePaging,
     ToastVue,
     Loader,
+  },
+
+  created() {
+    // Load lại trang
+    this.filterAndPaging();
+  },
+
+  mounted() {
+    // focus vào ô tìm kiếm
+    this.focusFirstInput();
+  },
+
+  watch: {
+    // Thực hiện cập nhật giới hạn bản ghi khi tổng số bản ghi thay đổi
+    totalOfRecords: function () {
+      this.$refs.theTable.updateLimit(this.totalOfRecords);
+    },
+  },
+
+  computed: {
+    // Nội dung dialog
+    warningMessage: function () {
+      let output = "";
+      if (this.mode === Enum.Mode.Delete) {
+        output = `Bạn có muốn xóa chứng từ có mã <b>${this.selectedVoucher.voucher_code}</b>?`;
+      } else {
+        output = `<b>${Function.formatNumber(
+          this.selectedRows.length
+        )}</b> chứng từ đã được chọn. Bạn có muốn xóa các chứng từ này khỏi danh sách?`;
+      }
+      return output;
+    },
+  },
+
+  methods: {
+    /**
+     * @description xử lý sự kiện khi nhấn phím control
+     * @param {event} e sự kiện bắt key từ bàn phím
+     * @author NVThinh 16/1/2023
+     */
+    handleOnCtrl: function (e) {
+      if (e.key == "1") {
+        this.openPopup(Enum.Mode.Add);
+      }
+    },
+
+    /**
+     * @description Ẩn toast
+     * @author NVThinh 10/1/2023
+     */
+    closeToast: function () {
+      this.isShowToast = false;
+    },
+
+    /**
+     * @description Đóng dialog
+     * @author NVThinh 10/1/2023
+     */
+    closeDialog: function () {
+      this.isShowDialog = false;
+    },
+
+    /**
+     * @description Mở popup "Thêm chứng từ ghi tăng"
+     * @author NVThinh 6/1/2023
+     */
+    updateVoucher: function (mode, voucher) {
+      try {
+        // Cập nhật đối tượng voucher được chọn
+        this.selectedVoucher = voucher;
+        // Mở popup voucher detail
+        this.openPopup(mode);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Phóng to/Thu nhỏ bảng chi tiết
+     * @author NVT 3/1/2022
+     */
+    toggle: function () {
+      this.isZoomIn = !this.isZoomIn;
+    },
+
+    /**
+     * @description Đóng popup
+     * @author NVThinh 5/1/2022
+     */
+    closePopup: function () {
+      this.isShowPopup = false;
+    },
+
+    /**
+     * @description Mở popup
+     * @author NVThinh 9/1/2023
+     */
+    openPopup: function (mode) {
+      // Cập nhật chế độ hiển thị popup
+      this.mode = mode;
+      // Cập nhật tiêu đề popup
+      if (mode == Enum.Mode.Add) {
+        this.popupTitle = Resource.PopupTitle.add_voucher;
+      }
+      if (mode == Enum.Mode.Update) {
+        this.popupTitle = Resource.PopupTitle.edit_increment_asset;
+      }
+      if (mode != Enum.Mode.Delete) {
+        // Hiển thị popup
+        this.isShowPopup = true;
+      } else {
+        // Hiển thị dialog
+        this.isShowDialog = true;
+      }
+    },
+
+    /**
+     * @description lọc và phân trang
+     * @author NVThinh 9/1/2023
+     */
+    filterAndPaging: async function () {
+      // Hiển thị loader
+      this.isShowLoader = true;
+      // Call API
+      await filterAndPaging(
+        this.conditions.keyword,
+        this.conditions.limit,
+        this.conditions.offset
+      )
+        .then((res) => {
+          this.vouchers = res.data.data;
+          // Cập nhật tổng số bản ghi thu được
+          this.totalOfRecords = res.data.totalOfRecords;
+          this.isShowLoader = false;
+        })
+        .catch((error) => console.log(error));
+      // focus vào dòng đầu tiên của bảng
+      this.focusFirstRow();
+    },
+
+    /**
+     * @description API lấy chi tiết chứng từ (danh sách tài sản)
+     * @param {string} voucher_id là id của chứng từ
+     * @author NVThinh 10/1/2023
+     */
+    getVoucherDetail: async function (voucher_id) {
+      try {
+        await getVoucherDetail(voucher_id).then((res) => {
+          this.voucherDetail = res.data;
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Cập nhật các điều kiện của filter
+     * @param {string} field trường của dữ liệu
+     * @param {string} value giá trị được cập nhật
+     * @author NVThinh 10/1/2023
+     */
+    updateFilter: function (field, value) {
+      try {
+        // Cập nhật các diều kiện lọc và phân trang
+        this.conditions[field] = value;
+        // Call lại API
+        this.filterAndPaging();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description xử lý sự kiện khi ô tìm kiếm trống
+     * @author NVThinh 7/1/2023
+     */
+    handleEmptyInput: function () {
+      this.conditions.keyword = "";
+      this.filterAndPaging();
+      this.voucherDetail = [];
+    },
+
+    /**
+     * @description Cập nhật mảng các dòng được chọn
+     * @author NVThinh 10/1/2023
+     */
+    updateRow: function (selectedRows) {
+      if (selectedRows.length > 1) {
+        // Cập nhật mảng các dòng được chọn
+        this.selectedRows = selectedRows;
+        // Hiển thị nút xóa nhiều
+        this.isShowDeleteMultiIcon = true;
+      } else {
+        // Cập nhật mảng chi tiết chứng từ
+        this.getVoucherDetail(selectedRows[0]?.voucher_id);
+        // Không hiển thị icon xóa nhiều
+        this.isShowDeleteMultiIcon = false;
+      }
+      console.log("VoucherList", selectedRows);
+    },
+
+    /**
+     * @description xử lý sự kiện khi ấn nút chính trong dialog
+     * @param {Number} mode chế độ hiển thị của dialog
+     * @author NVThinh 10/1/2023
+     */
+    confirm: async function (mode) {
+      if (mode === Enum.Mode.Delete) {
+        // Call API xóa 1
+        await deleteById(this.selectedVoucher.voucher_id)
+          .then(() => {
+            // Hiển thị thông báo
+            this.showToast(
+              Enum.ActionStatus.Success,
+              Resource.ToastContent.Delete.Success
+            );
+          })
+          .catch(() => {
+            // Hiển thị thông báo
+            this.showToast(
+              Enum.ActionStatus.Error,
+              Resource.ToastContent.Delete.Fail
+            );
+          });
+      } else {
+        // Tạo mảng các ids
+        let recordIDs = this.selectedRows.map((obj) => {
+          return obj.voucher_id;
+        });
+        // Call API xóa nhiều
+        await deleteMultipleRecords(recordIDs)
+          .then(() => {
+            // Hiển thị thông báo thành công
+            this.showToast(
+              Enum.ActionStatus.Success,
+              this.selectedRows.length +
+                Resource.ToastContent.DeleteMultiSuccess
+            );
+          })
+          .catch(() => {
+            // Hiển thị thông báo thất bại
+            this.showToast(
+              Enum.ActionStatus.Error,
+              Resource.ToastContent.DeleteMulti.Fail
+            );
+          });
+      }
+      // Đóng dialog
+      this.closeDialog();
+    },
+
+    /**
+     * Hiển thị toast
+     * @param {Number} actionStatus trạng thái toast
+     * @param {String} content nội dung hiển thị
+     * @author NVThinh 10/1/2023
+     */
+    showToast: function (actionStatus, content) {
+      // Cập nhật đối tượng toast
+      this.toastObj.actionStatus = actionStatus;
+      this.toastObj.content = content;
+      // Hiển thị toast
+      this.isShowToast = true;
+      // refresh table
+      this.filterAndPaging();
+    },
+
+    /**
+     * @description xử lý sự kiện khi ấn vào nút xóa nhiều
+     * @author NVThinh 10/1/2023
+     */
+    handleOnClickDeleteMany: async function () {
+      try {
+        // Cập nhật chế độ
+        this.mode = Enum.Mode.DeleteMulti;
+        // Mở dialog
+        this.isShowDialog = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description Bind dữ liệu và hiển thị popup
+     * @param {Number} mode chế độ popup
+     * @param {Object} obj đối tượng bản ghi
+     * @author NVThinh 13/1/2023
+     */
+    showPopup: function (mode, obj) {
+      try {
+        // update the title of popup
+        this.popupTitle = Resource.PopupTitle.edit_increment_asset;
+        // update the data of popup
+        this.selectedVoucher = obj;
+        // Hiển thị popup
+        this.openPopup(mode);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description focus vào dòng đầu tiên của bảng
+     * @author NVThinh 16/1/2023
+     */
+    focusFirstRow: function () {
+      try {
+        this.$refs.theTable.focusFirstRow();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * @description focus vào ô tìm kiếm
+     * @author NVThinh 16/1/2023
+     */
+    focusFirstInput: function () {
+      try {
+        this.$refs.search_input.focusInput();
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 
   data() {
@@ -284,287 +611,6 @@ export default {
         },
       ],
     };
-  },
-
-  created() {
-    this.filterAndPaging();
-  },
-
-  watch: {
-    // Thực hiện cập nhật giới hạn bản ghi khi tổng số bản ghi thay đổi
-    totalOfRecords: function () {
-      this.$refs.theTable.updateLimit(this.totalOfRecords);
-    },
-  },
-
-  computed: {
-    // Nội dung dialog
-    warningMessage: function () {
-      let output = "";
-      if (this.mode === Enum.Mode.Delete) {
-        output = `Bạn có muốn xóa chứng từ có mã <b>${this.selectedVoucher.voucher_code}</b>?`;
-      } else {
-        output = `<b>${this.selectedRows.length}</b> chứng từ đã được chọn. Bạn có muốn xóa các chứng từ này khỏi danh sách?`;
-      }
-      return output;
-    },
-  },
-
-  methods: {
-    /**
-     * @description Ẩn toast
-     * @author NVThinh 10/1/2023
-     */
-    closeToast: function () {
-      this.isShowToast = false;
-    },
-
-    /**
-     * @description Đóng dialog
-     * @author NVThinh 10/1/2023
-     */
-    closeDialog: function () {
-      this.isShowDialog = false;
-    },
-
-    /**
-     * @description Mở popup "Thêm chứng từ ghi tăng"
-     * @author NVThinh 6/1/2023
-     */
-    updateVoucher: function (mode, voucher) {
-      try {
-        // Cập nhật đối tượng voucher được chọn
-        this.selectedVoucher = voucher;
-        // Mở popup voucher detail
-        this.openPopup(mode);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    /**
-     * @description Phóng to/Thu nhỏ bảng chi tiết
-     * @author NVT 3/1/2022
-     */
-    toggle: function () {
-      this.isZoomIn = !this.isZoomIn;
-    },
-
-    /**
-     * @description Đóng popup
-     * @author NVThinh 5/1/2022
-     */
-    closePopup: function () {
-      this.isShowPopup = false;
-    },
-
-    /**
-     * @description Mở popup
-     * @author NVThinh 9/1/2023
-     */
-    openPopup: function (mode) {
-      // Cập nhật chế độ hiển thị popup
-      this.mode = mode;
-      // Cập nhật tiêu đề popup
-      if (mode == Enum.Mode.Add) {
-        this.popupTitle = Resource.PopupTitle.add_voucher;
-      }
-      if (mode == Enum.Mode.Update) {
-        this.popupTitle = Resource.PopupTitle.edit_increment_asset;
-      }
-      if (mode != Enum.Mode.Delete) {
-        // Hiển thị popup
-        this.isShowPopup = true;
-      } else {
-        // Hiển thị dialog
-        this.isShowDialog = true;
-      }
-    },
-
-    /**
-     * @description lọc và phân trang
-     * @author NVThinh 9/1/2023
-     */
-    filterAndPaging: async function () {
-      // Hiển thị loader
-      this.isShowLoader = true;
-      // Call API
-      await filterAndPaging(
-        this.conditions.keyword,
-        this.conditions.limit,
-        this.conditions.offset
-      )
-        .then((res) => {
-          this.vouchers = res.data.data;
-          // Cập nhật tổng số bản ghi thu được
-          this.totalOfRecords = res.data.totalOfRecords;
-          this.isShowLoader = false;
-        })
-        .catch((error) => console.log(error));
-      // focus vào dòng đầu tiên của bảng
-      this.$refs.theTable.focusFirstRow();
-    },
-
-    /**
-     * @description API lấy chi tiết chứng từ (danh sách tài sản)
-     * @param {string} voucher_id là id của chứng từ
-     * @author NVThinh 10/1/2023
-     */
-    getVoucherDetail: async function (voucher_id) {
-      try {
-        await getVoucherDetail(voucher_id).then((res) => {
-          this.voucherDetail = res.data;
-        });
-      } catch (error) {
-        console.log(error);
-      }
-      console.log(this.voucherDetail);
-    },
-
-    /**
-     * Cập nhật các điều kiện của filter
-     * @param {string} field trường của dữ liệu
-     * @param {string} value giá trị được cập nhật
-     * @author NVThinh 10/1/2023
-     */
-    updateFilter: function (field, value) {
-      try {
-        // Cập nhật các diều kiện lọc và phân trang
-        this.conditions[field] = value;
-        // Call lại API
-        this.filterAndPaging();
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    /**
-     * @description xử lý sự kiện khi ô tìm kiếm trống
-     * @author NVThinh 7/1/2023
-     */
-    handleEmptyInput: function () {
-      this.conditions.keyword = "";
-      this.filterAndPaging();
-      this.voucherDetail = [];
-    },
-
-    /**
-     * @description Cập nhật mảng các dòng được chọn
-     * @author NVThinh 10/1/2023
-     */
-    updateRow: function (selectedRows) {
-      if (selectedRows.length > 1) {
-        // Cập nhật mảng các dòng được chọn
-        this.selectedRows = selectedRows;
-        // Hiển thị nút xóa nhiều
-        this.isShowDeleteMultiIcon = true;
-      } else {
-        // Cập nhật mảng chi tiết chứng từ
-        this.getVoucherDetail(selectedRows[0]?.voucher_id);
-        // Không hiển thị icon xóa nhiều
-        this.isShowDeleteMultiIcon = false;
-      }
-    },
-
-    /**
-     * @description xử lý sự kiện khi ấn nút chính trong dialog
-     * @param {Number} mode chế độ hiển thị của dialog
-     * @author NVThinh 10/1/2023
-     */
-    confirm: async function (mode) {
-      if (mode === Enum.Mode.Delete) {
-        // Call API xóa 1
-        await deleteById(this.selectedVoucher.voucher_id)
-          .then(() => {
-            // Hiển thị thông báo
-            this.showToast(
-              Enum.ActionStatus.Success,
-              Resource.ToastContent.Delete.Success
-            );
-          })
-          .catch(() => {
-            // Hiển thị thông báo
-            this.showToast(
-              Enum.ActionStatus.Error,
-              Resource.ToastContent.Delete.Fail
-            );
-          });
-      } else {
-        // Tạo mảng các ids
-        let recordIDs = this.selectedRows.map((obj) => {
-          return obj.voucher_id;
-        });
-        // Call API xóa nhiều
-        await deleteMultipleRecords(recordIDs)
-          .then(() => {
-            // Hiển thị thông báo thành công
-            this.showToast(
-              Enum.ActionStatus.Success,
-              this.selectedRows.length +
-                Resource.ToastContent.DeleteMultiSuccess
-            );
-          })
-          .catch(() => {
-            // Hiển thị thông báo thất bại
-            this.showToast(
-              Enum.ActionStatus.Error,
-              Resource.ToastContent.DeleteMulti.Fail
-            );
-          });
-      }
-      // Đóng dialog
-      this.closeDialog();
-    },
-
-    /**
-     * Hiển thị toast
-     * @param {Number} actionStatus trạng thái toast
-     * @param {String} content nội dung hiển thị
-     * @author NVThinh 10/1/2023
-     */
-    showToast: function (actionStatus, content) {
-      // Cập nhật đối tượng toast
-      this.toastObj.actionStatus = actionStatus;
-      this.toastObj.content = content;
-      // Hiển thị toast
-      this.isShowToast = true;
-      // refresh table
-      this.filterAndPaging();
-    },
-
-    /**
-     * @description xử lý sự kiện khi ấn vào nút xóa nhiều
-     * @author NVThinh 10/1/2023
-     */
-    handleOnClickDeleteMany: async function () {
-      try {
-        // Cập nhật chế độ
-        this.mode = Enum.Mode.DeleteMulti;
-        // Mở dialog
-        this.isShowDialog = true;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    /**
-     * @description Bind dữ liệu và hiển thị popup
-     * @param {Number} mode chế độ popup
-     * @param {Object} obj đối tượng bản ghi
-     * @author NVThinh 13/1/2023
-     */
-    showPopup: function (mode, obj) {
-      try {
-        // update the title of popup
-        this.popupTitle = Resource.PopupTitle.edit_increment_asset;
-        // update the data of popup
-        this.selectedVoucher = obj;
-        // Hiển thị popup
-        this.openPopup(mode);
-      } catch (error) {
-        console.log(error);
-      }
-    },
   },
 };
 </script>
