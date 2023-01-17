@@ -2,7 +2,6 @@
   <!-- Table row  -->
   <tr
     :class="{ 'row--active': isActive }"
-    tabindex="1"
     @click="handleOnClickRow"
     @keydown.enter="handleOnClickRow"
     @dblclick="carryOutFeature(Enum.Mode.Update)"

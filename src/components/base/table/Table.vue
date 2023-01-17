@@ -383,6 +383,7 @@ export default {
      * @author NVThinh 13/1/2023
      */
     focusFirstRow: function () {
+      console.log(typeof this.$refs.tableRow);
       // highlight trên giao diện
       this.$refs.tableRow[0].onActive();
       // Thêm vào mảng các dòng được chọn

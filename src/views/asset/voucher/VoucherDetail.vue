@@ -110,7 +110,11 @@
     </div>
   </Popup>
   <!-- Voucher fixed asset list -->
-  <VoucherAssetList v-if="isShowAssetList" :selectedIDs="selectedIDs" />
+  <VoucherAssetList
+    v-if="isShowAssetList"
+    :selectedIDs="selectedIDs"
+    :deleted-asset-list="deletedAssetList"
+  />
   <!-- Budget Detail -->
   <BudgetDetail
     v-if="isShowBudgetDetail"
@@ -229,11 +233,9 @@ export default {
      */
     confirm: function () {
       try {
+        this.isShowDialog = false;
         if (this.dialog.hasSubButton == true) {
-          this.close();
           this.validate();
-        } else {
-          this.isShowDialog = false;
         }
       } catch (error) {
         console.log(error);
@@ -271,10 +273,18 @@ export default {
      */
     updateVoucher: function (mode, fixedAsset, indexOfArray) {
       if (mode == Enum.Mode.Delete) {
+        // Thêm tài sản vào mảng bị xóa
+        if (this.mode == Enum.Mode.Update) {
+          this.deletedAssetList.push(fixedAsset);
+        }
+        console.log(this.deletedAssetList);
+        // Bỏ tài sản bị xóa khỏi danh sách hiển thị
         this.assetList.splice(indexOfArray, 1);
+        // Phân trang
         this.paging();
         return;
       }
+      console.log(this.deletedAssetList);
       // Cập nhật thông tin tài sản
       this.selectedFixedAsset = this.assetList[indexOfArray];
       // Mở popup
@@ -307,7 +317,13 @@ export default {
     close: function () {
       try {
         if (Function.isObjectEqual(this.originalVoucher, this.voucher)) {
-          this.$parent.closePopup();
+          if (this.changed) {
+            this.dialog.hasOutlineButton = false;
+            this.dialog.hasSubButton = true;
+            this.showDialog(this.dialogMessage.confirm.add);
+          } else {
+            this.$parent.closePopup();
+          }
         } else {
           if (this.changed) {
             // Nếu dữ liệu được thay đổi
@@ -331,6 +347,13 @@ export default {
      */
     updateRow: function (selectedRows) {
       try {
+        // Cập nhật mảng danh sách bị xóa
+        this.deletedAssetList = this.deletedAssetList.filter((obj) => {
+          let result = selectedRows.find((newObj) => {
+            return newObj.fixed_asset_id == obj.fixed_asset_id;
+          });
+          return result == undefined ? true : false;
+        });
         // Cập nhật mảng các dòng được chọn
         if (this.assetList.length == 0) {
           this.assetList = selectedRows;
@@ -459,7 +482,7 @@ export default {
             .then(() => {
               this.handleSuccessAPI();
               // Đóng popup
-              this.close();
+              this.$parent.closePopup();
             })
             .catch((res) => {
               this.handleErrorAPI(res);
@@ -469,7 +492,7 @@ export default {
             .then(() => {
               this.handleSuccessAPI();
               // Đóng popup
-              this.close();
+              this.$parent.closePopup();
             })
             .catch((res) => {
               this.handleErrorAPI(res);
@@ -655,6 +678,7 @@ export default {
       displayedAssetList: [], // Mảng chứa các tài sản đã được lọc
       assetList: [], // Mảng chứa các tài sản được chọn
       costList: [], // Mảng chứa các tài sản được chỉnh sửa
+      deletedAssetList: [], // Mảng chứa các tài sản bị xóa
       dialog: {
         warningMessage: "", // Thông tin cảnh báo
         hasSubButton: false, // Dialog có button kiểu sub

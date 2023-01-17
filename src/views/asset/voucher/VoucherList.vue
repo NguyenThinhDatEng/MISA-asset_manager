@@ -715,4 +715,8 @@ export default {
 .master .table {
   flex: 1;
 }
+
+.detail .table::-webkit-scrollbar-track {
+  margin-bottom: unset;
+}
 </style>

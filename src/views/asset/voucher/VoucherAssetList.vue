@@ -56,6 +56,7 @@ import TablePaging from "@/components/base/table/TablePaging.vue";
 import Resource from "@/js/resource/resource";
 import TableResource from "@/js/resource/tableResource";
 import Enum from "@/js/enum/enum";
+import Function from "@/js/common/function";
 import { getFixedAssetByFilterAndPaging } from "@/apis/fixedAsset";
 
 export default {
@@ -73,9 +74,11 @@ export default {
       type: Array,
       default: () => [],
     }, // Danh sách các IDs đã được chọn
+    deletedAssetList: Array, // Mảng chứa các tài sản xóa tạm thời
   },
 
   created() {
+    console.log(this.deletedAssetList);
     // Gọi API lấy danh sách tài sản cố định theo tìm kiếm, lọc và giới hạn bản ghi
     this.searchAndFilter();
   },
@@ -136,8 +139,24 @@ export default {
         this.selectedIDs
       )
         .then((res) => {
+          // Lấy tổng số bản ghi thu được
+          const records = res.data.totalOfRecords;
+          // Lọc mảng các tài sản xóa tạm thời
+          const tmpArr = Function.autoComplete(
+            this.conditions.keyword,
+            this.deletedAssetList,
+            "fixed_asset_code",
+            "fixed_asset_name"
+          );
+          // Cập nhật mảng dữ liệu
           this.fixedAssets = res.data.data;
-          this.totalOfRecords = res.data.totalOfRecords;
+          let i = records;
+          while (i < this.conditions.limit && i - records < tmpArr.length) {
+            this.fixedAssets.push(tmpArr[i - records]);
+            i++;
+          }
+          // Cập nhật tổng số bản ghi thu được
+          this.totalOfRecords = records + tmpArr.length;
           this.isShowLoader = false;
         })
         .catch(() => {
@@ -223,6 +242,7 @@ export default {
       Resource,
       TableResource,
       Enum,
+      Function,
       // Style cho detail table
       tds_of_detail: [
         {
