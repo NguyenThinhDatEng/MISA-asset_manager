@@ -171,7 +171,7 @@ export default {
   },
 
   mounted() {
-    // Cập nhật table head
+    // Cập nhật style cho table head
     this.ths = Object.assign(this.cols);
     let index;
     if (this.isShowCheckbox == false) {

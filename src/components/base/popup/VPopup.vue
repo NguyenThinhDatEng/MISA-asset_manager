@@ -27,6 +27,7 @@
           :button-content="Resource.ButtonContent.cancel"
           :type="Enum.Type.Secondary"
           @click="close()"
+          @keydown.tab="$emit('on-tab')"
         ></ButtonMain>
       </div>
     </div>
@@ -65,7 +66,7 @@ export default {
     },
   },
 
-  emits: ["close-popup", "on-save"],
+  emits: ["close-popup", "on-save", "on-tab"],
 
   methods: {
     onCtrl: function (e) {

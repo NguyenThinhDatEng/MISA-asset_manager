@@ -3,11 +3,17 @@ export default {
     add: {
       VN: "Thêm",
     },
-    search: {
-      VN: "Tìm kiếm",
+    close: {
+      VN: "Đóng",
     },
     delete: {
       VN: "Xóa",
+    },
+    save: {
+      VN: "Lưu",
+    },
+    search: {
+      VN: "Tìm kiếm",
     },
   },
 };

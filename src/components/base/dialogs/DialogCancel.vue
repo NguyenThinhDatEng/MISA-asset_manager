@@ -11,12 +11,14 @@
       </div>
       <!-- Footer -->
       <div class="dialog__footer">
+        <!-- Main Button -->
         <ButtonMainVue
           :button-content="Resource.ButtonContent.remove"
           :title="Resource.Title.cancel"
           :type="Enum.Type.Main"
           @click="this.$emit('close-popup')"
         ></ButtonMainVue>
+        <!-- Outline Button -->
         <ButtonOutlineVue
           v-show="hasNoButton"
           :button-content="Resource.ButtonContent.no"
@@ -28,11 +30,14 @@
 
     <div class="dialog" v-else>
       <div class="dialog__header"></div>
+      <!-- dialog body -->
       <div id="dialog--no-header" class="dialog__body">
         <div class="icon icon--warning dialog__body__icon"></div>
         <p class="dialog__body__text">{{ content }}</p>
       </div>
+      <!-- dialog foot -->
       <div class="dialog__footer">
+        <!-- Main Button -->
         <ButtonMainVue
           :button-content="Resource.ButtonContent.save"
           :title="Resource.Title.update"
@@ -40,12 +45,12 @@
           @click="this.$emit('save-and-close')"
           @keydown.enter="this.$emit('save-and-close')"
         ></ButtonMainVue>
-
+        <!-- Sub Button -->
         <SubButton
           :title="Resource.Title.noSave"
           @click="this.$emit('close-popup')"
         ></SubButton>
-
+        <!-- Outline Button -->
         <ButtonOutlineVue
           :button-content="Resource.ButtonContent.remove"
           :title="Resource.Title.cancel"

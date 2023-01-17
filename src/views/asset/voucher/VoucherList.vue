@@ -33,7 +33,6 @@
             ref="search_input"
             @update-filter="updateFilter"
             @handle-empty-input="handleEmptyInput"
-            @handle-on-tab="focusFirstRow"
           />
         </div>
         <div class="function__right">

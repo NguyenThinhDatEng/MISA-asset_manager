@@ -7,6 +7,7 @@
     @keydown.esc="close"
     @keyup.ctrl.q.stop="validate"
     @keyup.ctrl.insert="showAssetList"
+    @on-tab="$refs.firstInput.focus()"
   >
     <div class="popup__body__wrapper">
       <div class="voucher-info">
@@ -14,6 +15,8 @@
         <div class="voucher-info__content">
           <!-- Row -->
           <div class="row">
+            <!-- ignore input -->
+            <input ref="firstInput" class="ignoreInput" readonly />
             <!-- Input: voucher code -->
             <InputVue
               class="bottomError"
@@ -117,8 +120,12 @@
   <!-- Dialog warning -->
   <DialogWarning
     v-if="isShowDialog"
-    :content="warningMessage"
-    @confirm="closeDialog"
+    :content="dialog.warningMessage"
+    :has-sub-button="dialog.hasSubButton"
+    :has-outline-button="hasOutlineButton"
+    @confirm="confirm"
+    @close-popup="$parent.closePopup()"
+    @close-dialog="closeDialog"
   />
 </template>
 
@@ -207,11 +214,31 @@ export default {
   mounted() {
     // focus vào ô input đầu tiên
     this.focusFirstInput();
+    // Khởi tạo originalData (sau khi DOM được updated)
+    this.$nextTick(function () {
+      this.originalVoucher = Object.assign({}, this.voucher);
+    });
     // Phân trang
     this.paging();
   },
 
   methods: {
+    /**
+     * @description xử lý sự kiện khi ấn vào nút confirm của dialog
+     * @author NVThinh 17/1/2023
+     */
+    confirm: function () {
+      try {
+        if (this.dialog.hasSubButton == true) {
+          this.close();
+          this.validate();
+        } else {
+          this.isShowDialog = false;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     /**
      * @description focus vào ô mã chứng từ
      * @author NVThinh 16/1/2023
@@ -279,7 +306,19 @@ export default {
      */
     close: function () {
       try {
-        this.$parent.closePopup();
+        if (Function.isObjectEqual(this.originalVoucher, this.voucher)) {
+          this.$parent.closePopup();
+        } else {
+          if (this.changed) {
+            // Nếu dữ liệu được thay đổi
+            if (this.mode == Enum.Mode.Update) {
+              this.dialog.hasSubButton = true;
+              this.showDialog(this.dialogMessage.confirm.update);
+            }
+          } else {
+            this.$parent.closePopup();
+          }
+        }
       } catch (error) {
         console.log(error);
       }
@@ -375,6 +414,7 @@ export default {
         await getNewCode().then((res) => {
           // Gán vào đối tượng
           this.voucher.voucher_code = res.data;
+          this.originalVoucher.voucher_code = res.data;
         });
       } catch (error) {
         console.log(error);
@@ -402,6 +442,7 @@ export default {
 
         // Khởi tạo chứng từ
         this.voucher.total_of_cost = this.updateTotalOfCost();
+        this.voucher.modified_date = new Date();
         input.voucher = this.voucher;
 
         // Khởi tạo danh sách nguyên giá cần cập nhật
@@ -452,6 +493,7 @@ export default {
         }
         // Kiểm tra bảng detail có ít nhất 1 tài sản
         if (this.assetList.length === 0) {
+          this.dialog.hasSubButton = false;
           this.showDialog(this.dialogMessage.isRequired);
           return;
         }
@@ -468,6 +510,13 @@ export default {
      */
     updateInput: function (value, field) {
       try {
+        if (this.mode == Enum.Mode.Update && this.changed == false) {
+          if (value == this.voucherProp[field]) {
+            this.changed = false;
+          } else {
+            this.changed = true;
+          }
+        }
         this.voucher[field] = value;
         // Cập nhật hiển thị lỗi
         if (value) this.isError = false;
@@ -547,6 +596,7 @@ export default {
         // Nếu tài sản được sửa ngân sách
         if (isChanged) {
           this.costList.push({ fixed_asset_id: assetID, cost: totalOfCost });
+          this.changed = true;
         }
         // Cập nhật tổng nguyên giá
         for (let obj of this.assetList) {
@@ -574,12 +624,12 @@ export default {
     },
 
     /**
-     * @description Hiển thị dialog
+     * @description Cập nhật đối tượng dialog và hiển thị dialog
      * @param {String} message Thông tin hiển thị trong popup
      * @author NVThinh 13/1/2023
      */
     showDialog: function (message) {
-      this.warningMessage = message;
+      this.dialog.warningMessage = message;
       this.isShowDialog = true;
     },
 
@@ -597,7 +647,7 @@ export default {
 
   data() {
     return {
-      warningMessage: "", // Thông tin cảnh báo
+      changed: false, // Nếu dữ liệu bị thay đổi
       isError: false, // Lỗi thiếu thông tin trường bắt buộc
       isShowDialog: false, // Hiển thị dialog cảnh báo
       isShowAssetList: false, // Hiển thị popup "chọn tài sản ghi tăng"
@@ -605,6 +655,11 @@ export default {
       displayedAssetList: [], // Mảng chứa các tài sản đã được lọc
       assetList: [], // Mảng chứa các tài sản được chọn
       costList: [], // Mảng chứa các tài sản được chỉnh sửa
+      dialog: {
+        warningMessage: "", // Thông tin cảnh báo
+        hasSubButton: false, // Dialog có button kiểu sub
+        hasOutlineButton: false, // Dialog có button kiểu outline
+      }, // Đối tượng dialog
       conditions: {
         keyword: "",
         limit: 20,
@@ -621,9 +676,15 @@ export default {
         modified_date: new Date(),
         modified_by: "",
       }, // Đối tượng chứng từ
+      originalVoucher: {}, // Đối tượng chứng từ khởi tạo ban đầu
       selectedFixedAsset: {}, // Đối tượng tài sản được chọn để chỉnh sửa
       dialogMessage: {
         isRequired: "Chọn ít nhất 1 tài sản",
+        confirm: {
+          add: "Bạn có muốn hủy khai báo tài sản này?",
+          update:
+            "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
+        },
       },
       // Resources
       Resource,
@@ -747,8 +808,13 @@ export default {
   display: flex;
   flex-direction: column;
 }
-
 .input__wrapper + div {
   margin-left: 16px;
+}
+
+.ignoreInput {
+  width: 0;
+  height: 0;
+  border: none;
 }
 </style>

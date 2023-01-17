@@ -15,15 +15,23 @@
       <div class="dialog__footer">
         <!-- Main Button -->
         <ButtonMainVue
-          :button-content="mainButtonContent"
+          :button-content="!hasSubButton ? mainButtonContent : action.save.VN"
           :title="Resource.Title.cancel"
           :type="Enum.Type.Main"
           @click="this.$emit('confirm', mode)"
         ></ButtonMainVue>
+        <!-- Sub Button -->
+        <SubButton
+          v-show="hasSubButton"
+          :title="Resource.Title.noSave"
+          @click="this.$emit('close-popup')"
+        ></SubButton>
         <!-- Outline Button -->
         <ButtonOutlineVue
-          v-show="hasOutlineButton"
-          :button-content="Resource.ButtonContent.no"
+          v-show="hasOutlineButton || hasSubButton"
+          :button-content="
+            hasSubButton ? buttonContent.remove : buttonContent.no
+          "
           :title="Resource.Title.cancel"
           @click="this.$emit('close-dialog')"
         ></ButtonOutlineVue>
@@ -36,14 +44,15 @@
 // Resources
 import Enum from "@/js/enum/enum";
 import Resource from "@/js/resource/resource";
+import Dictionary from "@/js/resource/dictionary";
 // Components
 import ButtonMainVue from "@/components/base/buttons/ButtonMain.vue";
 import ButtonOutlineVue from "@/components/base/buttons/ButtonOutline.vue";
-// import SubButton from "@/components/base/buttons/ButtonSub.vue";
+import SubButton from "@/components/base/buttons/ButtonSub.vue";
 
 export default {
   name: "DialogWarning",
-  components: { ButtonMainVue, ButtonOutlineVue },
+  components: { ButtonMainVue, ButtonOutlineVue, SubButton },
   props: {
     hasOutlineButton: {
       type: Boolean,
@@ -55,7 +64,7 @@ export default {
     }, // Dialog có button kiểu sub
     mainButtonContent: {
       type: String,
-      default: "Đóng",
+      default: Dictionary.action.close.VN,
     }, // Nội dung nút chính
     content: {
       type: String,
@@ -66,12 +75,16 @@ export default {
       default: 0,
     }, // Chế độ hiển thị của dialog
   },
-  emits: ["close-dialog", "confirm"],
+  emits: ["close-dialog", "close-popup", "confirm"],
 
-  created() {},
-  methods: {},
   data() {
-    return { Enum, Resource };
+    return {
+      // Resources
+      Enum,
+      Resource,
+      action: Dictionary.action,
+      buttonContent: Resource.ButtonContent,
+    };
   },
 };
 </script>

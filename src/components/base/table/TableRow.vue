@@ -19,14 +19,11 @@
     <div class="feature" v-show="isShowFeature">
       <!-- Edit button -->
       <div class="icon__wrapper" @click="updateVoucher(Enum.Mode.Update)">
-        <div class="icon icon--edit center" :title="Resource.Title.edit" />
+        <div class="icon icon--edit center" :title="'sửa'" />
       </div>
       <!-- Delete button -->
       <div class="icon__wrapper" @click="updateVoucher(Enum.Mode.Delete)">
-        <div
-          class="icon icon--18px icon--delete center"
-          :title="Resource.Title.delete"
-        ></div>
+        <div class="icon icon--18px icon--delete center" :title="'xóa'"></div>
       </div>
     </div>
   </tr>
@@ -38,6 +35,7 @@ import Resource from "@/js/resource/resource";
 import Enum from "@/js/enum/enum";
 import Function from "@/js/common/function";
 import TableResource from "@/js/resource/tableResource";
+import dictionary from "@/js/resource/dictionary";
 // Components
 import TableData from "./TableData.vue";
 
@@ -181,6 +179,7 @@ export default {
         const isNew = true;
         // Thay đổi trạng thái của dòng
         this.isActive = !this.isActive;
+        // this.$emit('update:isActive', true);
         // Nếu dòng được active, bắn đối tượng đến Table
         if (this.isActive == isNew) {
           this.$emit(
@@ -249,6 +248,7 @@ export default {
       Resource,
       Function,
       Enum,
+      dictionary,
       props: TableResource.TableRow.FixedAsset,
     };
   },

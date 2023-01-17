@@ -26,7 +26,7 @@
                   <InputVue
                     :has-label="false"
                     :isLogin="true"
-                    :labelContent="data.account.placeholder"
+                    :label="data.account.placeholder"
                     :placeholder="data.account.placeholder"
                     :field="fields.account"
                     :isError="data.account.isError"
@@ -39,7 +39,7 @@
                   :has-label="false"
                   :isLogin="true"
                   :is-password="true"
-                  :labelContent="data.password.placeholder"
+                  :label="data.password.placeholder"
                   :placeholder="data.password.placeholder"
                   :field="fields.password"
                   :type="Enum.DataType.Text"

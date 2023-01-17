@@ -1,6 +1,6 @@
 export default {
   Status: {
-    noContent: "Không có dữ liệu trên grid",
+    noContent: "Không có dữ liệu",
   },
   // Table Row
   TableRow: {
